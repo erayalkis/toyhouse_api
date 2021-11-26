@@ -40,7 +40,7 @@ class CharacterSpider < Kimurai::Base
     character[:created_n_ago] = response.css('abbr.tooltipster.datetime')[0].text
     from_time = Time.now - character[:created_n_ago][0..1].to_i.days - character[:created_n_ago][9..10].to_i.hours
     character[:created_at] = from_time.strftime("%d %b %Y")
-    character[:images] = []
+    character[:recent_images] = []
     response.css('li.gallery-item').each do |li|
       character[:images].push li.css('a.img-thumbnail')[0]["href"]
     end
