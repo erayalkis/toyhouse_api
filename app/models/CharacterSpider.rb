@@ -25,6 +25,10 @@ class CharacterSpider < Kimurai::Base
       response = browser.current_response
     end
 
+    if response.css('div.col-sm-12.content-main > div.character-profile').empty?
+      return nil
+    end
+
     character[:name] = response.css('h1.display-4').text
     character[:owner] = {}
     character[:owner][:name] = response.css('span.display-user > a')[0].text
