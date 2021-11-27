@@ -36,15 +36,17 @@ class CharacterSpider < Kimurai::Base
     character[:creator] = {}
     character[:creator][:name] = response.css('span.display-user > a')[2].text
     character[:creator][:profile] = response.css('span.display-user a')[2]['href']
+    character[:description] = ""
+    response.css('div.profile-content-content.user-content p').each { |p| character[:description] += "#{p.text}\n" }
     character[:fav_count] = response.css('div.fields-field > dd.col-sm-8')[2].text.strip
     character[:created_n_ago] = response.css('abbr.tooltipster.datetime')[0].text
     from_time = Time.now - character[:created_n_ago][0..1].to_i.days - character[:created_n_ago][9..10].to_i.hours
     character[:created_at] = from_time.strftime("%d %b %Y")
     character[:recent_images] = []
-    response.css('li.gallery-item').each do |li|
-      character[:images].push li.css('a.img-thumbnail')[0]["href"]
-    end
+    response.css('li.gallery-item').each { |li| character[:recent_images].push li.css('a.img-thumbnail')[0]["href"] }
 
+
+    print character[:description].split("\n")
     return character
   end
 end
