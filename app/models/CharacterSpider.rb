@@ -46,8 +46,20 @@ class CharacterSpider < Kimurai::Base
     end
     character[:fav_count] = response.css('div.fields-field > dd.col-sm-8')[2].text.strip
     character[:created_n_ago] = response.css('abbr.tooltipster.datetime')[0].text
-    from_time = Time.now - character[:created_n_ago][0..1].to_i.days - character[:created_n_ago][9..10].to_i.hours
-    character[:created_at] = from_time.strftime("%d %b %Y")
+    if character[:created_n_ago][0..1].start_with?('day')
+      time1 = character[:created_n_ago][0..1].to_i.days
+    else
+      character[:created_n_ago][0..1].start_with?('minute')
+      time1 = character[:created_n_ago][0..1].to_i.minutes
+    end
+    if character[:created_n_ago][9..10].start_with?('hour')
+      time2 = character[:created_n_ago][9..10].to_i.hours
+    else
+     time2 = character[:created_n_ago][9..10].to_i.seconds
+    end
+    from_time = Time.now - time1 - time2
+    character[:created_n_ago][0..1] 
+    character[:created_at] = from_time.strftime("%dth of %b %Y")
     character[:tags] = []
     response.css('div.profile-tags-content a').each { |a| character[:tags] << a.text }
     character[:recent_images] = []
