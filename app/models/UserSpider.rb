@@ -37,7 +37,9 @@ class UserSpider < Kimurai::Base
       user[:featured_character][:name] = response.css('div.thumb-character-name > a.character-name-badge').text
       user[:featured_character][:profile] = response.css('div.thumb-character-name > a.character-name-badge')[0]['href']
       user[:featured_character][:thumbnail] = response.css('div.profile-feature-thumb > div.thumb-image > a.img-thumbnail > img')[0]['src']
-      user[:featured_character][:images] = 
+      unless response.css('div.profile-feature-gallery').empty?
+        user[:featured_character][:images] = response.css('a.th.img-thumbnail > img').map { |img| img['src'] }
+      end
     end
 
     return user
