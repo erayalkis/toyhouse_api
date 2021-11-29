@@ -53,6 +53,11 @@ class UserSpider < Kimurai::Base
       end
     end
 
+    unless response.css('div.profile-section.user-content').empty?
+      user[:description] = ""
+      response.css('div.profile-section.user-content')[0].children.each { |child| user[:description] += "#{child.text}\n " }
+    end
+
     return user
   end
 end
