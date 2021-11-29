@@ -6,7 +6,11 @@ class RequestController < ApplicationController
       return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
     end
 
-    response = CharacterSpider.instance("https://toyhou.se/#{params[:id]}")
+    if params[:id] && params[:gallery_only] == "true"
+      response = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
+    else
+      response = CharacterSpider.instance("https://toyhou.se/#{params[:id]}")
+    end
 
     if response
       render json: response
