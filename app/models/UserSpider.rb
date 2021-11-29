@@ -1,8 +1,4 @@
 class UserSpider < Kimurai::Base
-  require 'action_view'
-  require 'action_view/helpers'
-  include ActionView::Helpers::DateHelper
-
   @name = 'user_spider'
   @engine = :mechanize
   @config = {
