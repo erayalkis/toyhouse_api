@@ -45,9 +45,11 @@ class UserSpider < Kimurai::Base
     unless response.css('div.profile-characters-content').empty?
       user[:recent_characters] = []
       response.css('div.gallery-row.mini > div').each do |div|
-        character_name = div.css('div.thumb-caption > span').text
-        user
-        div.css()
+        character = {}
+        character[:name] = div.css('div.thumb-caption > span').text
+        character[:profile] = div.css('div.thumb-caption > span > a')[0]['href']
+        character[:image] = div.css('div.thumb-image > a > img')[0]['src']
+        user[:recent_characters] << character
       end
     end
 
