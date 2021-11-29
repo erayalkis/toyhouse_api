@@ -1,5 +1,5 @@
 class CharacterSpider < Kimurai::Base
-  
+
   @name = 'character_spider'
   @engine = :mechanize
   @config = {
@@ -26,13 +26,13 @@ class CharacterSpider < Kimurai::Base
       return nil
     end
 
-    character[:name] = response.css('h1.display-4').text
+    character[:name] = response.css('h1.display-4').text.strip
     character[:creator] = {}
-    character[:creator][:name] = response.css('dd.field-value.col-sm-8')[1].text
+    character[:creator][:name] = response.css('dd.field-value.col-sm-8')[1].text.strip
     character[:creator][:profile] = response.css('dd.field-value.col-sm-8 a')[0]['href']
     character[:creator][:profile] = nil if response.css('dd.field-value.col-sm-8')[1].children.length == 1
     character[:owner] = {}
-    character[:owner][:name] = response.css('div.profile-name-info > h2 > .display-user > a').text
+    character[:owner][:name] = response.css('div.profile-name-info > h2 > .display-user > a').text.strip
     character[:owner][:profile] = response.css('div.profile-name-info > h2 > .display-user > a')[0]['href']
     character[:description] = ""
     if response.css('div.profile-content-content.user-content').children.length == 1

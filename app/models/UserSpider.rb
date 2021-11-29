@@ -1,5 +1,5 @@
 class UserSpider < Kimurai::Base
-  
+
   @name = 'user_spider'
   @engine = :mechanize
   @config = {
@@ -31,7 +31,7 @@ class UserSpider < Kimurai::Base
     user[:name] = response.css('span.display-user-username').text
     unless response.css('div.profile-feature-content').empty?
       user[:featured_character] = {}
-      user[:featured_character][:name] = response.css('div.thumb-character-name > a.character-name-badge').text
+      user[:featured_character][:name] = response.css('div.thumb-character-name > a.character-name-badge').text.strip
       user[:featured_character][:profile] = response.css('div.thumb-character-name > a.character-name-badge')[0]['href']
       user[:featured_character][:thumbnail] = response.css('div.profile-feature-thumb > div.thumb-image > a.img-thumbnail > img')[0]['src']
       unless response.css('div.profile-feature-gallery').empty?
@@ -43,7 +43,7 @@ class UserSpider < Kimurai::Base
       user[:recent_characters] = []
       response.css('div.gallery-row.mini > div').each do |div|
         character = {}
-        character[:name] = div.css('div.thumb-caption > span').text
+        character[:name] = div.css('div.thumb-caption > span').text.strip
         character[:profile] = div.css('div.thumb-caption > span > a')[0]['href']
         character[:image] = div.css('div.thumb-image > a > img')[0]['src']
         user[:recent_characters] << character
