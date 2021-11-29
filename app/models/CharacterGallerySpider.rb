@@ -23,7 +23,7 @@ class CharacterGallerySpider < Kimurai::Base
     end
 
     if response.css('ul.magnific-gallery').empty?
-      return { msg: 'Character has no images or character profile is locked!' }
+      return { msg: 'Character has no images or character profile is locked!', status: 422 }
     end
 
     character[:name] = response.css('li.character-name').text.strip
