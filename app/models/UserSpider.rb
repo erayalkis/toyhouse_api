@@ -1,4 +1,5 @@
 class UserSpider < Kimurai::Base
+  
   @name = 'user_spider'
   @engine = :mechanize
   @config = {
