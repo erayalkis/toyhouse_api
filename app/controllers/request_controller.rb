@@ -3,7 +3,7 @@ class RequestController < ApplicationController
   def scrape_character_profile
 
     unless params[:id]
-      return render json: { msg: 'Please pass in a Toyhouse link!', status: 404 }, status: 404
+      return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
     end
 
     response = CharacterSpider.instance("https://toyhou.se/#{params[:id]}")
@@ -13,6 +13,7 @@ class RequestController < ApplicationController
     else
       render json: { 
         msg: 'Please pass in a valid Toyhouse link!', 
+        msg_desc: 'The profile you\'re trying to fetch has custom HTML or it is a locked profile.',
         tip: 'Psst, if you\'re having trouble with parameters, check out the Toyhouse API helper!',  
         status: 422 }, status: 422
     end
@@ -21,7 +22,7 @@ class RequestController < ApplicationController
   def scrape_user_profile
 
     unless params[:id]
-      return render json: { msg: 'Please pass in a Toyhouse link!', status: 404 }, status: 404
+      return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
     end
 
     response = UserSpider.instance("https://toyhou.se/#{params[:id]}")
@@ -31,6 +32,7 @@ class RequestController < ApplicationController
     else
       render json: { 
         msg: 'Please pass in a valid Toyhouse link!', 
+        msg_desc: 'The profile you\'re trying to fetch has custom HTML or it is a locked profile.',
         tip: 'Psst, if you\'re having trouble with parameters, check out the Toyhouse API helper!',  
         status: 422 }, status: 422
     end

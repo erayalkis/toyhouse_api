@@ -57,8 +57,7 @@ class CharacterSpider < Kimurai::Base
     character[:recent_images] = []
     response.css('li.gallery-item').each { |li| character[:recent_images].push li.css('a.img-thumbnail')[0]["href"] }
 
-
-    print character[:description].split("\n")
+    # Add comment fetching in the future if user demand is high
     return character
   end
 end

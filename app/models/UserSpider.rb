@@ -58,6 +58,7 @@ class UserSpider < Kimurai::Base
       response.css('div.profile-section.user-content')[0].children.each { |child| user[:description] += "#{child.text}\n " }
     end
 
+    # Add comment fetching in the future if user demand is high
     return user
   end
 end
