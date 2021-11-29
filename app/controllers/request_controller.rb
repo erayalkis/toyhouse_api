@@ -16,7 +16,7 @@ class RequestController < ApplicationController
       render json: response
     else
       render json: { 
-        msg: 'Please pass in a valid Toyhouse link!', 
+        msg: 'Please pass in a valid Toyhouse character link!', 
         msg_desc: 'The profile you\'re trying to fetch has custom HTML or it is a locked profile.',
         tip: 'Psst, if you\'re having trouble with parameters, check out the Toyhouse API helper!',  
         status: 422 }, status: 422
@@ -35,7 +35,7 @@ class RequestController < ApplicationController
       render json: response
     else
       render json: { 
-        msg: 'Please pass in a valid Toyhouse link!', 
+        msg: 'Please pass in a valid Toyhouse user link!', 
         msg_desc: 'The profile you\'re trying to fetch has custom HTML or it is a locked profile.',
         tip: 'Psst, if you\'re having trouble with parameters, check out the Toyhouse API helper!',  
         status: 422 }, status: 422

@@ -1,4 +1,4 @@
-class galleryGallerySpider < Kimurai::Base
+class CharacterGallerySpider < Kimurai::Base
    
   @name = 'character_gallery_spider'
   @engine = :mechanize
@@ -15,8 +15,21 @@ class galleryGallerySpider < Kimurai::Base
   end
 
   def parse(response, url:, data: {})
-    gallery = []
-    
-    return gallery
+    character = {}
+
+    unless response.css('input.btn-success').empty?
+      browser.click_button "Okay! I have read and understand the above warnings."
+      response = browser.current_response
+    end
+
+    if response.css('ul.magnific-gallery').empty?
+      return { msg: 'Character has no images or character profile is locked!' }
+    end
+
+    character[:name] = response.css('li.character-name').text.strip
+    character[:gallery] = []
+    response.css('div.thumb-image > a').each { |a| character[:gallery] << a['href'] }
+
+    return character
   end
 end
