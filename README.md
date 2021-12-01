@@ -1,3 +1,8 @@
-# README
+# Welcome!
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lobortis eget nunc non congue. Ut gravida vestibulum ultricies. Phasellus a scelerisque sem. Integer malesuada placerat tellus et pretium. Proin semper at lectus id laoreet. Vivamus quam mi, rhoncus et mattis quis, pretium non ligula. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam posuere consequat euismod. Nam consequat luctus felis ut accumsan.
+This is a Toyhouse API that can fetch user and character profiles/galleries! It uses webscraping to accomplish this task and is optimised to be as fast as possible!
+
+Gems used in this project:
+ * rack-cors to disable CORS since no security is needed for this API.
+ * kimurai for webscraping.
+ * capybara for interaction with the websites
