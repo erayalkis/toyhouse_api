@@ -18,7 +18,7 @@ class CharacterSpider < Kimurai::Base
     character = {}
 
     unless response.css('input.btn-success').empty?
-      browser.click_button "Okay! I have read and understand the above warnings."
+      browser.click_button response.css('input.btn-success')[0]['value']
       response = browser.current_response
     end
 
