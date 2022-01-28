@@ -94,8 +94,8 @@ class RequestController < ApplicationController
 
   private 
 
-  def clear_cache(path)
-    puts "Clearing zip on path: #{path}"
-    FileUtils.rm_rf(Dir[path]) 
-  end
+  # def clear_cache(path)
+  #   puts "Clearing zip on path: #{path}"
+  #   FileUtils.rm_rf(Dir[path]) 
+  # end
 end
