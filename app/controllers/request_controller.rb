@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class RequestController < ApplicationController
 
   def download_gallery
@@ -9,6 +11,7 @@ class RequestController < ApplicationController
 
     links.each do |link|
       puts link
+      URI.open(link).read
     end
   end
 
