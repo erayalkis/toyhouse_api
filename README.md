@@ -29,6 +29,10 @@ The part that took me a long time was deciding which engine to use for the websc
 
 I was first planning on using Selenium-Chrome for this project, but after realising that Mechanize still mimicks a real browser - meaning that most Capybara functionalities work with it - and that Toyhouse doesn't use JS for any content rendering, I decided to use Mechanize for this app.
 
+The most recent challenge I faced was updating the app to use send_file instead of managing the download on the front end. This would create inconsistencies for users in the future and would also create a few potential security risks.
+After reading through some documentation and reading through some Stack Overflow threads, I was able to get it working. The newest version of the app now uses [rubyzip](https://github.com/rubyzip/rubyzip) and [open-uri](https://ruby-doc.org/stdlib-2.6.3/libdoc/open-uri/rdoc/OpenURI.html) to fetch and save images to a zip file locally, which then gets sent to the user through send_file. This zip file then gets deleted by a function that runs periodically.
+This created a performance increase of ~20% while also preventing the aformentioned security problems.
+
 # Technologies used
 
 This app is written in Rails and uses [Kimurai](https://github.com/vifreefly/kimuraframework) for webscraping.
