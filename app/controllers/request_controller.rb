@@ -10,6 +10,8 @@ class RequestController < ApplicationController
     file_name = "#{character[:name]}-gallery.zip"
     file_path = Rails.root.join('public', 'content', file_name).to_s
     
+    File.delete(file_path) if File.exists?(file_path)
+    
     Zip::File.open(file_path, create: true) do |zip|
       links.each_with_index do |link, idx|
         image = URI.open(link)
