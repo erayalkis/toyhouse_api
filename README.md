@@ -33,7 +33,7 @@ The most recent challenge I faced was updating the app to use send_file instead 
 After reading through some documentation and reading through some Stack Overflow threads, I was able to get it working. The newest version of the app now uses [rubyzip](https://github.com/rubyzip/rubyzip) and [open-uri](https://ruby-doc.org/stdlib-2.6.3/libdoc/open-uri/rdoc/OpenURI.html) to fetch and save images to a zip file locally, which then gets sent to the user through send_file. This zip file then gets deleted by a function that runs periodically.
 This created a performance increase of ~20% while also preventing the aformentioned security problems.
 
-After publishing the app to Heroku however, I soon realised that Heroku doesn't allow Tempfile's and had to revert the application back to it's original state. This *did* revert the performance increase but the security problems were soon patched out.
+After publishing the app to Heroku however, I unfortunately soon realised that Heroku doesn't allow Tempfile's and had to revert the application back to it's original state. This *did* revert the performance and security patches along with it, though the security problems were soon handled.
 
 # Technologies used
 
