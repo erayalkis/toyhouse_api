@@ -11,7 +11,6 @@ class RequestController < ApplicationController
     
     File.delete(file_path) if File.exists?(file_path)
 
-    puts "---- Creating file #{file_name} on #{file_path} ----"
     Zip::File.open(file_path, create: true) do |zip|
       links.each_with_index do |link, idx|
         puts link
@@ -22,12 +21,10 @@ class RequestController < ApplicationController
           data_type = data_type.split("?")[0];
         end
 
-        puts "Adding image to #{file_path}"
         zip.add("#{idx}.#{data_type}", image)
       end
     end
 
-    puts "---- Sending response... ----"
     if character
       render json: { msg: 'Character fetching successful!', status: 200 }, status: 200
     else
@@ -50,8 +47,6 @@ class RequestController < ApplicationController
     if File.exists?(file_path)
       send_data(File.open(file_path), type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false)
     end
-
-    # clear_cache(file_path) # Heroku already gets rid of files automatically
   end
 
   def scrape_character_profile
@@ -97,8 +92,7 @@ class RequestController < ApplicationController
 
   private 
 
-  # def clear_cache(path)
-  #   puts "Clearing zip on path: #{path}"
-  #   FileUtils.rm_rf(Dir[path]) 
-  # end
+  def clear_cache(path)
+    FileUtils.rm_rf(Dir[]) 
+  end
 end
