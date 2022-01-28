@@ -46,7 +46,7 @@ class RequestController < ApplicationController
     file_name = "#{character[:name]}-gallery.zip"
     file_path = Rails.root.join('public', 'content', file_name).to_s
     
-    send_data(file_path, type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false) if File.exists?(file_path)
+    send_file(file_path, type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false) if File.exists?(file_path)
   end
 
   def scrape_character_profile
