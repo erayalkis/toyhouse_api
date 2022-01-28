@@ -8,12 +8,12 @@ class RequestController < ApplicationController
     character = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
     links = character[:gallery]
 
-    zip = Zip::File.new("#{character[:name]}-gallery")
+    zip = Zip::File.new("#{character[:name]}-gallery", create: true)
 
     links.each_with_index do |link, idx|
-      image = open(link).read
+      image = URI.open(link)
 
-      zip.add(i, image)
+      zip.add(idx, image)
     end
 
     send_file zip
