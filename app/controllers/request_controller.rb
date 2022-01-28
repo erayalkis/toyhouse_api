@@ -1,6 +1,4 @@
 class RequestController < ApplicationController
-  after_action :clean_up_cache
-
   def cache_gallery
     unless params[:id]
       return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
@@ -46,7 +44,11 @@ class RequestController < ApplicationController
     file_name = "#{character[:name]}-gallery.zip"
     file_path = Rails.root.join('public', 'content', file_name).to_s
     
-    send_file(file_path, type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false) if File.exists?(file_path)
+    if File.exists?(file_path)
+      send_data(File.open(file_path), type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false)
+    end
+
+    clear_cache(file_path)
   end
 
   def scrape_character_profile
@@ -92,8 +94,7 @@ class RequestController < ApplicationController
 
   private 
 
-  def clean_up_cache
-    
+  def clear_cache(path)
+    FileUtils.rm_rf(Dir[path]) 
   end
-
 end
