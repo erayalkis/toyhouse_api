@@ -1,5 +1,3 @@
-require 'open-uri'
-
 class RequestController < ApplicationController
 
   def download_gallery
