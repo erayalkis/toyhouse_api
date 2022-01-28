@@ -7,7 +7,7 @@ class RequestController < ApplicationController
     character = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
     links = character[:gallery]
     file_name = "#{character[:name]}-gallery.zip"
-    file_path = Rails.root.join('public', 'content', file_name).to_s
+    file_path = Rails.root.join('public', 'content', file_name)
     
     File.delete(file_path) if File.exists?(file_path)
 
@@ -42,7 +42,7 @@ class RequestController < ApplicationController
     end
     character = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
     file_name = "#{character[:name]}-gallery.zip"
-    file_path = Rails.root.join('public', 'content', file_name).to_s
+    file_path = Rails.root.join('public', 'content', file_name)
     
     if File.exists?(file_path)
       send_data(File.open(file_path), type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false)
