@@ -15,7 +15,7 @@ gem 'puma', '~> 5.0'
 # gem 'bcrypt', '~> 3.1.7'
 gem 'kimurai'
 gem 'open-uri'
-gem 'rubyzip', '~> 2.3.0' 
+gem 'rubyzip', '~> 2.3.2', require: 'zip'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false

@@ -5,12 +5,18 @@ class RequestController < ApplicationController
       return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
     end
 
-    links = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")[:gallery]
+    character = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
+    links = character[:gallery]
 
-    links.each do |link|
-      puts link
-      URI.open(link).read
+    zip = Zip::File.new("#{character[:name]}-gallery")
+
+    links.each_with_index do |link, idx|
+      image = open(link).read
+
+      zip.add(i, image)
     end
+
+    send_file zip
   end
 
   def scrape_character_profile
