@@ -16,7 +16,6 @@ class RequestController < ApplicationController
       links.each_with_index do |link, idx|
         puts link
         image = URI.open(link)
-        image = image.string if image.is_a? StringIO
         
         data_type = link.split(".")[3];
         if (data_type.length > 4)
