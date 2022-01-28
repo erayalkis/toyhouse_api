@@ -1,7 +1,18 @@
 class RequestController < ApplicationController
 
-  def scrape_character_profile
+  def download_gallery
+    unless params[:id]
+      return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
+    end
 
+    links = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
+
+    links.each do |link|
+      puts link
+    end
+  end
+
+  def scrape_character_profile
     unless params[:id]
       return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
     end
@@ -24,7 +35,6 @@ class RequestController < ApplicationController
   end
 
   def scrape_user_profile
-
     unless params[:id]
       return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
     end
