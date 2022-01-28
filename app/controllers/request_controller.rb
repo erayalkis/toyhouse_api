@@ -48,7 +48,7 @@ class RequestController < ApplicationController
       send_data(File.open(file_path), type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false)
     end
 
-    clear_cache(file_path)
+    # clear_cache(file_path) # Heroku already gets rid of files automatically
   end
 
   def scrape_character_profile
@@ -95,6 +95,7 @@ class RequestController < ApplicationController
   private 
 
   def clear_cache(path)
+    puts "Clearing zip on path: #{path}"
     FileUtils.rm_rf(Dir[path]) 
   end
 end
