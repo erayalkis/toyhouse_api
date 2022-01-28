@@ -11,6 +11,7 @@ class RequestController < ApplicationController
     
     File.delete(file_path) if File.exists?(file_path)
 
+    puts "---- Creating file #{file_name} on #{file_path} ----"
     Zip::File.open(file_path, create: true) do |zip|
       links.each_with_index do |link, idx|
         puts link
@@ -21,10 +22,12 @@ class RequestController < ApplicationController
           data_type = data_type.split("?")[0];
         end
 
+        puts "Adding image to #{file_path}"
         zip.add("#{idx}.#{data_type}", image)
       end
     end
 
+    puts "---- Sending response... ----"
     if character
       render json: { msg: 'Character fetching successful!', status: 200 }, status: 200
     else
