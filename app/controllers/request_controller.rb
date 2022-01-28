@@ -13,7 +13,12 @@ class RequestController < ApplicationController
     Zip::File.open(file_path, create: true) do |zip|
       links.each_with_index do |link, idx|
         image = URI.open(link)
-        zip.add("#{idx}.jpg", image)
+        data_type = link.split(".")[3];
+        if (data_type.length > 4)
+          data_type = dataType.split("?")[0];
+        end
+
+        zip.add("#{idx}.#{data_type}", image)
       end
     end
 
