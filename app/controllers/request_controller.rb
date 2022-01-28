@@ -15,7 +15,7 @@ class RequestController < ApplicationController
         image = URI.open(link)
         data_type = link.split(".")[3];
         if (data_type.length > 4)
-          data_type = dataType.split("?")[0];
+          data_type = data_type.split("?")[0];
         end
 
         zip.add("#{idx}.#{data_type}", image)
