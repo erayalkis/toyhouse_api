@@ -1,6 +1,6 @@
 class RequestController < ApplicationController
 
-  def download_gallery
+  def cache_gallery
     unless params[:id]
       return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
     end
@@ -11,7 +11,7 @@ class RequestController < ApplicationController
     file_path = Rails.root.join('public', 'content', file_name).to_s
     
     File.delete(file_path) if File.exists?(file_path)
-    
+
     Zip::File.open(file_path, create: true) do |zip|
       links.each_with_index do |link, idx|
         image = URI.open(link)
@@ -24,7 +24,25 @@ class RequestController < ApplicationController
       end
     end
 
-    send_file(file_path, type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false)
+    if character
+      render json: { msg: 'Character fetching successfull...', status: 200 }, status: 200
+    else
+      render json: { 
+        msg: 'Please pass in a valid Toyhouse character link!', 
+        msg_desc: 'The profile you\'re trying to fetch has custom HTML or it is a locked profile.',
+        tip: 'Psst, if you\'re having trouble with parameters, check out the Toyhouse API helper!',  
+        status: 422 }, status: 422
+    end
+  end
+
+  def download_gallery
+    unless params[:id]
+      return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
+    end
+
+    file_path = Rails.root.join('public', 'content', file_name).to_s
+    
+    send_file(file_path, type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false) if File.exists?(file_path)
   end
 
   def scrape_character_profile

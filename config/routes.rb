@@ -3,5 +3,6 @@ Rails.application.routes.draw do
   get '/character', to: 'request#scrape_character_profile'
   get '/user', to: 'request#scrape_user_profile'
   get '/app_status', to: 'application#app_status'
+  get '/cache_gallery', to: 'request#cache_gallery'
   get '/download_gallery', to: 'request#download_gallery'
 end
