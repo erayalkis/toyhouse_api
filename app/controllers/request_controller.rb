@@ -7,16 +7,16 @@ class RequestController < ApplicationController
 
     character = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
     links = character[:gallery]
-
-    zip = Zip::File.new("#{character[:name]}-gallery", create: true)
-
-    links.each_with_index do |link, idx|
-      image = URI.open(link)
-
-      zip.add(idx, image)
+    filename = "#{character[:name]}-gallery.zip"
+    
+    Zip::File.open(filename, create: true) do |zip|
+      links.each_with_index do |link, idx|
+        image = URI.open(link)
+        zip.add("#{idx}.jpg", image)
+      end
     end
 
-    send_file zip
+    send_file(filename, type: 'application/zip', disposition: 'attachment', filename: filename)
   end
 
   def scrape_character_profile
