@@ -14,7 +14,9 @@ class RequestController < ApplicationController
 
     Zip::File.open(file_path, create: true) do |zip|
       links.each_with_index do |link, idx|
+        puts link
         image = URI.open(link)
+        
         data_type = link.split(".")[3];
         if (data_type.length > 4)
           data_type = data_type.split("?")[0];
