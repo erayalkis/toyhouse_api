@@ -1,4 +1,5 @@
 class RequestController < ApplicationController
+  after_action :clean_up_cache
 
   def cache_gallery
     unless params[:id]
@@ -27,7 +28,7 @@ class RequestController < ApplicationController
     end
 
     if character
-      render json: { msg: 'Character fetching successfull...', status: 200 }, status: 200
+      render json: { msg: 'Character fetching successful!', status: 200 }, status: 200
     else
       render json: { 
         msg: 'Please pass in a valid Toyhouse character link!', 
@@ -45,7 +46,7 @@ class RequestController < ApplicationController
     file_name = "#{character[:name]}-gallery.zip"
     file_path = Rails.root.join('public', 'content', file_name).to_s
     
-    send_file(file_path, type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false) if File.exists?(file_path)
+    send_data(file_path, type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false) if File.exists?(file_path)
   end
 
   def scrape_character_profile
@@ -87,6 +88,12 @@ class RequestController < ApplicationController
         status: 422 }, status: 422
     end
 
+  end
+
+  private 
+
+  def clean_up_cache
+    
   end
 
 end
