@@ -6,8 +6,8 @@ class RequestController < ApplicationController
 
     character = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
     links = character[:gallery]
-    file_name = "#{character[:name]}-gallery.zip"
-    file_path = Rails.root.join('public', 'content', file_name).to_s
+    file_name = "#{character[:name]}-gallery"
+    file_path = "/public/content/#{file_name}.zip"
     
     File.delete(file_path) if File.exists?(file_path)
 
@@ -41,8 +41,8 @@ class RequestController < ApplicationController
       return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
     end
     character = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
-    file_name = "#{character[:name]}-gallery.zip"
-    file_path = Rails.root.join('public', 'content', file_name).to_s
+    file_name = "#{character[:name]}-gallery"
+    file_path = "/public/content/#{file_name}.zip"
     
     if File.exists?(file_path)
       send_data(File.open(file_path), type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false)
