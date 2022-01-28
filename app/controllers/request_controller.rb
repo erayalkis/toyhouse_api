@@ -39,7 +39,8 @@ class RequestController < ApplicationController
     unless params[:id]
       return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
     end
-
+    character = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
+    file_name = "#{character[:name]}-gallery.zip"
     file_path = Rails.root.join('public', 'content', file_name).to_s
     
     send_file(file_path, type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false) if File.exists?(file_path)
