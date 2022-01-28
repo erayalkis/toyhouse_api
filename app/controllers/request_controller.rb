@@ -5,7 +5,7 @@ class RequestController < ApplicationController
       return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
     end
 
-    links = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
+    links = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")[:gallery]
 
     links.each do |link|
       puts link
