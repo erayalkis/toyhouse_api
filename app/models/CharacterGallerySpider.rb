@@ -17,19 +17,17 @@ class CharacterGallerySpider < Kimurai::Base
   def parse(response, url:, data: {})
     character = {}
 
+   
     unless response.css('input.btn-success').empty?
       browser.click_button response.css('input.btn-success')[0]['value']
       response = browser.current_response
     end
-
     if response.css('ul.magnific-gallery').empty?
       return { msg: 'Character has no images or character profile is locked!', status: 422 }
     end
-
     character[:name] = response.css('li.character-name').text.strip
     character[:gallery] = []
     response.css('div.thumb-image > a').each { |a| character[:gallery] << a['href'] }
-
     return character
   end
 end

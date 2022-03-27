@@ -51,15 +51,23 @@ class RequestController < ApplicationController
 
   def scrape_character_profile
     unless params[:id]
-      return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
+      return render json: { msg: 'Please pass in a Toyhouse profile ID!' }, status: 404
     end
 
-    if params[:id] && params[:gallery_only] == "true"
-      response = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
-    elsif params[:id] && params[:details_only] == "true"
-      response = CharacterDetailsSpider.instance("https://toyhou.se/#{params[:id]}")
-    else
-      response = CharacterSpider.instance("https://toyhou.se/#{params[:id]}")
+    begin
+      if params[:id] && params[:gallery_only] == "true"
+        response = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery")
+      elsif params[:id] && params[:details_only] == "true"
+        response = CharacterDetailsSpider.instance("https://toyhou.se/#{params[:id]}")
+      else
+        response = CharacterSpider.instance("https://toyhou.se/#{params[:id]}")
+      end
+    rescue
+      render json: { 
+        msg: "Invalid Toyhouse link or private profile.", 
+        msg_desc: "The profile you're trying to fetch has custom HTML or it is a locked profile.", 
+        }, status: 422
+      return
     end
 
     if response
@@ -68,7 +76,6 @@ class RequestController < ApplicationController
       render json: { 
         msg: 'Please pass in a valid Toyhouse character link!', 
         msg_desc: 'The profile you\'re trying to fetch has custom HTML or it is a locked profile.',
-        tip: 'Psst, if you\'re having trouble with parameters, check out the Toyhouse API helper!',  
         status: 422 }, status: 422
     end
   end
@@ -86,7 +93,6 @@ class RequestController < ApplicationController
       render json: { 
         msg: 'Please pass in a valid Toyhouse user link!', 
         msg_desc: 'The profile you\'re trying to fetch has custom HTML or it is a locked profile.',
-        tip: 'Psst, if you\'re having trouble with parameters, check out the Toyhouse API helper!',  
         status: 422 }, status: 422
     end
 
