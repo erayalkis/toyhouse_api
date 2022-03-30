@@ -4,7 +4,7 @@ class AuthorizationsSpider < Kimurai::Base
   @engine = :mechanize
   @config = {
     user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36",
-    cookies: [{name: "laravel_session", value: "eyJpdiI6IkZpY2REUjg5bmpKQ1BCZE1sWVp4VEE9PSIsInZhbHVlIjoiUVk5V0tIRDFvcWpyVVROQm1MU2ZwTDRYcXNldW5xcEw1RFNKRzF6RGlPbzc4V0Y5cXc0bE1qZGdvMUpITDFRa0MyaVJhOFh4ZkVnbVF4MVowbzdCTEZveURxaXdlZk5CK09oVHNTZU1KUXMrSVA4VERwUVV0QW8yWkcyZU5RdUQiLCJtYWMiOiIyMGVkMmYxNTNhNTY3NjBkMGMzMjU1MGQ5ZWZlYjBjYjJkNjQyMjFhMTc0OGM4Y2ViMmYwYmQ4NWMzMzk0NTBlIn0%3D", domain: "toyhou.se"}]
+    cookies: [{name: "laravel_session", value: Rails.application.credentials.account_cookie, domain: "toyhou.se"}]
   }
 
   def self.instance(url)
