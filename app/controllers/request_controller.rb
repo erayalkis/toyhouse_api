@@ -59,7 +59,7 @@ class RequestController < ApplicationController
       if params[:id] && params[:gallery_only] == "true"
         response = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery", @auths)
       elsif params[:id] && params[:details_only] == "true"
-        response = CharacterDetailsSpider.instance("https://toyhou.se/#{params[:id]}")
+        response = CharacterDetailsSpider.instance("https://toyhou.se/#{params[:id]}", @auths)
       else
         response = CharacterSpider.instance("https://toyhou.se/#{params[:id]}")
       end
