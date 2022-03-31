@@ -11,6 +11,7 @@ class CharacterGallerySpider < Kimurai::Base
     @start_urls = [url]
     @auths = auths
 
+    puts "--------- AUTHS: #{@auths} ---------"
     gallery = self.parse!(:parse, url: @start_urls[0], data: {auths: @auths})
     return gallery
   end
