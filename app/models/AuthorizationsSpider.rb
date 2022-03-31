@@ -8,13 +8,18 @@ class AuthorizationsSpider < Kimurai::Base
 
   def self.instance(url)
     @start_urls = [url]
+    unless File.exists?(Rails.root.join('config', 'access_cookie.yml'))
+      yaml = {'account_cookie' => nil}
+      p yaml
+      File.open(Rails.root.join('config', 'access_cookie.yml'), 'w+') { |f| YAML.dump(yaml, f) }
+    end
 
     @config[:cookies] = [
       {
-      name: "laravel_session", 
-      value: YAML.load_file(Rails.root.join('config', 'access_cookie.yml'))["account_cookie"],
-      domain: "toyhou.se"
-    }
+        name: "laravel_session", 
+        value: YAML.load_file(Rails.root.join('config', 'access_cookie.yml'))['account_cookie'],
+        domain: "toyhou.se"
+      }
     ]
 
     auths = self.parse!(:parse, url: @start_urls[0])
@@ -30,11 +35,11 @@ class AuthorizationsSpider < Kimurai::Base
       browser.click_button "Sign in", match: :first
       response = browser.current_response
       new_cookie = browser.driver.get_cookies[0]
-      
+
       access_yaml = YAML.load_file(Rails.root.join('config', 'access_cookie.yml'))
       access_yaml["account_cookie"] = new_cookie.value
 
-      File.open(Rails.root.join('config', 'access_cookie.yml'), 'w') { |f| YAML.dump(access_yaml, f) }
+      File.open(Rails.root.join('config', 'access_cookie.yml'), 'w+') { |f| YAML.dump(access_yaml, f) }
 
       return AuthorizationsSpider.instance("https://toyhou.se/~account/authorizers")
     end
