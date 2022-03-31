@@ -26,9 +26,9 @@ class AuthorizationsSpider < Kimurai::Base
     #   return { msg: 'Character is locked and/or you\'re unauthorized to see their profile!', status: 422 }
     # end
 
-    auth_container = response.css("div.row.align-items-end")
-    auth_container.each do |auth_block|
-      auths.add response.css("a.btn.btn-sm.user-name-badge").text
+    usernames = response.css("a.btn.btn-sm.user-name-badge")
+    usernames.each do |username|
+      auths.add username.text
     end
 
     return auths
