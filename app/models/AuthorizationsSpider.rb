@@ -10,7 +10,6 @@ class AuthorizationsSpider < Kimurai::Base
     @start_urls = [url]
     unless File.exists?(Rails.root.join('config', 'access_cookie.yml'))
       yaml = {'account_cookie' => nil}
-      p yaml
       File.open(Rails.root.join('config', 'access_cookie.yml'), 'w+') { |f| YAML.dump(yaml, f) }
     end
 
@@ -57,7 +56,6 @@ class AuthorizationsSpider < Kimurai::Base
       auths.add username.text
     end
 
-    p @config
     return auths
   end
 end
