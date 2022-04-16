@@ -66,7 +66,7 @@ class RequestController < ApplicationController
     rescue => err
       puts err
       render json: { 
-        msg: "Invalid Toyhouse link or private profile.", 
+        msg: "Invalid Toyhouse character link or private profile.", 
         msg_desc: "The profile you're trying to fetch has custom HTML or it is a locked profile.", 
         }, status: 422
       return
