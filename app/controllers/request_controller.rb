@@ -1,18 +1,19 @@
 class RequestController < ApplicationController
   before_action :get_authorizations
-  
+
   def scrape_character_profile
     unless params[:id]
       return render json: { msg: 'Please pass in a Toyhouse profile ID!' }, status: 404
     end
 
     begin
-      if params[:id] && params[:gallery_only] == "true"
-        response = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery", @auths)
-      elsif params[:id] && params[:details_only] == "true"
-        response = CharacterDetailsSpider.instance("https://toyhou.se/#{params[:id]}", @auths)
-      else
-        response = CharacterSpider.instance("https://toyhou.se/#{params[:id]}")
+      case
+        when params[:gallery_only]
+          response = CharacterGallerySpider.instance("https://toyhou.se/#{params[:id]}/gallery", @auths)
+        when params[:details_only]
+          response = CharacterDetailsSpider.instance("https://toyhou.se/#{params[:id]}", @auths)
+        else
+          response = CharacterSpider.instance("https://toyhou.se/#{params[:id]}")
       end
     rescue => err
       puts err
@@ -23,14 +24,15 @@ class RequestController < ApplicationController
       return
     end
 
-    if response
-      render json: response
-    else
+    unless response
       render json: { 
         msg: 'Please pass in a valid Toyhouse character link!', 
         msg_desc: 'The profile you\'re trying to fetch has custom HTML or it is a locked profile.',
-        status: 422 }, status: 422
+      }, 
+      status: 422
     end
+
+    render json: response
   end
 
   def scrape_user_profile
@@ -40,15 +42,15 @@ class RequestController < ApplicationController
 
     response = UserSpider.instance("https://toyhou.se/#{params[:id]}")
 
-    if response
-      render json: response
-    else
+    unless response
       render json: { 
         msg: 'Please pass in a valid Toyhouse user link!', 
         msg_desc: 'The profile you\'re trying to fetch has custom HTML or it is a locked profile.',
-        status: 422 }, status: 422
+      }, 
+      status: 422
     end
 
+    render json: response
   end
 
   private
