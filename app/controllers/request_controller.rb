@@ -5,7 +5,7 @@ class RequestController < ApplicationController
       return render json: { msg: 'Please pass in a Toyhouse profile ID!' }, status: 404
     end
 
-    results = SpiderManager::Character.call(params[:id], get_request_type)
+    results = SpiderManager::Character.call(params[:id], get_request_type(params))
 
     if results
       render json: results, status: 200
