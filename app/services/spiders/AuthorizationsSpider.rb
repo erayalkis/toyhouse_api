@@ -1,4 +1,4 @@
-class AuthorizationsSpider < Kimurai::Base
+class Spiders::AuthorizationsSpider < Kimurai::Base
 
   @name = 'authorizations_spider'
   @engine = :mechanize

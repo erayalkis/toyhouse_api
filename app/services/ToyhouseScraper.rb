@@ -1,4 +1,4 @@
-class ToyhouseScraper
+class ToyhouseScraper < ApplicationService
 
   def initialize(id, req_type)
     @id = id
@@ -6,7 +6,7 @@ class ToyhouseScraper
     @req_type = req_type
   end
 
-  def scrape
+  def call
     begin
       case @req_type
         when "gallery_only"
@@ -30,7 +30,7 @@ class ToyhouseScraper
     # Use a set for holding auths so that lookup time is O(1) !!!!!!!!!!!!!!!!!!!!!!!
     # Pass the auths to the instance method of CharacterGallerySpider (and maybe others) and check if the profile name on the 
       # page matches any in the auths set to authorize users
-    @auths = AuthorizationsSpider.instance("https://toyhou.se/~account/authorizers")
+    @auths = Spiders::AuthorizationsSpider.instance("https://toyhou.se/~account/authorizers")
   end
 
 end
