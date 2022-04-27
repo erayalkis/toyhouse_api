@@ -5,7 +5,7 @@ class RequestController < ApplicationController
       return render json: { msg: 'Please pass in a Toyhouse profile ID!' }, status: 404
     end
 
-    results = ToyhouseScraper.call(params[:id], get_request_type(params))
+    results = SpiderManager::Character.call(params[:id], get_request_type)
 
     if results
       render json: results, status: 200
@@ -22,7 +22,7 @@ class RequestController < ApplicationController
       return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
     end
 
-    response = UserSpider.instance("https://toyhou.se/#{params[:id]}")
+    response = SpiderManager::User.call(params[:id])
 
     unless response
       render json: { 
