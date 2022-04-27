@@ -24,4 +24,4 @@
 /config/master.key
 
 /public/content/*
-config/access_cookie.yml
+/config/access_cookie.yml
