@@ -39,5 +39,12 @@ module ToyhouseRailsApi
 
     OpenURI::Buffer.send :remove_const, 'StringMax' if OpenURI::Buffer.const_defined?('StringMax')
     OpenURI::Buffer.const_set 'StringMax', 0
+
+    config.after_initalize do
+      unless File.exists?(Rails.root.join('config', 'access_cookie.yml'))
+        yaml = {'account_cookie' => nil}
+        File.open(Rails.root.join('config', 'access_cookie.yml'), 'w+') { |f| YAML.dump(yaml, f) }
+      end
+    end
   end
 end
