@@ -1,4 +1,4 @@
-class CharacterDetailsSpider < Kimurai::Base
+class Spiders::CharacterDetailsSpider < Kimurai::Base
    
   @name = 'character_details_spider'
   @engine = :mechanize

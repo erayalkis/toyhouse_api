@@ -1,4 +1,4 @@
-class CharacterGallerySpider < Kimurai::Base
+class Spiders::CharacterGallerySpider < Kimurai::Base
    
   @name = 'character_gallery_spider'
   @engine = :mechanize
