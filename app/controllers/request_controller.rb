@@ -5,10 +5,10 @@ class RequestController < ApplicationController
       return render json: { msg: 'Please pass in a Toyhouse profile ID!' }, status: 404
     end
 
-    results = SpiderManager::Character.call(params[:id], get_request_type(params))
+    character_data = SpiderManager::Character.call(params[:id], get_request_type(params))
 
-    if results
-      render json: results, status: 200
+    if character_data
+      render json: character_data, status: 200
     else
       render json: { 
         msg: "Invalid Toyhouse character link or private profile.", 
@@ -22,17 +22,17 @@ class RequestController < ApplicationController
       return render json: { msg: 'Please pass in a Toyhouse profile ID!', status: 404 }, status: 404
     end
 
-    response = SpiderManager::User.call(params[:id])
+    user_data = SpiderManager::User.call(params[:id])
 
-    unless response
+    if user_data
+      render json: user_data, status: 200
+    else
       render json: { 
         msg: 'Please pass in a valid Toyhouse user link!', 
         msg_desc: 'The profile you\'re trying to fetch has custom HTML or it is a locked profile.',
       }, 
       status: 422
     end
-
-    render json: response
   end
 
   private
