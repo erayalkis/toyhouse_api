@@ -40,7 +40,7 @@ class Spiders::AuthorizationsSpider < Kimurai::Base
 
       File.open(Rails.root.join('config', 'access_cookie.yml'), 'w+') { |f| YAML.dump(access_yaml, f) }
 
-      return AuthorizationsSpider.instance("https://toyhou.se/~account/authorizers")
+      return Spiders::AuthorizationsSpider.instance("https://toyhou.se/~account/authorizers")
     end
 
     if response.css('div.row.align-items-end').empty?
