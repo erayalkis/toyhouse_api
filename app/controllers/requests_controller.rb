@@ -1,4 +1,4 @@
-class RequestController < ApplicationController
+class RequestsController < ApplicationController
 
   def scrape_character_profile
     unless params[:id]
