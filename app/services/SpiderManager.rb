@@ -36,6 +36,21 @@ module SpiderManager
   end
 
   class User < ApplicationService
+
+    def initialize(id)
+      @id = id
+    end
+
+    def call
+      begin
+        response = Spiders::UserSpider.instance("https://toyhou.se/#{@id}")
+      rescue => err
+        puts err
+        return nil
+      end
+
+      return response
+    end
   end
 
 end
