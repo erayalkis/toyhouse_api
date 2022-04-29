@@ -9,7 +9,6 @@ class Spiders::CharacterGallerySpider < Kimurai::Base
   def self.instance(url, auths)
     @start_urls = [url]
     @auths = auths
-
     @config[:cookies] = [
       {
         name: "laravel_session", 
@@ -17,7 +16,6 @@ class Spiders::CharacterGallerySpider < Kimurai::Base
         domain: "toyhou.se"
       }
     ]
-
 
     puts "--------- AUTHS: #{@auths} ---------"
     gallery = self.parse!(:parse, url: @start_urls[0], data: {auths: @auths})

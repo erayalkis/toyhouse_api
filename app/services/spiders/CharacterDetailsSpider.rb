@@ -9,7 +9,7 @@ class Spiders::CharacterDetailsSpider < Kimurai::Base
   def self.instance(url, auths)
     @start_urls = [url]
     @auths = auths
-    @config["cookies"] = [
+    @config[:cookies] = [
       {
         name: "laravel_session", 
         value: YAML.load_file(Rails.root.join('config', 'access_cookie.yml'))["account_cookie"], 
@@ -17,6 +17,7 @@ class Spiders::CharacterDetailsSpider < Kimurai::Base
       }
     ]
     
+    puts "--------- AUTHS: #{@auths} ---------"
     details = self.parse!(:parse, url: @start_urls[0], data: {auths: @auths})
     return details
   end
