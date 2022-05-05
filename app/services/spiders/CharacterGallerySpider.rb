@@ -26,6 +26,7 @@ class Spiders::CharacterGallerySpider < Kimurai::Base
     character = {}
     character[:owner] = {}
     character[:owner][:name] = response.css('span.display-user > a > span.display-user-username').text
+    artists = response.css('div.artist-credit')
 
     if response.css('ul.magnific-gallery').empty?
       return { msg: 'Character has no images or character profile is locked!', status: 422 }
@@ -42,7 +43,7 @@ class Spiders::CharacterGallerySpider < Kimurai::Base
     character[:owner][:link] = response.css('span.display-user > a')[0]['href']
     character[:name] = response.css('li.character-name').text.strip
     character[:gallery] = []
-    response.css('div.thumb-image > a').each { |a| character[:gallery] << a['href'] }
+    response.css('div.thumb-image > a').each_with_index { |a, i| character[:gallery] << { link: a['href'], artist: artists[i].text.strip } }
     return character
   end
 end
