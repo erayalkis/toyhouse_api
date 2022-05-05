@@ -43,7 +43,10 @@ class Spiders::CharacterGallerySpider < Kimurai::Base
     character[:owner][:link] = response.css('span.display-user > a')[0]['href']
     character[:name] = response.css('li.character-name').text.strip
     character[:gallery] = []
-    response.css('div.thumb-image > a').each_with_index { |a, i| character[:gallery] << { link: a['href'], artist: artists[i].text.strip } }
+    response.css('div.thumb-image > a').each_with_index do |a, i| 
+      name = artists[i].text.strip
+      character[:gallery] << { link: a['href'], artist: { name: name , profile: "https://toyhou.se/#{name}"} }
+    end
     return character
   end
 end
