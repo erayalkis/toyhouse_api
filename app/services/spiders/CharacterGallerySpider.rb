@@ -45,8 +45,18 @@ class Spiders::CharacterGallerySpider < Kimurai::Base
     character[:gallery] = []
     response.css('div.thumb-image > a').each_with_index do |a, i| 
       name = artists[i].text.strip
-      character[:gallery] << { link: a['href'], artist: { name: name , profile: "https://toyhou.se/#{name}"} }
+      character[:gallery] << { link: a['href'], artist: { name: name, profile: get_profile_name(name)} }
     end
     return character
+  end
+
+  private
+
+  def get_profile_name(name)
+    if name.starts_with?("https") || name.starts_with?("http")
+      return name
+    else
+      return "https://toyhou.se/#{name}"
+    end
   end
 end
