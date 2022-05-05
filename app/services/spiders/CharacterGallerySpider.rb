@@ -52,7 +52,7 @@ class Spiders::CharacterGallerySpider < Kimurai::Base
 
   private
 
-  def get_profile_name(name)
+  def get_profile_name(name) # Artist profile link can either be a simple name string, or a link for an external website
     if name.starts_with?("https") || name.starts_with?("http")
       return name
     else
