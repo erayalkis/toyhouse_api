@@ -6,7 +6,7 @@ class Spiders::CharacterDetailsSpider < Kimurai::Base
     user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36",
   }
 
-  def self.instance(url, auths)
+  def self.instance(url, auths, id=nil)
     @start_urls = [url]
     @auths = auths
     @config[:cookies] = [
@@ -18,7 +18,7 @@ class Spiders::CharacterDetailsSpider < Kimurai::Base
     ]
     
     puts "--------- AUTHS: #{@auths} ---------"
-    details = self.parse!(:parse, url: @start_urls[0], data: {auths: @auths})
+    details = self.parse!(:parse, url: @start_urls[0], data: {auths: @auths, id: id})
     return details
   end
 
@@ -41,6 +41,7 @@ class Spiders::CharacterDetailsSpider < Kimurai::Base
     
     character[:name] = response.css('h1.display-4').text.strip
     character[:profile_img] = response.css('img.profile-name-icon')[0]["src"]
+    character[:id] = data[:id]
     return character
   end
 end
