@@ -41,7 +41,6 @@ class Spiders::CharacterDetailsSpider < Kimurai::Base
     
     character[:name] = response.css('h1.display-4').text.strip
     character[:profile_img] = response.css('img.profile-name-icon')[0]["src"]
-    character[:id] = data[:id]
     return character
   end
 end
