@@ -18,6 +18,9 @@
 !/tmp/pids/
 !/tmp/pids/.keep
 
+/tmp/zip/*
+!/tmp/zip/
+
 .byebug_history
 
 # Ignore master key for decrypting credentials and more.
