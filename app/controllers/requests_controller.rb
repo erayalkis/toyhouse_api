@@ -11,9 +11,9 @@ class RequestsController < ApplicationController
       render json: character_data, status: 200
     else
       render json: { 
-        msg: "Invalid Toyhouse character link or private profile.", 
+        msg: "Something went wrong while processing your character!", 
         msg_desc: "The profile you're trying to fetch has custom HTML or it is a locked profile.", 
-      }, status: 422
+      }, status: 500
     end
   end
 
