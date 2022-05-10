@@ -8,7 +8,7 @@ class RequestsController < ApplicationController
     character = SpiderManager::Character.call(params[:id], get_request_type(params))
     photos = character[:gallery]
     file_name = "#{params[:id]}-gallery.zip"
-    file_path = Rails.root.join('tmp', 'zip', file_name)
+    file_path = Rails.root.join('tmp', 'cache', file_name)
 
     File.delete(file_path) if File.exists?(file_path)
 
@@ -41,7 +41,7 @@ class RequestsController < ApplicationController
     end
 
     file_name = "#{params[:id]}-gallery.zip"
-    file_path = Rails.root.join('tmp', 'zip', file_name)
+    file_path = Rails.root.join('tmp', 'cache', file_name)
 
     if File.exists?(file_path)
       send_data(File.open(file_path), type: 'application/zip', disposition: 'attachment', filename: file_name, stream: false)
