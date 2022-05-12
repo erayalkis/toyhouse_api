@@ -7,7 +7,6 @@ class RequestsController < ApplicationController
 
     character = SpiderManager::Character.call(params[:id], get_request_type(params))
     photos = character[:gallery]
-    p
     file_name = "#{params[:id]}-gallery.zip"
     file_path = Rails.root.join('tmp', 'cache', file_name)
 
@@ -99,12 +98,8 @@ class RequestsController < ApplicationController
 
   def threaded_download(link, zip, idx)
     puts "Downloading #{link}..."
-    begin
-      image = URI.open(link)
-    rescue
-      puts "#{link} doesn't exist..."
-      return
-    end
+    image = URI.open(link)
+    return unless image
 
     data_type = link.split(".")[3];
     if (data_type.length > 4)
