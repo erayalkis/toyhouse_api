@@ -30,10 +30,15 @@ class Spiders::AuthorizationsSpider < Kimurai::Base
 
     unless response.css("form.form-horizontal").empty?
       data = [["login_username", "toyhouse_downloader"],
-        ["login_password", Rails.credentials.account_cookie]]
+        ["login_password", Rails.credentials.account_password]]
 
+      uri = URI('https://toyhou.se/~account/login')
+      response = Net::HTTP.post_form(uri, data)
+
+      new_cookie = response['Set-Cookie']
+ 
       access_yaml = YAML.load_file(Rails.root.join('config', 'access_cookie.yml'))
-      access_yaml["account_cookie"] = new_cookie.value
+      access_yaml["account_cookie"] = new_cookie.split(";")[5].split(",")[1].split("=")[1].strip
 
       File.open(Rails.root.join('config', 'access_cookie.yml'), 'w+') { |f| YAML.dump(access_yaml, f) }
 
@@ -43,10 +48,6 @@ class Spiders::AuthorizationsSpider < Kimurai::Base
     if response.css('div.row.align-items-end').empty?
       return Set.new
     end
-
-    # unless response.css('i.fa.fa-unlock-alt').empty?
-    #   return { msg: 'Character is locked and/or you\'re unauthorized to see their profile!', status: 422 }
-    # end
 
     usernames = response.css("a.btn.btn-sm.user-name-badge")
     usernames.each do |username|
