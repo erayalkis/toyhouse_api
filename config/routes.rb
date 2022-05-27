@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     get '/:id', to: 'characters#profile'
     get '/:id/gallery', to: 'characters#gallery'
     get '/:id/details', to: 'characters#details'
-    get '/:id/gallery', to: 'characters#favorites'
+    get '/:id/favorites', to: 'characters#favorites'
   end
 
   namespace :user do
