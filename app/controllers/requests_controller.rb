@@ -1,5 +1,5 @@
 class RequestsController < ApplicationController
-  
+
   def scrape_character_profile
     unless params[:id]
       return render json: { msg: 'Please pass in a Toyhouse profile ID!' }, status: 404
