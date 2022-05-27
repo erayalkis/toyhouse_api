@@ -40,6 +40,19 @@ class CharactersController < ApplicationController
     end
   end
 
+  def favorites
+    character_data = SpiderManager::Character.call(params[:id], "favorites")
+
+    if character_data
+      render json: character_data, status: 200
+    else
+      render json: { 
+        msg: "Something went wrong while processing your character!", 
+        msg_desc: "The profile you're trying to fetch has custom HTML or it is a locked profile.", 
+      }, status: 500
+    end
+  end
+
   private
 
   def ensure_id_exists
