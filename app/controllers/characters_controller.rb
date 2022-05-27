@@ -1,11 +1,8 @@
 class CharactersController < ApplicationController
+  before_action :ensure_id_exists
 
-  def scrape_character_profile
-    unless params[:id]
-      return render json: { msg: 'Please pass in a Toyhouse profile ID!' }, status: 404
-    end
-
-    character_data = SpiderManager::Character.call(params[:id], get_request_type(params))
+  def profile
+    character_data = SpiderManager::Character.call(params[:id], "default")
 
     if character_data
       render json: character_data, status: 200
@@ -17,26 +14,37 @@ class CharactersController < ApplicationController
     end
   end
 
-  def profile
-  end
+  def details
+    character_data = SpiderManager::Character.call(params[:id], "details_only")
 
-  def details 
+    if character_data
+      render json: character_data, status: 200
+    else
+      render json: { 
+        msg: "Something went wrong while processing your character!", 
+        msg_desc: "The profile you're trying to fetch has custom HTML or it is a locked profile.", 
+      }, status: 500
+    end
   end
 
   def gallery
+    character_data = SpiderManager::Character.call(params[:id], "gallery_only")
+
+    if character_data
+      render json: character_data, status: 200
+    else
+      render json: { 
+        msg: "Something went wrong while processing your character!", 
+        msg_desc: "The profile you're trying to fetch has custom HTML or it is a locked profile.", 
+      }, status: 500
+    end
   end
 
   private
 
-  def get_request_type(params)
-    case
-      when params[:gallery_only]
-        return "gallery_only"
-      when params[:details_only]
-        return "details_only"
-      else
-        return nil
+  def ensure_id_exists
+    unless params[:id]
+      return render json: { msg: 'Please pass in a Toyhouse profile ID!' }, status: 404
     end
   end
-
 end
