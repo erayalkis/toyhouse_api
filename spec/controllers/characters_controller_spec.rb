@@ -62,7 +62,7 @@ class CharactersControllerSpec
       it "should fetch the correct data from authorized characters" do
         get :profile, :params => { id: @authorized_character[:id] }
         data = JSON.parse(response.body)
-        expect(data["name"]).to eq("yui !!")
+        expect(data["name"]).to eq(" 🌊 yui !! 🌊")
       end
 
       it "should fetch all data correctly from authorized characters" do
