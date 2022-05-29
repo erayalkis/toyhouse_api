@@ -10,7 +10,7 @@ class UsersControllerSpec
 
     describe "#profile" do
       it "should return a 500 error when an invalid ID string is passed in" do
-        get :profile, :params => { id: "------" }
+        get :profile, :params => { id: "nonexistentid" }
         assert_response :internal_server_error
       end
 
