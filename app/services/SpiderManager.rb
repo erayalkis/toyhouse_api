@@ -13,7 +13,7 @@ module SpiderManager
           when "gallery_only"
             response = Spiders::CharacterGallerySpider.instance("https://toyhou.se/#{@id}/gallery", @auths)
           when "details_only"
-            response = Spiders::CharacterDetailsSpider.instance("https://toyhou.se/#{@id}", @auths, @id)
+            response = Spiders::CharacterDetailsSpider.instance("https://toyhou.se/#{@id}", @auths)
           when "favorites"
             response = Spiders::CharacterFavoritesSpider.instance("https://toyhou.se/#{@id}/favorites")
           else
