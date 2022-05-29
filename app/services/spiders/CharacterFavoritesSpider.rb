@@ -17,7 +17,8 @@ class Spiders::CharacterFavoritesSpider < Kimurai::Base
       }
     ]
     
-    puts "--------- AUTHS: #{@auths} ---------"
+    # Don't print auths when tests are being ran
+    puts "--------- AUTHS: #{@auths} ---------" unless Rails.env == "test"
     favorites = self.parse!(:parse, url: @start_urls[0], data: {auths: @auths})
     return favorites
   end

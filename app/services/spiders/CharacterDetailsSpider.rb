@@ -17,7 +17,8 @@ class Spiders::CharacterDetailsSpider < Kimurai::Base
       }
     ]
     
-    puts "--------- AUTHS: #{@auths} ---------"
+    # Don't print auths when tests are being ran
+    puts "--------- AUTHS: #{@auths} ---------" unless Rails.env == "test"
     details = self.parse!(:parse, url: @start_urls[0], data: {auths: @auths})
     return details
   end
