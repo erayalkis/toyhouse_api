@@ -46,7 +46,7 @@ class CharactersControllerSpec
 
         expect(data["name"]).to eq("test character!!!")
         expect(data["creator"]["name"]).to eq("toyhouse_downloader")
-        expect(data["creatore"]["profile"]).to eq("https://toyhou.se/toyhouse_downloader")
+        expect(data["creator"]["profile"]).to eq("https://toyhou.se/toyhouse_downloader")
         expect(data["owner"]["name"]).to eq("toyhouse_downloader")
         expect(data["owner"]["profile"]).to eq("https://toyhou.se/toyhouse_downloader")
         expect(data["description"]).to eq("here!!!!\n")
