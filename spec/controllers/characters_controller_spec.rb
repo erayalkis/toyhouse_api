@@ -133,6 +133,57 @@ class CharactersControllerSpec
       end
     end
 
+    describe "#details" do
+      it "should return a 500 error when an invalid ID string is passed in" do
+        get :details, :params => { id: "nonexistentid" }
+        assert_response :internal_server_error
+      end
+
+      it "should make a fetch call successfully" do 
+        get :details, :params => { id: @character[:id] }
+        assert_response :success
+      end
+
+      it "should fetch the correct data" do
+        get :details, :params => { id: @character[:id] }
+        data = JSON.parse(response.body)
+        expect(data["name"]).to eq("test character!!!")
+      end
+
+      it "should fetch all data corectly" do
+        get :details, :params => { id: @character[:id] }
+        data = JSON.parse(response.body)
+
+        expect(data["owner"]["name"]).to eq("toyhouse_downloader")
+        expect(data["name"]).to eq("test character!!!")
+        # Length must be equal to or higher than gallery length at the time of writing tests 
+        # It can also go lower if a bunch of images end up getting deleted, but this is the most reliable way to test this
+        expect(data["profile_img"]).to eq("https://f2.toyhou.se/file/f2-toyhou-se/characters/15895178?1651272177")
+      end
+
+      it "should fetch data from authorized characters" do
+        get :details, :params => { id: @authorized_character[:id] }
+        assert_response :success
+      end
+
+      it "should fetch the correct data from authorized characters" do
+        get :details, :params => { id: @authorized_character[:id] }
+        data = JSON.parse(response.body)
+        expect(data["name"]).to eq(" 🌊 yui !! 🌊")
+      end
+
+      it "should fetch all data correctly from authorized characters" do
+        get :details, :params => { id: @authorized_character[:id] }
+        data = JSON.parse(response.body)
+
+        expect(data["owner"]["name"]).to eq("kyumi")
+        expect(data["name"]).to eq(" 🌊 yui !! 🌊")
+        # Length must be equal to or higher than gallery length at the time of writing tests
+        # It can also go lower if a bunch of images end up getting deleted, but this is the most reliable way to test this
+        expect(data["profile_img"]).to eq("https://f2.toyhou.se/file/f2-toyhou-se/characters/10868863?1622409587")
+      end
+    end
+
     
   end
 end
