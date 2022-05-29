@@ -71,7 +71,7 @@ class CharactersControllerSpec
 
         expect(data["name"]).to eq(" 🌊 yui !! 🌊")
         expect(data["creator"]["name"]).to eq("SPARKNIGHT")
-        expect(data["creatore"]["profile"]).to eq("https://toyhou.se/SPARKNIGHT")
+        expect(data["creator"]["profile"]).to eq("https://toyhou.se/SPARKNIGHT")
         expect(data["owner"]["name"]).to eq("kyumi")
         expect(data["owner"]["profile"]).to eq("https://toyhou.se/kyumi")
         # Description might change, but a length higher than 0 means we're fetching the description
