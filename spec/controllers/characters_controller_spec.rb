@@ -69,7 +69,7 @@ class CharactersControllerSpec
         get :profile, :params => { id: @authorized_character[:id] }
         data = JSON.parse(response.body)
 
-        expect(data["name"]).to eq(" 🌊 yui !! 🌊")
+        expect(data["name"]).to eq(" 🌊 yui !! 🌊")
         expect(data["creator"]["name"]).to eq("SPARKNIGHT")
         expect(data["creatore"]["profile"]).to eq("https://toyhou.se/SPARKNIGHT")
         expect(data["owner"]["name"]).to eq("kyumi")
