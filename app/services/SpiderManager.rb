@@ -15,7 +15,7 @@ module SpiderManager
           when "details_only"
             response = Spiders::CharacterDetailsSpider.instance("https://toyhou.se/#{@id}", @auths)
           when "favorites"
-            response = Spiders::CharacterFavoritesSpider.instance("https://toyhou.se/#{@id}/favorites")
+            response = Spiders::CharacterFavoritesSpider.instance("https://toyhou.se/#{@id}/favorites", @auths)
           else
             response = Spiders::CharacterSpider.instance("https://toyhou.se/#{@id}", @auths)
         end
