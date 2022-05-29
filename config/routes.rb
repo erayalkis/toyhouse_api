@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-  scope :character do
+  scope :character, constraints: { id: /[^\/]+/ } do
     get '/:id', to: 'characters#profile'
     get '/:id/gallery', to: 'characters#gallery'
     get '/:id/details', to: 'characters#details'
