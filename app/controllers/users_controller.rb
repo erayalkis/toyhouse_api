@@ -14,7 +14,7 @@ class UsersController < ApplicationController
         msg: 'Please pass in a valid Toyhouse user link!', 
         msg_desc: 'The profile you\'re trying to fetch has custom HTML or it is a locked profile.',
       }, 
-      status: 422
+      status: 500
     end
   end
 

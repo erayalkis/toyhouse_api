@@ -24,9 +24,9 @@ class CharactersControllerSpec
 
     describe "#profile" do
 
-      it "should return a Not Found error when an ID string isn't passed in" do
-        get :profile, :params => { id: @character[:id] }
-        assert_response :not_found
+      it "should return a 500 error when an invalid ID string is passed in" do
+        get :profile, :params => { id: "------" }
+        assert_response :internal_server_error
       end
 
       it "should make a fetch call successfully" do 
