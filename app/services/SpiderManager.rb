@@ -17,7 +17,7 @@ module SpiderManager
           when "favorites"
             response = Spiders::CharacterFavoritesSPider.instance("https://toyhou.se/#{@id}/favorites", @auths)
           else
-            response = Spiders::CharacterSpider.instance("https://toyhou.se/#{@id}")
+            response = Spiders::CharacterSpider.instance("https://toyhou.se/#{@id}", @auths)
         end
       rescue => err
         puts err
