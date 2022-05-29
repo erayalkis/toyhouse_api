@@ -51,7 +51,7 @@ class CharactersControllerSpec
         expect(data["owner"]["profile"]).to eq("https://toyhou.se/toyhouse_downloader")
         expect(data["description"]).to eq("here!!!!\n")
         # Value might change, but will always be more than 0
-        expect(data["fav_count"]).to be > 0 
+        expect(data["fav_count"].to_i).to be > 0 
       end
 
       it "should fetch data from authorized characters" do
