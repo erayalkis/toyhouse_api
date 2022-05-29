@@ -29,8 +29,8 @@ class Spiders::AuthorizationsSpider < Kimurai::Base
     auths = Set.new
 
     unless response.css("form.form-horizontal").empty?
-      data = [["login_username", "toyhouse_downloader"],
-        ["login_password", Rails.credentials.account_password]]
+      data = [["login_username", Rails.application.credentials.toyhouse_account[:username]],
+        ["login_password", Rails.application.credentials.toyhouse_account[:password]]]
 
       uri = URI('https://toyhou.se/~account/login')
       response = Net::HTTP.post_form(uri, data)
