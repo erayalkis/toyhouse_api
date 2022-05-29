@@ -184,6 +184,53 @@ class CharactersControllerSpec
       end
     end
 
+    describe "#favorites" do
+      it "should return a 500 error when an invalid ID string is passed in" do
+        get :favorites, :params => { id: "nonexistentid" }
+        assert_response :internal_server_error
+      end
+
+      it "should make a fetch call successfully" do 
+        get :favorites, :params => { id: @character[:id] }
+        assert_response :success
+      end
+
+      it "should fetch the correct data" do
+        get :favorites, :params => { id: @character[:id] }
+        data = JSON.parse(response.body)
+        expect(data["name"]).to eq("test character!!!")
+      end
+
+      it "should fetch all data corectly" do
+        get :favorites, :params => { id: @character[:id] }
+        data = JSON.parse(response.body)
+
+        expect(data["name"]).to eq("test character!!!")
+        expect(data["profile_img"]).to eq("https://f2.toyhou.se/file/f2-toyhou-se/characters/15895178?1651272177")
+        # Favorites must be greater than or equal to the favorites count at the time of writing tests
+        expect(data["favorites"].length).to be >= 2
+      end
+
+      it "should fetch data from authorized characters" do
+        get :favorites, :params => { id: @authorized_character[:id] }
+        assert_response :success
+      end
+
+      it "should fetch the correct data from authorized characters" do
+        get :favorites, :params => { id: @authorized_character[:id] }
+        data = JSON.parse(response.body)
+        expect(data["name"]).to eq("🌊 yui !! 🌊")
+      end
+
+      it "should fetch all data correctly from authorized characters" do
+        get :favorites, :params => { id: @authorized_character[:id] }
+        data = JSON.parse(response.body)
+
+        expect(data["name"]).to eq("🌊 yui !! 🌊")
+        # Favorites must be greater than or equal to the favorites count at the time of writing tests
+        expect(data["favorites"].length).to be >= 0
+      end
+    end
     
   end
 end
