@@ -1,15 +1,14 @@
 class UsersControllerSpec
 
   describe UsersController do 
+    before(:all) do
+      @user = {
+        url: "https://toyhou.se/toyhouse_downloader",
+        id: "toyhouse_downloader"
+      }
+    end
+
     describe "#profile" do
-
-      before(:all) do
-        @user = {
-          url: "https://toyhou.se/toyhouse_downloader",
-          id: "toyhouse_downloader"
-        }
-      end
-
       it "should return a 404 Not Found error when an id isn't passed in" do
         get :profile
         assert_response :not_found
