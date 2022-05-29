@@ -37,9 +37,6 @@ module ToyhouseRailsApi
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    OpenURI::Buffer.send :remove_const, 'StringMax' if OpenURI::Buffer.const_defined?('StringMax')
-    OpenURI::Buffer.const_set 'StringMax', 0
-
     config.after_initialize do
       unless File.exists?(Rails.root.join('config', 'access_cookie.yml'))
         yaml = {'account_cookie' => nil}
