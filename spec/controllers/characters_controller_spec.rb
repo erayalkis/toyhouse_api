@@ -23,7 +23,6 @@ class CharactersControllerSpec
     end
 
     describe "#profile" do
-
       it "should return a 500 error when an invalid ID string is passed in" do
         get :profile, :params => { id: "nonexistentid" }
         assert_response :internal_server_error
@@ -79,9 +78,66 @@ class CharactersControllerSpec
         # Value might change, but will always be more than 0
         expect(data["fav_count"].to_i).to be > 0
       end
-
     end
+
+    describe "#gallery" do
+      it "should return a 500 error when an invalid ID string is passed in" do
+        get :gallery, :params => { id: "nonexistentid" }
+        assert_response :internal_server_error
+      end
+
+      it "should make a fetch call successfully" do 
+        get :gallery, :params => { id: @character[:id] }
+        assert_response :success
+      end
+
+      it "should fetch the correct data" do
+        get :gallery, :params => { id: @character[:id] }
+        data = JSON.parse(response.body)
+        expect(data["name"]).to eq("test character!!!")
+      end
+
+      # it "should fetch all data corectly" do
+      #   get :profile, :params => { id: @character[:id] }
+      #   data = JSON.parse(response.body)
+
+      #   expect(data["name"]).to eq("test character!!!")
+      #   expect(data["creator"]["name"]).to eq("toyhouse_downloader")
+      #   expect(data["creator"]["profile"]).to eq("https://toyhou.se/toyhouse_downloader")
+      #   expect(data["owner"]["name"]).to eq("toyhouse_downloader")
+      #   expect(data["owner"]["profile"]).to eq("https://toyhou.se/toyhouse_downloader")
+      #   expect(data["description"]).to eq("here!!!!\n")
+      #   # Value might change, but will always be more than 0
+      #   expect(data["fav_count"].to_i).to be > 0 
+      # end
+
+      # it "should fetch data from authorized characters" do
+      #   get :profile, :params => { id: @authorized_character[:id] }
+      #   assert_response :success
+      # end
+
+      # it "should fetch the correct data from authorized characters" do
+      #   get :profile, :params => { id: @authorized_character[:id] }
+      #   data = JSON.parse(response.body)
+      #   expect(data["name"]).to eq(" 🌊 yui !! 🌊")
+      # end
+
+      # it "should fetch all data correctly from authorized characters" do
+      #   get :profile, :params => { id: @authorized_character[:id] }
+      #   data = JSON.parse(response.body)
+
+      #   expect(data["name"]).to eq(" 🌊 yui !! 🌊")
+      #   expect(data["creator"]["name"]).to eq("SPARKNIGHT")
+      #   expect(data["creator"]["profile"]).to eq("https://toyhou.se/SPARKNIGHT")
+      #   expect(data["owner"]["name"]).to eq("kyumi")
+      #   expect(data["owner"]["profile"]).to eq("https://toyhou.se/kyumi")
+      #   # Description might change, but a length higher than 0 means we're fetching the description
+      #   expect(data["description"].length).to be > 0
+      #   # Value might change, but will always be more than 0
+      #   expect(data["fav_count"].to_i).to be > 0
+      # end
+    end
+
     
   end
-
 end
