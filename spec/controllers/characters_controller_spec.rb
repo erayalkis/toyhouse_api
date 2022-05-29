@@ -77,7 +77,7 @@ class CharactersControllerSpec
         # Description might change, but a length higher than 0 means we're fetching the description
         expect(data["description"].length).to be > 0
         # Value might change, but will always be more than 0
-        expect(data["fav_count"]).to be > 0
+        expect(data["fav_count"].to_i).to be > 0
       end
 
     end
