@@ -6,8 +6,9 @@ class Spiders::CharacterFavoritesSpider < Kimurai::Base
     user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36",
   }
 
-  def self.instance(url)
+  def self.instance(url, auths)
     @start_urls = [url]
+    @auths = auths
     @config[:cookies] = [
       {
         name: "laravel_session", 
@@ -16,7 +17,8 @@ class Spiders::CharacterFavoritesSpider < Kimurai::Base
       }
     ]
     
-    favorites = self.parse!(:parse, url: @start_urls[0], data: {})
+    puts "--------- AUTHS: #{@auths} ---------"
+    favorites = self.parse!(:parse, url: @start_urls[0], data: {auths: @auths})
     return favorites
   end
 

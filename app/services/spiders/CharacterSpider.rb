@@ -17,7 +17,8 @@ class Spiders::CharacterSpider < Kimurai::Base
       }
     ]
 
-    character = self.parse!(:parse, url: @start_urls[0])
+    puts "--------- AUTHS: #{@auths} ---------"
+    character = self.parse!(:parse, url: @start_urls[0], data: {auths: @auths})
     return character
   end
 
