@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     get '/:id/favorites', to: 'characters#favorites'
   end
 
-  scope :user do
+  scope :user, constraints: { id: /[^\/]+/ } do
     get '/:id', to: 'users#profile'
   end
 
