@@ -16,7 +16,7 @@ class Spiders::CharacterFavoritesSpider < Kimurai::Base
       }
     ]
     
-    favorites = self.parse!(:parse, url: @start_urls[0], data: {auths: @auths, id: id})
+    favorites = self.parse!(:parse, url: @start_urls[0], data: {})
     return favorites
   end
 
@@ -32,13 +32,15 @@ class Spiders::CharacterFavoritesSpider < Kimurai::Base
     end
     
     character[:name] = response.css('li.character-name').text.strip
-    character[:profile_img] = response.css('img.mr-2')['src']
+    character[:profile_img] = response.css('img.mr-2')[0]['src']
 
-    character[:favorites]
-    response.css("div.user-cell").each do |user|
+    character[:favorites] = []
+    response.css("div.user-cell").each do |user_cell|
       user = {}
-      user[:image] = user.css("img.mw-100")['src']
-      user[:name] = user.css("div.user-name").text.strip
+      user[:image] = user_cell.css("img.mw-100")[0]['src']
+      user[:name] = user_cell.css("div.user-name").text.strip
+
+      character[:favorites] << user
     end
 
     return character
