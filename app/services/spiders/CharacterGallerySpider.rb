@@ -18,7 +18,7 @@ class Spiders::CharacterGallerySpider < Kimurai::Base
     ]
 
     # Don't print auths when tests are being ran
-    puts "--------- AUTHS: #{@auths} ---------" unless Kimurai.env == "test"
+    puts "--------- AUTHS: #{@auths} ---------" unless Rails.env == "test"
     gallery = self.parse!(:parse, url: @start_urls[0], data: {auths: @auths})
     return gallery
   end
