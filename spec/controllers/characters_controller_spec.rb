@@ -1,8 +1,11 @@
+require "kimurai"
+require "rails_helper"
+
 class CharactersControllerSpec
 
   describe CharactersController do
 
-    before(:all) do     
+    before(:all) do      
       @character = {
         url: "https://toyhou.se/15895178.test-character-",
         id: "15895178.test-character-"
@@ -12,12 +15,17 @@ class CharactersControllerSpec
         url: "https://toyhou.se/10868863.-yui-",
         id: "10868863.-yui-"
       }
+
+      # Disable logging for kimurai when running tests
+      Kimurai.configure do |config|
+        config.logger = Logger.new(nil)
+      end
     end
 
     describe "#profile" do
 
       it "should return a Not Found error when an ID string isn't passed in" do
-        get :profile
+        get :profile, :params => { id: @character[:id] }
         assert_response :not_found
       end
 
@@ -61,7 +69,7 @@ class CharactersControllerSpec
         get :profile, :params => { id: @authorized_character[:id] }
         data = JSON.parse(response.body)
 
-        expect(data["name"]).to eq("🌊 yui !! 🌊")
+        expect(data["name"]).to eq(" 🌊 yui !! 🌊")
         expect(data["creator"]["name"]).to eq("SPARKNIGHT")
         expect(data["creatore"]["profile"]).to eq("https://toyhou.se/SPARKNIGHT")
         expect(data["owner"]["name"]).to eq("kyumi")
