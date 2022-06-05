@@ -37,7 +37,14 @@ module SpiderManager
 
     def call
       begin
-        response = Spiders::UserSpider.instance("https://toyhou.se/#{@id}")
+        case @req_type
+          when "subscribers"
+            response = Spiders::UserSubscribersSpider.instance("https://toyhou.se/#{@id}/stats/subscribers")
+          when "subscriptions"
+            response = Spiders::UserSubscriptionsSpider.instance("")
+          else
+            response = Spiders::UserSpider.instance("https://toyhou.se/#{@id}")
+        end
       rescue => err
         puts err
         return nil
