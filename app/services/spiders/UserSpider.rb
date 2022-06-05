@@ -1,4 +1,4 @@
-class Spiders::UserSpider < Kimurai::Base
+class Spiders::UserSpider < Spiders::ToyhouseSpider
   @name = 'user_spider'
 
   def parse(response, url:, data: {})

@@ -1,6 +1,6 @@
-class Spiders::CharacterDetailsSpider < Kimurai::Base
+class Spiders::CharacterDetailsSpider < Spiders::ToyhouseSpider
   @name = 'character_details_spider'
-  
+
   def parse(response, url:, data: {})
     character = {}
     character[:owner] = {}
