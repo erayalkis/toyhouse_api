@@ -41,7 +41,7 @@ module SpiderManager
           when "subscribers"
             response = Spiders::UserSubscribersSpider.instance("https://toyhou.se/#{@id}/stats/subscribers")
           when "subscriptions"
-            response = Spiders::UserSubscriptionsSpider.instance("")
+            response = Spiders::UserSubscriptionsSpider.instance("https://toyhou.se/#{@id}/stats/subscriptions")
           else
             response = Spiders::UserSpider.instance("https://toyhou.se/#{@id}")
         end
