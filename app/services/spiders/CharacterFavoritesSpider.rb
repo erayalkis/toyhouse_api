@@ -5,7 +5,7 @@ class Spiders::CharacterFavoritesSpider < Spiders::ToyhouseSpider
     character = {}
 
     unless response.css('i.fa.fa-unlock-alt').empty?
-      if data[:auths].include?(character[:owner][:name])
+      if data[:auths]&.include?(character[:owner][:name])
         puts "User is authorized"
       else
         return { msg: 'Character is locked and/or you\'re unauthorized to see their profile!', status: 422 }

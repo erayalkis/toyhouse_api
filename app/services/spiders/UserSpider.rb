@@ -15,7 +15,7 @@ class Spiders::UserSpider < Spiders::ToyhouseSpider
 
     user = {}
     
-    user[:name] = response.css('span.display-user-username').text
+    user[:name] = response.css('span.display-user-username')[0].text
     unless response.css('div.profile-feature-content').empty?
       user[:featured_character] = {}
       user[:featured_character][:name] = response.css('div.thumb-character-name > a.character-name-badge').text.strip

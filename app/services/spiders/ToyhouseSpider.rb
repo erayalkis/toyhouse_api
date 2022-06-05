@@ -11,7 +11,7 @@ class Spiders::ToyhouseSpider < Kimurai::Base
     ]
   }
 
-  def self.instance(url, auths)
+  def self.instance(url, auths=nil)
     @start_urls = [url]
 
     unless File.exists?(Rails.root.join('config', 'access_cookie.yml'))
