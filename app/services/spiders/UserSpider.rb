@@ -3,17 +3,6 @@ class Spiders::UserSpider < Spiders::ToyhouseSpider
 
   def parse(response, url:, data: {})
     user = {}
-
-    unless response.css('input.btn-success').empty?
-      browser.click_button response.css('input.btn-success')[0]['value']
-      response = browser.current_response
-    end
-
-    if response.css('div.col-sm-12.content-main > div.user-profile').empty?
-      return nil
-    end
-
-    user = {}
     
     user[:name] = response.css('span.display-user-username')[0].text
     unless response.css('div.profile-feature-content').empty?
