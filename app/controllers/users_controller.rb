@@ -5,6 +5,10 @@ class UsersController < ApplicationController
     fetch_and_send_response("profile")
   end
 
+  def subscribers
+    fetch_and_send_response("subscribers")
+  end
+
   private
 
   def ensure_id_exists
