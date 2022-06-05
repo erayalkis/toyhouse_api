@@ -2,31 +2,27 @@ class Spiders::UserSubscribersSpider < Spiders::ToyhouseSpider
   @name = 'user_subscribers_spider'
 
   def parse(response, url:, data: {})
-    subscribers = []
-    paginated = response.css("div.pagination-wrapper").length > 0
+    pagination_wrapper = response.css("div.pagination-wrapper")
+    subscribers = request_to :parse_subscribers_page, url: url
+    next_page_wrapper = pagination_wrapper.empty? ? nil : pagination_wrapper.css("li.page-item")[-1]
+    next_page = next_page_wrapper.nil? ? nil : next_page_wrapper.css(".page-link")[0]['href']
 
-    if response.css("div.col-4").empty?
-      return @subscribers
+    if pagination_wrapper.length.zero? || next_page.nil?
+      return subscribers
     end
 
-    unless paginated
-      data = request_to :parse_subscribers_page, url: url
-      return data
-    end
-    
-    request_to :parse_subscribers_page, url: url, data: data.merge(subscribers: subscribers)
-    # request_to :parse, url: next_page, data: { subscribers: subscribers }
+    request_to :parse, url: next_page, data: { subscribers: subscribers }
   end
 
   def parse_subscribers_page(response, url:, data: {})
-    temp_arr = []
+    users_arr = []
     response.css("div.col-4").each do |col|
       user = {}
       user[:image] = col.css("div.mb-1 img.mw-100")[0]['src']
       user[:name] = col.css("a.user-name-badge").text.strip
-      temp_arr << user
+      users_arr << user
     end
 
-    return temp_arr
+    users_arr
   end
 end
