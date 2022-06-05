@@ -10,7 +10,7 @@ class Spiders::UserSubscribersSpider < Spiders::ToyhouseSpider
       data[:subscribers] += subscribers
     else
       puts "creating new subs array"
-      data[:subscribers] = []
+      data[:subscribers] = subscribers
     end
 
     next_page_wrapper = pagination_wrapper.empty? ? nil : pagination_wrapper.css("li.page-item")[-1]
@@ -20,7 +20,7 @@ class Spiders::UserSubscribersSpider < Spiders::ToyhouseSpider
       return data[:subscribers]
     end
 
-    request_to :parse, url: next_page, data: data.merge(subscribers: subscribers)
+    request_to :parse, url: next_page, data: data.merge(subscribers: data[:subscribers])
   end
 
   def parse_subscribers_page(response, url:, data: {})
