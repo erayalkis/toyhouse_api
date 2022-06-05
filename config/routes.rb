@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   scope :user, constraints: { id: /[^\/]+/ } do
     get '/:id', to: 'users#profile'
+    get '/:id/subscribers', to: 'users#subscribers'
   end
 
   get '/app_status', to: 'application#app_status'
