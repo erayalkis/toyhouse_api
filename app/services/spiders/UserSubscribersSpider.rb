@@ -4,14 +4,23 @@ class Spiders::UserSubscribersSpider < Spiders::ToyhouseSpider
   def parse(response, url:, data: {})
     pagination_wrapper = response.css("div.pagination-wrapper")
     subscribers = request_to :parse_subscribers_page, url: url
+
+    if data[:subscribers]
+      puts "adding new subscribers"
+      data[:subscribers] += subscribers
+    else
+      puts "creating new subs array"
+      data[:subscribers] = []
+    end
+
     next_page_wrapper = pagination_wrapper.empty? ? nil : pagination_wrapper.css("li.page-item")[-1]
     next_page = next_page_wrapper.nil? ? nil : next_page_wrapper.css(".page-link")[0]['href']
 
     if pagination_wrapper.length.zero? || next_page.nil?
-      return subscribers
+      return data[:subscribers]
     end
 
-    request_to :parse, url: next_page, data: { subscribers: subscribers }
+    request_to :parse, url: next_page, data: data.merge(subscribers: subscribers)
   end
 
   def parse_subscribers_page(response, url:, data: {})
