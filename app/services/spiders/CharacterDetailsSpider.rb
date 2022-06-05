@@ -1,28 +1,6 @@
 class Spiders::CharacterDetailsSpider < Kimurai::Base
-   
   @name = 'character_details_spider'
-  @engine = :mechanize
-  @config = {
-    user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36",
-  }
-
-  def self.instance(url, auths)
-    @start_urls = [url]
-    @auths = auths
-    @config[:cookies] = [
-      {
-        name: "laravel_session", 
-        value: YAML.load_file(Rails.root.join('config', 'access_cookie.yml'))["account_cookie"], 
-        domain: "toyhou.se"
-      }
-    ]
-    
-    # Don't print auths when tests are being ran
-    puts "--------- AUTHS: #{@auths} ---------" unless Rails.env == "test"
-    details = self.parse!(:parse, url: @start_urls[0], data: {auths: @auths})
-    return details
-  end
-
+  
   def parse(response, url:, data: {})
     character = {}
     character[:owner] = {}

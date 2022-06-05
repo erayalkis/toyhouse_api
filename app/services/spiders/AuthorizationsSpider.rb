@@ -1,29 +1,5 @@
-class Spiders::AuthorizationsSpider < Kimurai::Base
-
+class Spiders::AuthorizationsSpider < Spiders::ToyhouseSpider
   @name = 'authorizations_spider'
-  @engine = :mechanize
-  @config = {
-    user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36",
-  }
-
-  def self.instance(url)
-    @start_urls = [url]
-    unless File.exists?(Rails.root.join('config', 'access_cookie.yml'))
-      yaml = {'account_cookie' => nil}
-      File.open(Rails.root.join('config', 'access_cookie.yml'), 'w+') { |f| YAML.dump(yaml, f) }
-    end
-
-    @config[:cookies] = [
-      {
-        name: "laravel_session", 
-        value: YAML.load_file(Rails.root.join('config', 'access_cookie.yml'))['account_cookie'],
-        domain: "toyhou.se"
-      }
-    ]
-
-    auths = self.parse!(:parse, url: @start_urls[0])
-    return auths
-  end
 
   def parse(response, url:, data: {})
     auths = Set.new
