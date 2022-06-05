@@ -10,9 +10,11 @@ This API uses [Kimurai](https://github.com/vifreefly/kimuraframework), a webscra
 
 Using this API is quite simple, there are 3 routes available, and each of them return a unique response:
 
-- Making a call to **/character/?id={character_id}** returns info that can be gather from the main page.
-- Making a call to **/character/?id={character_id}&gallery_only="true"** returns the entire gallery for the character. (Except NSFW and hidden images)
-- Making a call to **/user/?id={user_id} returns info that can be gather** from the main page of a user.
+- Making a call to `/character/:id` returns info that can be gather from the main page.
+- Making a call to `/character/:id/gallery` returns the entire gallery for the character.
+- Making a call to `/character/:id/favorites` returns the favorites of the character.
+- Making a call to `/user/:id` returns info that can be gathered from the main page of a user.
+- Making a call to `/user/:id/subscribers` return the subscribers of a user.
 
 All of these routes return a JSON object with the requested characters information.
 
