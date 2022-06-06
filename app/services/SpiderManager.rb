@@ -21,7 +21,6 @@ module SpiderManager
         end
       rescue => err
         code = SpiderManager::parse_scraper_error(err)
-        puts "CODE IS: #{code}"
 
         case code
           when 404
@@ -56,7 +55,6 @@ module SpiderManager
         end
       rescue => err
         code = SpiderManager::parse_scraper_error(err)
-        puts "CODE IS: #{code}"
 
         case code
           when 404
