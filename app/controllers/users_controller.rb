@@ -32,13 +32,6 @@ class UsersController < ApplicationController
   end
 
   def respond_with_data(user_data)
-    if user_data
-      render json: user_data, status: 200
-    else
-      render json: { 
-        msg: "Something went wrong while processing the requested user!", 
-        msg_desc: "The profile you're trying to fetch has custom HTML or it is a locked profile.", 
-      }, status: 500
-    end
+    render json: user_data, status: user_data[:status] || 200
   end
 end

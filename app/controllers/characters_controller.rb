@@ -36,14 +36,6 @@ class CharactersController < ApplicationController
   end
 
   def respond_with_data(character_data)
-    if character_data
-      render json: character_data, status: 200
-    else
-      render json: { 
-        msg: "Something went wrong while processing your character!", 
-        msg_desc: "The profile you're trying to fetch has custom HTML or it is a locked profile.", 
-      }, status: 500
-    end
+    render json: character_data, status: character_data[:status] || 200
   end
-
 end

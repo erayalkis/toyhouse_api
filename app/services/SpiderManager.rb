@@ -20,7 +20,16 @@ module SpiderManager
             response = Spiders::CharacterSpider.instance("https://toyhou.se/#{@id}", @auths)
         end
       rescue => err
-        puts err
+        code = SpiderManager::parse_scraper_error(err)
+        puts "CODE IS: #{code}"
+
+        case code
+          when 404
+            return { msg: 'The character you\'re requesting doesn\'t exist!', status: 404 }
+          when 403
+            return { msg: 'Toyhouse has denied access to the character you\'re requesting!', status: 403 }
+        end
+
         return nil
       end
 
@@ -46,7 +55,16 @@ module SpiderManager
             response = Spiders::UserSpider.instance("https://toyhou.se/#{@id}")
         end
       rescue => err
-        puts err
+        code = SpiderManager::parse_scraper_error(err)
+        puts "CODE IS: #{code}"
+
+        case code
+          when 404
+            return { msg: 'The user you\'re trying to fetch doesn\'t exist!', status: 404 }
+          when 403
+            return { msg: 'The user you requested has their details hidden!', status: 403 }
+        end
+
         return nil
       end
 
@@ -59,5 +77,11 @@ module SpiderManager
     # Pass the auths to the instance method of CharacterGallerySpider (and maybe others) and check if the profile name on the 
       # page matches any in the auths set to authorize users
     @auths = Spiders::AuthorizationsSpider.instance("https://toyhou.se/~account/authorizers", @auths)
+  end
+
+  def self.parse_scraper_error(err)
+    # Evil string parsing code
+    # Replace this with Regex soon!!!
+    err.message.split(":")[2].split("=")[0].split('\'')[1].strip.to_i
   end
 end
