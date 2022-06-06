@@ -23,9 +23,9 @@ class CharactersControllerSpec
     end
 
     describe "#profile" do
-      it "should return a 500 error when an invalid ID string is passed in" do
+      it "should return a 404 error when an invalid ID string is passed in" do
         get :profile, :params => { id: "nonexistentid" }
-        assert_response :internal_server_error
+        assert_response :not_found
       end
 
       it "should make a fetch call successfully" do 
@@ -81,9 +81,9 @@ class CharactersControllerSpec
     end
 
     describe "#gallery" do
-      it "should return a 500 error when an invalid ID string is passed in" do
+      it "should return a 404 error when an invalid ID string is passed in" do
         get :gallery, :params => { id: "nonexistentid" }
-        assert_response :internal_server_error
+        assert_response :not_found
       end
 
       it "should make a fetch call successfully" do 
@@ -134,9 +134,9 @@ class CharactersControllerSpec
     end
 
     describe "#details" do
-      it "should return a 500 error when an invalid ID string is passed in" do
+      it "should return a 404 error when an invalid ID string is passed in" do
         get :details, :params => { id: "nonexistentid" }
-        assert_response :internal_server_error
+        assert_response :not_found
       end
 
       it "should make a fetch call successfully" do 
@@ -185,9 +185,9 @@ class CharactersControllerSpec
     end
 
     describe "#favorites" do
-      it "should return a 500 error when an invalid ID string is passed in" do
+      it "should return a 404 error when an invalid ID string is passed in" do
         get :favorites, :params => { id: "nonexistentid" }
-        assert_response :internal_server_error
+        assert_response :not_found
       end
 
       it "should make a fetch call successfully" do 

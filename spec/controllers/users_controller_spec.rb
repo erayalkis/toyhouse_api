@@ -9,9 +9,9 @@ class UsersControllerSpec
     end
 
     describe "#profile" do
-      it "should return a 500 error when an invalid ID string is passed in" do
+      it "should return a 404 error when an invalid ID string is passed in" do
         get :profile, :params => { id: "nonexistentid" }
-        assert_response :internal_server_error
+        assert_response :not_found
       end
 
       it "should fetch data successfully" do
