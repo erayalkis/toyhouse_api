@@ -17,6 +17,10 @@ class CharactersController < ApplicationController
     fetch_and_send_response("favorites")
   end
 
+  def comments
+    fetch_and_send_response("comments")
+  end
+
   private
 
   def ensure_id_exists
