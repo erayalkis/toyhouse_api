@@ -16,6 +16,8 @@ module SpiderManager
             response = Spiders::CharacterDetailsSpider.instance("https://toyhou.se/#{@id}", @auths)
           when "favorites"
             response = Spiders::CharacterFavoritesSpider.instance("https://toyhou.se/#{@id}/favorites", @auths)
+          when "comments"
+            response = Spiders::CharacterCommentsSpider.instance("https://toyhou.se/#{@id}/comments", @auths)
           else
             response = Spiders::CharacterSpider.instance("https://toyhou.se/#{@id}", @auths)
         end
