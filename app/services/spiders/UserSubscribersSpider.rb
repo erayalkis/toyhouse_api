@@ -17,7 +17,10 @@ class Spiders::UserSubscribersSpider < Spiders::ToyhouseSpider
     next_page = next_page_wrapper.nil? ? nil : next_page_wrapper.css(".page-link")[0]['href']
 
     if pagination_wrapper.length.zero? || next_page.nil?
-      return data[:subscribers]
+      user = {}
+      user[:name] = response.css("span.display-user-username")[0].text
+      user[:subscribers] = data[:subscribers]
+      return user
     end
 
     request_to :parse, url: next_page, data: data.merge(subscribers: data[:subscribers])
