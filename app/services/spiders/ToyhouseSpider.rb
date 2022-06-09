@@ -21,7 +21,11 @@ class Spiders::ToyhouseSpider < Kimurai::Base
       }
     ]
 
-    data = self.parse!(:parse, url: @start_urls[0], data: { auths: @auths })
+    scraper_thread = Thread.new do
+      self.parse!(:parse, url: @start_urls[0], data: { auths: @auths })
+    end
+
+    data = scraper_thread.value
     return data
   end
 
