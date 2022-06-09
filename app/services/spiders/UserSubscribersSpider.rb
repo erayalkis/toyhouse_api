@@ -18,7 +18,7 @@ class Spiders::UserSubscribersSpider < Spiders::ToyhouseSpider
 
     if pagination_wrapper.length.zero? || next_page.nil?
       user = {}
-      user[:name] = response.css("span.display-user-username")[0].text
+      user[:username] = response.css("span.display-user-username")[1].text
       user[:subscribers] = data[:subscribers]
       return user
     end
@@ -31,7 +31,7 @@ class Spiders::UserSubscribersSpider < Spiders::ToyhouseSpider
     response.css("div.col-4").each do |col|
       user = {}
       user[:image] = col.css("div.mb-1 img.mw-100")[0]['src']
-      user[:name] = col.css("a.user-name-badge").text.strip
+      user[:username] = col.css("a.user-name-badge").text.strip
       users_arr << user
     end
 

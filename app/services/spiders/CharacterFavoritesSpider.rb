@@ -22,7 +22,7 @@ class Spiders::CharacterFavoritesSpider < Spiders::ToyhouseSpider
     response.css("div.user-cell").each do |user_cell|
       user = {}
       user[:image] = user_cell.css("img.mw-100")[0]['src']
-      user[:name] = user_cell.css("div.user-name").text.strip
+      user[:username] = user_cell.css("div.user-name").text.strip
 
       character[:favorites] << user
     end
