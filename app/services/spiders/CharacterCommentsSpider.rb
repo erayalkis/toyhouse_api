@@ -19,6 +19,9 @@ class Spiders::CharacterCommentsSpider < Spiders::ToyhouseSpider
     if pagination_wrapper.length.zero? || next_page.nil?
       character = {}
       character[:name] = response.css("h1.comments-title a").text.strip
+      character[:owner] = {}
+      character[:owner][:name] = response.css("span.display-user-username")[1].text
+      character[:owner][:link] = response.css("span.display-user a")[0]['href']
       character[:comments] = data[:comments]
       return character
     end
