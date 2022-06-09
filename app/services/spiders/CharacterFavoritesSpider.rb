@@ -13,6 +13,9 @@ class Spiders::CharacterFavoritesSpider < Spiders::ToyhouseSpider
     end
     
     character[:name] = response.css('li.character-name').text.strip
+    character[:owner] = {}
+    character[:owner][:name] = response.css("span.display-user-username")[1].text
+    character[:owner][:link] = response.css("span.display-user a")[0]['href']
     character[:profile_img] = response.css('img.mr-2')[0]['src']
 
     character[:favorites] = []
