@@ -13,17 +13,20 @@ class RafflesController < ApplicationController
 
     owner_id = comments[:owner][:name]
 
-
-    comments = SpiderManager::Character.call(params[:id], "comments")
-    comments[:comments].each do |comment|
-      username = comment[:user][:username]
-      tickets[username][:ticket_count] += set_ticket_count_if_exists("comment") if tickets.has_key?(username)
+    if params[:must_comment]
+      comments = SpiderManager::Character.call(params[:id], "comments")
+      comments[:comments].each do |comment|
+        username = comment[:user][:username]
+        tickets[username][:ticket_count] += set_ticket_count_if_exists("comment") if tickets.has_key?(username)
+      end
     end
     
-    subscribers = SpiderManager::User.call(owner_id, "subscribers")
-    subscribers[:subscribers].each do |subscriber|
-      username = subscriber[:username]
-      tickets[username][:ticket_count] += set_ticket_count_if_exists("subscribe") if tickets.has_key?(username) 
+    if params[:must_subscribe]
+      subscribers = SpiderManager::User.call(owner_id, "subscribers")
+      subscribers[:subscribers].each do |subscriber|
+        username = subscriber[:username]
+        tickets[username][:ticket_count] += set_ticket_count_if_exists("subscribe") if tickets.has_key?(username) 
+      end
     end
 
     render json: tickets
