@@ -11,7 +11,7 @@ class RafflesController < ApplicationController
       tickets[username][:image] = favorite[:image]
     end
 
-    owner_id = comments[:owner][:name]
+    owner_id = favorites[:owner][:name]
 
     if params[:must_comment]
       comments = SpiderManager::Character.call(params[:id], "comments")
@@ -38,7 +38,7 @@ class RafflesController < ApplicationController
   def set_ticket_count_if_exists(option_type)
     ticket_count_param = "#{option_type}_ticket_count"
     return 1 if params[ticket_count_param].nil?
-    params[ticket_count_param]
+    params[ticket_count_param].to_i
   end
 
 end
