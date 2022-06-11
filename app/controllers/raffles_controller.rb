@@ -11,8 +11,6 @@ class RafflesController < ApplicationController
       tickets[username][:image] = favorite[:image]
     end
 
-    owner_id = favorites[:owner][:name]
-
     if params[:must_comment]
       comments = SpiderManager::Character.call(params[:id], "comments")
       comments[:comments].each do |comment|
@@ -21,6 +19,7 @@ class RafflesController < ApplicationController
       end
     end
     
+    owner_id = favorites[:owner][:name]
     if params[:must_subscribe]
       subscribers = SpiderManager::User.call(owner_id, "subscribers")
       subscribers[:subscribers].each do |subscriber|
