@@ -2,20 +2,27 @@ class RafflesController < ApplicationController
 
   def calculate_tickets
     tickets = {}
+    fav_ticket_count = set_ticket_count_if_exists("fav")
+    comment_ticket_count = set_ticket_count_if_exists("comment")
+    sub_ticket_count = set_ticket_count_if_exists("subscriber")
 
     favorites = SpiderManager::Character.call(params[:id], "favorites")
     favorites[:favorites].each do |favorite| 
       username = favorite[:username]
       tickets[username] = {}
-      tickets[username][:ticket_count] = set_ticket_count_if_exists("fav")
+      tickets[username][:ticket_count] = fav_ticket_count
       tickets[username][:image] = favorite[:image]
     end
 
+    seen = Set.new
     if params[:must_comment]
       comments = SpiderManager::Character.call(params[:id], "comments")
       comments[:comments].each do |comment|
         username = comment[:user][:username]
-        tickets[username][:ticket_count] += set_ticket_count_if_exists("comment") if tickets.has_key?(username)
+        if tickets.has_key?(username) && !seen.include?(username)
+          tickets[username][:ticket_count] += comment_ticket_count 
+        end
+        seen.add(username)
       end
     end
     
@@ -24,7 +31,7 @@ class RafflesController < ApplicationController
       subscribers = SpiderManager::User.call(owner_id, "subscribers")
       subscribers[:subscribers].each do |subscriber|
         username = subscriber[:username]
-        tickets[username][:ticket_count] += set_ticket_count_if_exists("subscribe") if tickets.has_key?(username) 
+        tickets[username][:ticket_count] += sub_ticket_count if tickets.has_key?(username) 
       end
     end
 
