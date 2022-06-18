@@ -38,8 +38,9 @@ class Spiders::CharacterCommentsSpider < Spiders::ToyhouseSpider
       # Disabled accounts won't have any data and will throw an error when being accessed
       image = comment.css("div.hidden-xs-down.forum-post-avatar > img")
       curr[:user][:image] = image.length > 0 ? image[0]['src'] : nil
-
-      curr[:user][:username] = comment.css("span.forum-post-user-badge a").text.strip
+      name_badge = comment.css("span.forum-post-user-badge a").text.strip
+      username = name_badge.length > 0 ? name_badge : comment.css("a.forum-post-user-link").text.strip
+      curr[:user][:username] = username
       curr[:body] = comment.css("div.user-content").text.strip
 
       comments << curr
