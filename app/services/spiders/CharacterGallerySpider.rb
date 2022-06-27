@@ -34,6 +34,27 @@ class Spiders::CharacterGallerySpider < Spiders::ToyhouseSpider
 
         image[:artists] << artist_data
       end
+
+      image_metadata = {}
+      image_metadata[:tagged_characters] = []
+      item.css('div.image-characters > div').each do |tagged_character|
+        character_data = {}
+        character_link = tagged_character.css('a')[0]
+        
+        character_data[:profile] = "https://toyhou.se#{character_link[:href]}"
+        character_data[:name] = character_link.text.strip
+        
+        image_metadata[:tagged_characters] << character_data
+      end
+      image_metadata[:description] = item.css('div.image-description').text.strip
+      temp = image_metadata[:description] # temporary access variable so i wont have to repeat it
+      if temp.length > 0
+        temp = temp.split("\n")[1..-1].filter { |str| str.length >0 }.join(" ")
+        image_metadata[:description] = temp
+      end
+        
+
+      image[:metadata] = image_metadata
       character[:gallery] << image
     end
     return character
