@@ -46,15 +46,17 @@ class Spiders::CharacterGallerySpider < Spiders::ToyhouseSpider
         
         image_metadata[:tagged_characters] << character_data
       end
+
       image_metadata[:description] = item.css('div.image-description').text.strip
       temp = image_metadata[:description] # temporary access variable so i wont have to repeat it
       if temp.length > 0
         temp = temp.split("\n")[1..-1].filter { |str| str.length >0 }.join(" ")
         image_metadata[:description] = temp
       end
-      image_metadata[:date] = item.css('div.image-credits > div.mb-1')[0].text
 
+      image_metadata[:date] = item.css('div.image-credits > div.mb-1')[0].text
       image[:metadata] = image_metadata
+
       character[:gallery] << image
     end
     return character
