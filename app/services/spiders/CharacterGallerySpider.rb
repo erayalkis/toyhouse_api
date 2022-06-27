@@ -52,7 +52,7 @@ class Spiders::CharacterGallerySpider < Spiders::ToyhouseSpider
         temp = temp.split("\n")[1..-1].filter { |str| str.length >0 }.join(" ")
         image_metadata[:description] = temp
       end
-        
+      image_metadata[:date] = item.css('div.image-credits > div.mb-1')[0].text
 
       image[:metadata] = image_metadata
       character[:gallery] << image
