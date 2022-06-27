@@ -23,10 +23,18 @@ class Spiders::CharacterGallerySpider < Spiders::ToyhouseSpider
     character[:gallery] = []
 
     response.css('li.gallery-item').each_with_index do |item, idx| 
-      name = item.css('div.artist-credit').text.strip
+      artists = item.css('div.artist-credit')
       a = item.css('div.thumb-image > a')[0]
       
-      character[:gallery] << { link: a['href'], artist: { name: name, profile: get_profile_name(name)} }
+      image = { link: a['href'], artists: [] }
+      artists.each do |artist|
+        artist_data = {}
+        artist_data[:name] = artist.css('a').text.strip
+        artist_data[:profile] = artist.css('a')[0]['href']
+
+        image[:artists] << artist_data
+      end
+      character[:gallery] << image
     end
     return character
   end
