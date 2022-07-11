@@ -76,7 +76,7 @@ module SpiderManager
     # Use a set for holding auths so that lookup time is O(1) !!!!!!!!!!!!!!!!!!!!!!!
     # Pass the auths to the instance method of CharacterGallerySpider (and maybe others) and check if the profile name on the 
       # page matches any in the auths set to authorize users
-    @auths = Spiders::AuthorizationsSpider.instance("https://toyhou.se/~account/authorizers", @auths)
+    Spiders::AuthorizationsSpider.instance("https://toyhou.se/~account/authorizers")
   end
 
   def self.parse_scraper_error(err)
