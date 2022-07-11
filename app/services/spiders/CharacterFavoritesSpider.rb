@@ -3,6 +3,8 @@ class Spiders::CharacterFavoritesSpider < Spiders::ToyhouseSpider
 
   def parse(response, url:, data: {})
     character = {}
+    character[:owner] = {}
+    character[:owner][:name] = response.css("span.display-user-username")[1].text
 
     unless response.css('i.fa.fa-unlock-alt').empty?
       if data[:auths]&.include?(character[:owner][:name])
@@ -13,8 +15,7 @@ class Spiders::CharacterFavoritesSpider < Spiders::ToyhouseSpider
     end
     
     character[:name] = response.css('li.character-name').text.strip
-    character[:owner] = {}
-    character[:owner][:name] = response.css("span.display-user-username")[1].text
+
     character[:owner][:link] = response.css("span.display-user a")[0]['href']
     character[:profile_img] = response.css('img.mr-2')[0]['src']
 
