@@ -7,6 +7,7 @@ class RafflesController < ApplicationController
     sub_ticket_count = set_ticket_count_if_exists("subscriber")
 
     favorites = SpiderManager::Character.call(params[:id], "favorites")
+    puts favorites
     favorites[:favorites].each do |favorite| 
       username = favorite[:username]
       tickets[username] = {}
