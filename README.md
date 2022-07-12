@@ -15,6 +15,7 @@ Using this API is quite simple, there are 3 routes available, and each of them r
 - Making a call to `/character/:id/favorites` returns the favorites of the character.
 - Making a call to `/user/:id` returns info that can be gathered from the main page of a user.
 - Making a call to `/user/:id/subscribers` return the subscribers of a user.
+- Making a call to `/raffle/:id` will return ticket counts for the people who've favorited that character
 
 All of these routes return a JSON object with the requested characters information.
 
