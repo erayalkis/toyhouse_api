@@ -5,16 +5,16 @@ class Spiders::AuthorizationsSpider < Spiders::ToyhouseSpider
     auths = Set.new
 
     unless response.css("form.form-horizontal").empty?
-      data = [["login_username", Rails.application.credentials.toyhouse_account[:username]],
-        ["login_password", Rails.application.credentials.toyhouse_account[:password]]]
+      data = [["username", Rails.application.credentials.toyhouse_account[:username]],
+        ["password", Rails.application.credentials.toyhouse_account[:password]]]
 
       uri = URI('https://toyhou.se/~account/login')
       response = Net::HTTP.post_form(uri, data)
 
       new_cookie = response['Set-Cookie']
- 
+
       access_yaml = YAML.load_file(Rails.root.join('config', 'access_cookie.yml'))
-      access_yaml["account_cookie"] = new_cookie.split(";")[5].split(",")[1].split("=")[1].strip
+      access_yaml["account_cookie"] = new_cookie.split(";")[0].split("=")[1]
 
       File.open(Rails.root.join('config', 'access_cookie.yml'), 'w+') { |f| YAML.dump(access_yaml, f) }
 
