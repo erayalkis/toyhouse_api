@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   scope :character, constraints: { id: /[^\/]+/ } do
     get '/:id',           to:   'characters#profile'
     get '/:id/gallery',   to:   'characters#gallery'
+    get '/:id/:id/gallery', to: 'characters#gallery'
     get '/:id/details',   to:   'characters#details'
     get '/:id/favorites', to:   'characters#favorites'
     get '/:id/comments',  to:   'characters#comments'
