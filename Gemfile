@@ -15,6 +15,7 @@ gem 'puma', '~> 5.0'
 # gem 'bcrypt', '~> 3.1.7'
 gem 'kimurai'
 gem 'net_http_ssl_fix'
+gem "httparty"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
