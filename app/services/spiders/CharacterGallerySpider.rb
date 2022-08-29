@@ -65,7 +65,7 @@ class Spiders::CharacterGallerySpider < Spiders::ToyhouseSpider
   private
 
   def get_profile_name(name) # Artist profile link can either be a simple name string, or a link for an external website
-    if name.starts_with?("https") || name.starts_with?("http")
+    if name.starts_with?("http")
       return name
     else
       return "https://toyhou.se/#{name}"

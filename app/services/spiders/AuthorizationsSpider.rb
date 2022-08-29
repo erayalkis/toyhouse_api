@@ -5,13 +5,23 @@ class Spiders::AuthorizationsSpider < Spiders::ToyhouseSpider
     auths = Set.new
 
     unless response.css("form.form-horizontal").empty?
-      data = [["username", Rails.application.credentials.toyhouse_account[:username]],
-        ["password", Rails.application.credentials.toyhouse_account[:password]]]
+      xsrf_token_input = response.xpath('input[@name="_token"]@value')
+
+      data = [
+        ["username", Rails.application.credentials.toyhouse_account[:username]],
+        ["password", Rails.application.credentials.toyhouse_account[:password]],
+        ["_token", xsrf_token_input]
+      ]
+      xsrf_token_cookie = browser.agent.cookies['XSRF-TOKEN']
+      headers = {
+        'XSRF-TOKEN': xsrf_token_cookie
+      }
 
       uri = URI('https://toyhou.se/~account/login')
-      response = Net::HTTP.post_form(uri, data)
+      response = Net::HTTP.post_form(uri, data, headers)
 
       new_cookie = response['Set-Cookie']
+      xsrf_token_cookie = response['XSRF-TOKEN']
 
       access_yaml = YAML.load_file(Rails.root.join('config', 'access_cookie.yml'))
       access_yaml["account_cookie"] = new_cookie.split(";")[0].split("=")[1]
