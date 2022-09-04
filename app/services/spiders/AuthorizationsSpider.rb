@@ -2,8 +2,6 @@ class Spiders::AuthorizationsSpider < Spiders::ToyhouseSpider
   @name = 'authorizations_spider'
 
   def parse(response, url:, data: {})
-    auths = Set.new
-
     unless response.css("form.form-horizontal").empty?
       xsrf_token_input = response.xpath('//input[@name="_token"]/@value')[1].value
 
@@ -42,15 +40,31 @@ class Spiders::AuthorizationsSpider < Spiders::ToyhouseSpider
       return Spiders::AuthorizationsSpider.instance("https://toyhou.se/~account/authorizers")
     end
 
+    authed_users = request_to :parse_auths, url: url
+    puts authed_users
+    pagination_wrapper = response.css('div.pagination-wrapper')
+    next_page_wrapper = pagination_wrapper.empty? ? nil : pagination_wrapper.css("li.page-item")[-1]
+    next_page = next_page_wrapper.nil? ? nil : next_page_wrapper.css(".page-link")[0]['href']
+
+    if pagination_wrapper.length.zero? || next_page.nil?
+      puts "returning early"
+      return data[:auths] + authed_users
+    end
+
+    request_to :parse, url: next_page, data: data.merge(auths: authed_users)
+  end
+
+
+  def parse_auths(response, url:, data: {})
+    auths = Set.new
+    usernames = response.css("a.btn.btn-sm.user-name-badge")
     if response.css('div.row.align-items-end').empty?
       return Set.new
     end
-
-    usernames = response.css("a.btn.btn-sm.user-name-badge")
     usernames.each do |username|
       auths.add username.text
     end
 
-    return auths
+    auths
   end
 end
