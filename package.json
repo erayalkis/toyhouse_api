@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/erayalkis/toyhouse_api/issues"
   },
-  "homepage": "https://github.com/erayalkis/toyhouse_api#readme"
+  "homepage": "https://github.com/erayalkis/toyhouse_api#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
 }
