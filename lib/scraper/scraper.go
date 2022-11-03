@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/http/cookiejar"
+	"net/url"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -16,16 +16,14 @@ type Character struct {
 
 func ScrapeUser() {}
 
-func ScrapeCharacter(user_id string) Character {
+func ScrapeCharacter(user_id string, client *http.Client) Character {
 	fmt.Println("Scraping user", user_id)
+	url, err := url.Parse("https://toyhou.se");
 	full_url := fmt.Sprint("https://toyhou.se/", user_id, "/gallery");
-	jar, _ := cookiejar.New(nil);
 
-	client := http.Client{
-		Jar: jar,
-	}
-
+	fmt.Printf("Cookies: %v\n", client.Jar.Cookies(url));
 	res, err := client.Get(full_url);
+	fmt.Printf("Cookies: %v\n", client.Jar.Cookies(url));
 	
 	if err != nil {
 		log.Fatal(err);
@@ -45,6 +43,7 @@ func ScrapeCharacter(user_id string) Character {
 			images = append(images, link);
 		}
 	})
+
 
 	character := Character {
 		Name: name,
