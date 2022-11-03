@@ -40,8 +40,10 @@ func ScrapeCharacter(user_id string) Character {
 	name := doc.Find("h1.image-gallery-title a").Text();
 	var images []string;
  	doc.Find(".magnific-item").Each(func(i int, ele *goquery.Selection ) {
-		link, _ := ele.Find("img").Attr("href");
-		images = append(images, link);
+		link, ok := ele.Find("img").Attr("src");
+		if ok {
+			images = append(images, link);
+		}
 	})
 
 	character := Character {
@@ -49,6 +51,5 @@ func ScrapeCharacter(user_id string) Character {
 		Images: images,
 	}
 
-	fmt.Println(character);
 	return character;
 }
