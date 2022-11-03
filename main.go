@@ -8,7 +8,7 @@ import (
 
 func main() {
 	server := gin.Default();
-	server.LoadHTMLFiles("index.html")
+	server.LoadHTMLFiles("./static/index.html")
 
 	server.GET("/", func(c *gin.Context) {
 		// c.JSON(http.StatusOK, gin.H{"data": "Hello World!"})
