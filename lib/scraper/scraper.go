@@ -16,10 +16,10 @@ type Character struct {
 
 func ScrapeUser() {}
 
-func ScrapeCharacter(user_id string, client *http.Client) Character {
-	fmt.Println("Scraping user", user_id)
+func ScrapeCharacter(character_id string, client *http.Client) Character {
+	fmt.Println("Scraping characterr", character_id)
 	url, err := url.Parse("https://toyhou.se");
-	full_url := fmt.Sprint("https://toyhou.se/", user_id, "/gallery");
+	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/gallery");
 
 	fmt.Printf("Cookies: %v\n", client.Jar.Cookies(url));
 	res, err := client.Get(full_url);
