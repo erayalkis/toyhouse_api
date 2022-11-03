@@ -16,14 +16,20 @@ import (
 // !! Definitely play around with this !!
 func LoadInitialAuth(client *http.Client) {
 	page, err := client.Get("https://toyhou.se/~account/login");
+	if err != nil {
+		log.Fatal(err);
+	}
+
 	viper.SetConfigFile(".env")
 	viper.ReadInConfig();
 
 	username, ok := viper.Get("toyhouse_username") . (string);
+	if !ok {
+		log.Fatal("Something went wrong while reading username from .env file!");
+	}
 	password, ok := viper.Get("toyhouse_password") . (string);
-
-	if err != nil {
-		log.Fatal(err);
+	if !ok {
+		log.Fatal("Something went wrong while reading password from .env file!");
 	}
 
 	doc, err := goquery.NewDocumentFromReader(page.Body);
@@ -35,7 +41,7 @@ func LoadInitialAuth(client *http.Client) {
 	csrf_token, ok := doc.Find("meta[name='csrf-token']").Attr("content");
 
 	if !ok {
-		log.Fatal(err);
+		log.Fatal("Something went wrong while reading csrf token element!");
 	}
 
 
