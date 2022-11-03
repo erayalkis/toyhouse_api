@@ -28,7 +28,7 @@ func main() {
 		character_id := c.Param("id");
 
 		character := scraper.ScrapeCharacter(character_id);
-		c.JSON(http.StatusOK, gin.H{"data": []interface{}{character}});
+		c.JSON(http.StatusOK, character);
 	})
 
 	server.Run();
