@@ -44,7 +44,7 @@ func main() {
 	})
 
 	server.GET("/authentication_test", func(c *gin.Context) {
-		res, err := http.Get("https://toyhou.se");
+		res, err := client.Get("https://toyhou.se");
 		
 		if err != nil {
 			log.Fatal(err)

@@ -15,7 +15,7 @@ import (
 // I'm guessing the auth cookie should refresh if we have all the necessary cookies, since you never really have to login again when using the site normally even if a long time passes between each use.
 // !! Definitely play around with this !!
 func LoadInitialAuth(client *http.Client) {
-	page, err := http.Get("https://toyhou.se/~account/login");
+	page, err := client.Get("https://toyhou.se/~account/login");
 	viper.SetConfigFile(".env")
 	viper.ReadInConfig();
 
@@ -46,9 +46,10 @@ func LoadInitialAuth(client *http.Client) {
 		"_token": { csrf_token },
 	}
 
-	println("Posting login form with data:", form_data.Encode());
-	client.PostForm("https://toyhou.se/login", form_data);
 	url, err := url.Parse("https://toyhou.se");
+	println("Posting login form with data:", form_data.Encode());
+	fmt.Printf("Cookies: %v\n", client.Jar.Cookies(url));
+	client.PostForm("https://toyhou.se/~account/login", form_data);
 
 	if err != nil {
 		log.Fatal(err)
