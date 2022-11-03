@@ -27,8 +27,8 @@ func main() {
 	server.GET("/character/:id/gallery", func(c *gin.Context) {
 		character_id := c.Param("id");
 
-		url := scraper.ScrapeCharacter(character_id);
-		c.String(http.StatusOK, "Character with ID %s %s", character_id, url);
+		character := scraper.ScrapeCharacter(character_id);
+		c.JSON(http.StatusOK, character);
 	})
 
 	server.Run();
