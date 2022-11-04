@@ -1,13 +1,14 @@
 package auth
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"net/url"
+	"toyhouse_api/v2/lib/structs"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
 
@@ -64,9 +65,32 @@ func LoadInitialAuth(client *http.Client) {
 	fmt.Printf("Cookies: %v\n", client.Jar.Cookies(url));
 }
 
-// 
-func AuthorizeIfAuthNotValid(c *gin.Context) {
-	fmt.Println("Authorization happens here");
+func GetAuthorizedUsers(client *http.Client) []string {
+	page, err := client.Get("https://toyhou.se/~account/authorizers")
+	if err != nil {
+		log.Fatal(err);
+	}
 
-	c.Next();
+	doc, err := goquery.NewDocumentFromReader(page.Body);
+	if err != nil {
+		log.Fatal(err);
+	}
+
+	var usernames []string;
+	doc.Find("a.user-name-badge").Each(func(i int, ele *goquery.Selection) {
+		username := ele.Text();
+		usernames = append(usernames, username);
+	});
+
+	return usernames;
+}
+
+func EnsureUserHasAccess(char *structs.Character, auths []string) (bool, error) {
+	for _, username := range auths {
+		if username == char.Owner {
+			return true, nil;
+		}
+	}
+
+	return false, errors.New("Username not in auths array");
 }

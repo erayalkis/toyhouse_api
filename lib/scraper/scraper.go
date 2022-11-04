@@ -5,18 +5,14 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"toyhouse_api/v2/lib/structs"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-type Character struct {
-	Name string `json:"name" binding:"required"`
-	Images []string `json:"images" binding:"required"`
-}
-
 func ScrapeUser() {}
 
-func ScrapeCharacter(character_id string, client *http.Client) Character {
+func ScrapeCharacter(character_id string, client *http.Client) structs.Character {
 	fmt.Println("Scraping characterr", character_id)
 	url, err := url.Parse("https://toyhou.se");
 	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/gallery");
@@ -44,8 +40,7 @@ func ScrapeCharacter(character_id string, client *http.Client) Character {
 		}
 	})
 
-
-	character := Character {
+	character := structs.Character {
 		Name: name,
 		Images: images,
 	}
