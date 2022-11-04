@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"toyhouse_api/v2/lib/scraper"
 	"toyhouse_api/v2/lib/structs"
 
 	"github.com/PuerkitoBio/goquery"
@@ -66,23 +67,21 @@ func LoadInitialAuth(client *http.Client) {
 }
 
 func GetAuthorizedUsers(client *http.Client) []string {
-	page, err := client.Get("https://toyhou.se/~account/authorizers")
-	if err != nil {
-		log.Fatal(err);
+	var all_usernames []string;
+
+	get_usernames := func(doc *goquery.Document) []string {
+		var usernames []string;
+		doc.Find("a.user-name-badge").Each(func(i int, ele *goquery.Selection) {
+			username := ele.Text();
+			usernames = append(usernames, username);
+		});
+
+		return usernames
 	}
 
-	doc, err := goquery.NewDocumentFromReader(page.Body);
-	if err != nil {
-		log.Fatal(err);
-	}
+	scraper.SaveWithPagination(client, "https://toyhou.se/~account/authorizers", all_usernames, get_usernames)
 
-	var usernames []string;
-	doc.Find("a.user-name-badge").Each(func(i int, ele *goquery.Selection) {
-		username := ele.Text();
-		usernames = append(usernames, username);
-	});
-
-	return usernames;
+	return all_usernames;
 }
 
 func EnsureUserHasAccess(char *structs.Character, auths []string) (bool, error) {

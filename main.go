@@ -34,8 +34,9 @@ func main() {
 	server.GET("/character/:id/gallery", func(c *gin.Context) {
 		character_id := c.Param("id");
 
-		character, locked := scraper.ScrapeCharacter(character_id, &client);
+		character, locked := scraper.ScrapeCharacterGallery(character_id, &client);
 		auths := auth.GetAuthorizedUsers(&client);
+		println("AUTHS", auths)
 		if locked {
 			ok, _ := auth.EnsureUserHasAccess(&character, auths);
 			if !ok {
