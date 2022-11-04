@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"toyhouse_api/v2/lib/auth"
@@ -35,16 +34,18 @@ func main() {
 	server.GET("/character/:id/gallery", func(c *gin.Context) {
 		character_id := c.Param("id");
 
-		character := scraper.ScrapeCharacter(character_id, &client);
+		character, locked := scraper.ScrapeCharacter(character_id, &client);
 		auths := auth.GetAuthorizedUsers(&client);
-		ok, err := auth.EnsureUserHasAccess(&character, auths);
-		if !ok {
-			log.Fatal(err);
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": "You do not have access to this character!",
-			})
-			return;
+		if locked {
+			ok, _ := auth.EnsureUserHasAccess(&character, auths);
+			if !ok {
+				c.JSON(http.StatusForbidden, gin.H{
+					"error": "You do not have access to this character!",
+				})
+				return;
+			}
 		}
+
 
 		c.JSON(http.StatusOK, character);
 	})

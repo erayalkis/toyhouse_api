@@ -12,7 +12,7 @@ import (
 
 func ScrapeUser() {}
 
-func ScrapeCharacter(character_id string, client *http.Client) structs.Character {
+func ScrapeCharacter(character_id string, client *http.Client) (structs.Character, bool) {
 	fmt.Println("Scraping characterr", character_id)
 	url, err := url.Parse("https://toyhou.se");
 	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/gallery");
@@ -32,6 +32,8 @@ func ScrapeCharacter(character_id string, client *http.Client) structs.Character
 	}
 
 	name := doc.Find("h1.image-gallery-title a").Text();
+	owner := doc.Find("span.display-user a").First().Text();
+	println("OWNER", owner)
 	var images []string;
  	doc.Find(".magnific-item").Each(func(i int, ele *goquery.Selection ) {
 		link, ok := ele.Find("img").Attr("src");
@@ -40,10 +42,13 @@ func ScrapeCharacter(character_id string, client *http.Client) structs.Character
 		}
 	})
 
+	locked := doc.Find("i.fa-unlock-alt").Length() > 0
+
 	character := structs.Character {
 		Name: name,
 		Images: images,
+		Owner: owner,
 	}
 
-	return character;
+	return character, locked;
 }
