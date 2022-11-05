@@ -67,8 +67,6 @@ func LoadInitialAuth(client *http.Client) {
 }
 
 func GetAuthorizedUsers(client *http.Client) []string {
-	var all_usernames []string;
-
 	get_usernames := func(doc *goquery.Document) []string {
 		var usernames []string;
 		doc.Find("a.user-name-badge").Each(func(i int, ele *goquery.Selection) {
@@ -79,7 +77,7 @@ func GetAuthorizedUsers(client *http.Client) []string {
 		return usernames
 	}
 
-	scraper.SaveWithPagination(client, "https://toyhou.se/~account/authorizers", all_usernames, get_usernames)
+	all_usernames := scraper.SaveWithPagination(client, "https://toyhou.se/~account/authorizers", get_usernames)
 
 	return all_usernames;
 }

@@ -63,7 +63,9 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document) (structs.Character, 
 // Given an array `data`, goes through each page, provides callback to process page's data, adds the array returned from the callback to the data array
 //
 // The callback **must** return an array
-func SaveWithPagination(client *http.Client, baseUrl string, data []string, callback func(doc *goquery.Document) []string) []string {
+func SaveWithPagination(client *http.Client, baseUrl string, callback func(doc *goquery.Document) []string) []string {
+	var data []string;
+
 	fmt.Println("Hit pagination");
 	idx := 1;
 	newUrl := fmt.Sprint(baseUrl, "?page=", idx);
@@ -87,10 +89,6 @@ func SaveWithPagination(client *http.Client, baseUrl string, data []string, call
 	}
 
 	for page != nil {
-		if idx > limit_int {
-			break
-		}
-
 		doc, err = goquery.NewDocumentFromReader(page.Body);
 		if err != nil {
 			log.Fatal(err)
@@ -99,13 +97,15 @@ func SaveWithPagination(client *http.Client, baseUrl string, data []string, call
 		ret := callback(doc);
 		data = append(data, ret...);
 
+		idx++;
+		if idx > limit_int {
+			break
+		}
 		url := fmt.Sprint(baseUrl, "?page=", idx);
 		fmt.Println("Fetching", url)
 		page, err = client.Get(url);
 		fmt.Println("Code", page.StatusCode);
 		fmt.Println("Page", idx, "fetched");
-
-		idx++;
 	}
 
 

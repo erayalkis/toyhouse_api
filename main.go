@@ -36,7 +36,6 @@ func main() {
 
 		character, locked := scraper.ScrapeCharacterGallery(character_id, &client);
 		auths := auth.GetAuthorizedUsers(&client);
-		println("AUTHS", auths)
 		if locked {
 			ok, _ := auth.EnsureUserHasAccess(&character, auths);
 			if !ok {
