@@ -68,48 +68,28 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 //
 // The callback **must** return an array
 func SaveWithPagination(client *http.Client, baseUrl string, callback func(doc *goquery.Document) []string) []string {
+	var data []string;
+	var urls []string;
+	var waitGroup sync.WaitGroup;
+
 	idx := 1;
 	newUrl := fmt.Sprint(baseUrl, "?page=", idx);
 	page, err := client.Get(newUrl);
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	doc, err := goquery.NewDocumentFromReader(page.Body);
-
-	var pagination_items *goquery.Selection;
-	var last_idx int;
-	var limit string;
-	var limit_int int;
-
-	if(doc.Find("ul.pagination")).Length() > 0 {
-		pagination_items = doc.Find("li.page-item")
-		last_idx = pagination_items.Length() - 1;
-		limit = pagination_items.Slice(0, last_idx).Last().Text();
-		
-		limit_int, err = strconv.Atoi(limit);
-	} else {
-		limit_int = 1
-	}
-
-	var data []string;
+	limit_int := getPaginationLimit(doc)
 
 	ret := callback(doc);
 	data = append(data, ret...);
 	idx++
 
-	var waitGroup sync.WaitGroup;
 
-	var urls []string;
-	fmt.Println("Generating urls from", idx, "to", limit_int);
-	for i := idx; i < limit_int; i++ {
+	for i := idx; i <= limit_int; i++ {
 		newUrl := fmt.Sprint(baseUrl, "?page=", i);
-		fmt.Println("Got", newUrl);
 		urls = append(urls, newUrl);
 	}
-	fmt.Println("Generating urls complete")
-
-	fmt.Printf("urls: %v\n", urls);
 
 	for _, url := range urls {
 		fmt.Println("Fetching", url);
@@ -131,4 +111,20 @@ func SaveWithPagination(client *http.Client, baseUrl string, callback func(doc *
 	waitGroup.Wait()
 
 	return data;
+}
+
+func getPaginationLimit(doc *goquery.Document) int {
+	var limit_int int;
+
+	if(doc.Find("ul.pagination")).Length() > 0 {
+		pagination_items := doc.Find("li.page-item")
+		last_idx := pagination_items.Length() - 1;
+		limit := pagination_items.Slice(0, last_idx).Last().Text();
+		
+		limit_int, _ = strconv.Atoi(limit);
+	} else {
+		limit_int = 1
+	}
+	
+	return limit_int;
 }
