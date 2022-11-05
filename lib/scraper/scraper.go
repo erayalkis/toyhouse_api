@@ -44,7 +44,7 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 	get_images := func(doc *goquery.Document) []string {
 		var images []string;
 		doc.Find(".magnific-item").Each(func(i int, ele *goquery.Selection ) {
-			link, ok := ele.Find("img").Attr("src");
+			link, ok := ele.Attr("href");
 			if ok {
 				images = append(images, link);
 			}
