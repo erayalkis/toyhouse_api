@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/cookiejar"
 	"toyhouse_api/v2/lib/auth"
@@ -36,6 +37,7 @@ func main() {
 
 		character, locked := scraper.ScrapeCharacterGallery(character_id, &client);
 		auths := auth.GetAuthorizedUsers(&client);
+		fmt.Printf("auths: %v\n", auths)
 		if locked {
 			ok, _ := auth.EnsureUserHasAccess(&character, auths);
 			if !ok {

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/url"
 	"strconv"
+	"sync"
 	"toyhouse_api/v2/lib/structs"
 
 	"github.com/PuerkitoBio/goquery"
@@ -14,13 +14,10 @@ import (
 func ScrapeUser() {}
 
 func ScrapeCharacterGallery(character_id string, client *http.Client) (structs.Character, bool) {
-	fmt.Println("Scraping characterr", character_id)
-	url, err := url.Parse("https://toyhou.se");
+	fmt.Println("Scraping character", character_id)
 	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/gallery");
 
-	fmt.Printf("Cookies: %v\n", client.Jar.Cookies(url));
 	res, err := client.Get(full_url);
-	fmt.Printf("Cookies: %v\n", client.Jar.Cookies(url));
 	
 	if err != nil {
 		log.Fatal(err);
@@ -32,27 +29,34 @@ func ScrapeCharacterGallery(character_id string, client *http.Client) (structs.C
 		log.Fatal(err);
 	}
 
-	character, locked := getCharacterDataFromGalleryPage(doc);
+	character, locked := getCharacterDataFromGalleryPage(doc, client, full_url);
 
 	return character, locked;
 }
 
-func getCharacterDataFromGalleryPage(doc *goquery.Document) (structs.Character, bool) {
+func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client, url string) (structs.Character, bool) {
 	name := doc.Find("h1.image-gallery-title a").Text();
 	owner := doc.Find("span.display-user a").First().Text();
-	var images []string;
- 	doc.Find(".magnific-item").Each(func(i int, ele *goquery.Selection ) {
-		link, ok := ele.Find("img").Attr("src");
-		if ok {
-			images = append(images, link);
-		}
-	})
+	locked := doc.Find("h1.image-gallery-title i.fa-unlock-alt").Length() > 0
 
-	locked := doc.Find("i.fa-unlock-alt").Length() > 0
+	get_images := func(doc *goquery.Document) []string {
+		var images []string;
+		doc.Find(".magnific-item").Each(func(i int, ele *goquery.Selection ) {
+			link, ok := ele.Find("img").Attr("src");
+			if ok {
+				images = append(images, link);
+			}
+		})
+
+		return images;
+	}
+
+	all_images := SaveWithPagination(client, url, get_images);
+
 
 	character := structs.Character {
 		Name: name,
-		Images: images,
+		Images: all_images,
 		Owner: owner,
 	}
 
@@ -64,50 +68,67 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document) (structs.Character, 
 //
 // The callback **must** return an array
 func SaveWithPagination(client *http.Client, baseUrl string, callback func(doc *goquery.Document) []string) []string {
-	var data []string;
-
-	fmt.Println("Hit pagination");
 	idx := 1;
 	newUrl := fmt.Sprint(baseUrl, "?page=", idx);
-	fmt.Println("Fetching", baseUrl);
 	page, err := client.Get(newUrl);
-	doc, err := goquery.NewDocumentFromReader(page.Body);
-	if(doc.Find("ul.pagination")).Length() == 0 {
-		log.Fatal("Page", newUrl, "does not use pagination");
-	}
-	pagination_items := doc.Find("li.page-item")
-	last_idx := pagination_items.Length() - 1;
-	limit := pagination_items.Slice(0, last_idx).Last().Text();
-	
-	limit_int, err := strconv.Atoi(limit);
-	fmt.Println("Limit is", limit);
-	fmt.Println("Initial page fetched")
-
-
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for page != nil {
-		doc, err = goquery.NewDocumentFromReader(page.Body);
-		if err != nil {
-			log.Fatal(err)
-		}
+	doc, err := goquery.NewDocumentFromReader(page.Body);
 
-		ret := callback(doc);
-		data = append(data, ret...);
+	var pagination_items *goquery.Selection;
+	var last_idx int;
+	var limit string;
+	var limit_int int;
 
-		idx++;
-		if idx > limit_int {
-			break
-		}
-		url := fmt.Sprint(baseUrl, "?page=", idx);
-		fmt.Println("Fetching", url)
-		page, err = client.Get(url);
-		fmt.Println("Code", page.StatusCode);
-		fmt.Println("Page", idx, "fetched");
+	if(doc.Find("ul.pagination")).Length() > 0 {
+		pagination_items = doc.Find("li.page-item")
+		last_idx = pagination_items.Length() - 1;
+		limit = pagination_items.Slice(0, last_idx).Last().Text();
+		
+		limit_int, err = strconv.Atoi(limit);
+	} else {
+		limit_int = 1
 	}
 
+	var data []string;
+
+	ret := callback(doc);
+	data = append(data, ret...);
+	idx++
+
+	var waitGroup sync.WaitGroup;
+
+	var urls []string;
+	fmt.Println("Generating urls from", idx, "to", limit_int);
+	for i := idx; i < limit_int; i++ {
+		newUrl := fmt.Sprint(baseUrl, "?page=", i);
+		fmt.Println("Got", newUrl);
+		urls = append(urls, newUrl);
+	}
+	fmt.Println("Generating urls complete")
+
+	fmt.Printf("urls: %v\n", urls);
+
+	for _, url := range urls {
+		fmt.Println("Fetching", url);
+		waitGroup.Add(1)
+
+		fetch := func(url string) { 
+			defer waitGroup.Done();
+
+			page, err = client.Get(url);
+			doc, err = goquery.NewDocumentFromReader(page.Body);
+			ret := callback(doc);
+			data = append(data, ret...);
+			fmt.Println("Fetch for", url, "complete");
+		}
+
+		go fetch(url);
+	}
+
+	waitGroup.Wait()
 
 	return data;
 }

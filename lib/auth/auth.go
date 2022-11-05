@@ -2,7 +2,6 @@ package auth
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -47,23 +46,19 @@ func LoadInitialAuth(client *http.Client) {
 	}
 
 
-	fmt.Println("CSRF TOKEN:", csrf_token);
 	form_data := url.Values{
 		"username": { username },
 		"password": { password },
 		"_token": { csrf_token },
 	}
 
-	url, err := url.Parse("https://toyhou.se");
 	println("Posting login form with data:", form_data.Encode());
-	fmt.Printf("Cookies: %v\n", client.Jar.Cookies(url));
 	client.PostForm("https://toyhou.se/~account/login", form_data);
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Cookies: %v\n", client.Jar.Cookies(url));
 }
 
 func GetAuthorizedUsers(client *http.Client) []string {
