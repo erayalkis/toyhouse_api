@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sort"
 	"strconv"
+
 	"sync"
 	"toyhouse_api/v2/lib/structs"
 
@@ -70,6 +72,7 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 func SaveWithPagination(client *http.Client, baseUrl string, callback func(doc *goquery.Document) []string) []string {
 	var data []string;
 	var urls []string;
+	pages := make(map[int][]string);
 	var waitGroup sync.WaitGroup;
 
 	idx := 1;
@@ -82,7 +85,7 @@ func SaveWithPagination(client *http.Client, baseUrl string, callback func(doc *
 	limit_int := getPaginationLimit(doc)
 
 	ret := callback(doc);
-	data = append(data, ret...);
+	pages[idx] = ret;
 	idx++
 
 
@@ -91,25 +94,40 @@ func SaveWithPagination(client *http.Client, baseUrl string, callback func(doc *
 		urls = append(urls, newUrl);
 	}
 
-	for _, url := range urls {
+	for i, url := range urls {
 		fmt.Println("Fetching", url);
 		waitGroup.Add(1)
 
-		fetch := func(url string) { 
+		fetch := func(i int, url string, ) { 
 			defer waitGroup.Done();
 
 			page, err = client.Get(url);
 			doc, err = goquery.NewDocumentFromReader(page.Body);
 			ret := callback(doc);
-			data = append(data, ret...);
+
+			pages[i + 2] = ret;
+
 			fmt.Println("Fetch for", url, "complete");
 		}
 
-		go fetch(url);
+		go fetch(i, url);
 	}
 
 	waitGroup.Wait()
 
+	keys := make([]int, 0, len(pages))
+	for k := range pages {
+		keys = append(keys, k)
+	}
+
+	sort.Ints(keys);
+
+	fmt.Println(keys);
+
+	for _, key := range keys {
+		data = append(data, pages[key]...)
+	}
+	
 	return data;
 }
 
