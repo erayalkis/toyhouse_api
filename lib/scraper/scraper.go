@@ -19,6 +19,7 @@ func ScrapeCharacterGallery(character_id string, client *http.Client) (structs.C
 	fmt.Println("Scraping character", character_id)
 	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/gallery");
 
+	fmt.Println("Fetching", full_url);
 	res, err := client.Get(full_url);
 	
 	if err != nil {

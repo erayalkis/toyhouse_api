@@ -15,6 +15,8 @@ import (
 // Make request to /login, keep all the cookies
 // I'm guessing the auth cookie should refresh if we have all the necessary cookies, since you never really have to login again when using the site normally even if a long time passes between each use.
 // !! Definitely play around with this !!
+
+// Update: Wow, was I high? Of course the cookie refreshes
 func LoadInitialAuth(client *http.Client) {
 	page, err := client.Get("https://toyhou.se/~account/login");
 	if err != nil {
