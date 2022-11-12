@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"flag"
 	"log"
 	"net/http"
 	"net/url"
@@ -23,7 +24,11 @@ func LoadInitialAuth(client *http.Client) {
 		log.Fatal(err);
 	}
 
-	viper.SetConfigFile(".env")
+	if(flag.Lookup("test.v") == nil ) {
+		viper.SetConfigFile(".env")
+	} else {
+		viper.SetConfigFile("../../.env")
+	}
 	viper.ReadInConfig();
 
 	username, ok := viper.Get("toyhouse_username") . (string);
