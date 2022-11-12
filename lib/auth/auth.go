@@ -56,7 +56,8 @@ func LoadInitialAuth(client *http.Client) {
 
 	println("Posting login form with data:", form_data.Encode());
 	client.PostForm("https://toyhou.se/~account/login", form_data);
-
+	println("Login complete")
+	print("Login successful")
 	if err != nil {
 		log.Fatal(err)
 	}
