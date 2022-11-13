@@ -116,6 +116,8 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 // Given an array `data`, goes through each page, provides callback to process page's data, adds the array returned from the callback to the data array
 //
 // The callback **must** return an array
+//
+// *V* is a generic parameter that can either be `string` or `structs.Image`
 func SaveWithPagination[V string | structs.Image](client *http.Client, baseUrl string, callback func(doc *goquery.Document) []V) []V {
 	var data []V;
 	var urls []string;
