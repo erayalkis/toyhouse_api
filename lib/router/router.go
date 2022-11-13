@@ -67,11 +67,13 @@ func SetRoutes() *gin.Engine {
 			fmt.Printf("auths: %v\n", auths)
 			ok, _ := auth.EnsureUserHasAccess(&character, auths);
 			if !ok {
+				println("User unauthorized")
 				c.JSON(http.StatusForbidden, gin.H{
 					"error": "You do not have access to this character!",
 				})
 				return
 			}
+			println("User authorized")
 		}
 
 		c.JSON(http.StatusOK, character);

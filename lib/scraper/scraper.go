@@ -39,16 +39,25 @@ func ScrapeCharacterGallery(character_id string, client *http.Client) (structs.C
 
 func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client, url string) (structs.Character, bool) {
 	name := doc.Find("h1.image-gallery-title a").Text();
-	owner := doc.Find("span.display-user a").First().Text();
+	owner_box := doc.Find("span.display-user a").First()
+	owner := structs.Profile{
+		Name: owner_box.Text(),
+		Link: owner_box.AttrOr("href", "error"),
+	}
+
 	locked := doc.Find("h1.image-gallery-title i.fa-unlock-alt").Length() > 0
 
-	get_images := func(doc *goquery.Document) []string {
-		var images []string;
-		doc.Find(".magnific-item").Each(func(i int, ele *goquery.Selection ) {
-			link, ok := ele.Attr("href");
-			if ok {
-				images = append(images, link);
+	get_images := func(doc *goquery.Document) []structs.Image {
+		var images []structs.Image;
+		
+		doc.Find(".gallery-item").Each(func(i int, ele *goquery.Selection ) {
+			artists := []structs.Profile{ }
+			image := structs.Image{
+				Link: "https://link",
+				Artists: artists,
 			}
+
+			images = append(images, image)
 		})
 
 		return images;
@@ -59,7 +68,7 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 
 	character := structs.Character {
 		Name: name,
-		Images: all_images,
+		Gallery: all_images,
 		Owner: owner,
 	}
 
@@ -70,10 +79,10 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 // Given an array `data`, goes through each page, provides callback to process page's data, adds the array returned from the callback to the data array
 //
 // The callback **must** return an array
-func SaveWithPagination(client *http.Client, baseUrl string, callback func(doc *goquery.Document) []string) []string {
-	var data []string;
+func SaveWithPagination[V string | structs.Image](client *http.Client, baseUrl string, callback func(doc *goquery.Document) []V) []V {
+	var data []V;
 	var urls []string;
-	pages := make(map[int][]string);
+	pages := make(map[int][]V);
 	var waitGroup sync.WaitGroup;
 
 	idx := 1;

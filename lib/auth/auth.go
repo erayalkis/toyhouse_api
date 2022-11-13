@@ -62,7 +62,7 @@ func LoadInitialAuth(client *http.Client) {
 	println("Posting login form with data:", form_data.Encode());
 	client.PostForm("https://toyhou.se/~account/login", form_data);
 	println("Login complete")
-	print("Login successful")
+	println("Login successful")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -87,7 +87,7 @@ func GetAuthorizedUsers(client *http.Client) []string {
 
 func EnsureUserHasAccess(char *structs.Character, auths []string) (bool, error) {
 	for _, username := range auths {
-		if username == char.Owner {
+		if username == char.Owner.Name {
 			return true, nil;
 		}
 	}

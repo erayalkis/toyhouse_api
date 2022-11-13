@@ -2,6 +2,6 @@ package structs
 
 type Character struct {
 	Name string `json:"name" binding:"required"`
-	Images []string `json:"images" binding:"required"`
-	Owner string `json:"owner" binding:"required"`
+	Gallery []Image `json:"gallery" binding:"required"`
+	Owner Profile `json:"owner" binding:"required"`
 }
