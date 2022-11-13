@@ -51,9 +51,24 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 		var images []structs.Image;
 		
 		doc.Find(".gallery-item").Each(func(i int, ele *goquery.Selection ) {
-			artists := []structs.Profile{ }
+			artists := []structs.Profile{}
+			artists_div := ele.Find("div.artist-credit")
+			link := ele.Find("div.thumb-image a").First().AttrOr("href", "none")
+
+			artists_div.Each(func(i int, artist *goquery.Selection) {
+				artist_name := artist.Find("a").Text()
+				artist_link := artist.Find("a").AttrOr("href", "none")
+
+				artist_obj := structs.Profile{
+					Name: artist_name,
+					Link: artist_link,
+				}
+
+				artists = append(artists, artist_obj)
+			})
+
 			image := structs.Image{
-				Link: "https://link",
+				Link: link,
 				Artists: artists,
 			}
 
