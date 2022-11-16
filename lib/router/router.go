@@ -10,6 +10,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func setCORS() gin.HandlerFunc {
+	fmt.Println("Setting CORS");
+
+	return func(c *gin.Context) {
+		  c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+      c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+      c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+      c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
+			if c.Request.Method == "OPTIONS" {
+        c.AbortWithStatus(204)
+        return
+      }
+
+      c.Next()
+	}
+}
+
 func SetRoutes() *gin.Engine {
 	server := gin.Default();
 	server.LoadHTMLFiles("./static/index.html")
@@ -21,12 +39,19 @@ func SetRoutes() *gin.Engine {
 
 	auth.LoadInitialAuth(&client);
 
+	server.Use(setCORS())
 	server.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil);
 	})
 
 	server.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong");
+	})
+
+	server.GET("/app_status", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Server is up and running",
+		})
 	})
 
 	server.GET("/user/:id/details", func(c *gin.Context) {
