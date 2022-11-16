@@ -55,7 +55,7 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 			tagged_characters := []structs.Profile{}
 
 			artists_div := ele.Find("div.artist-credit")
-			characters_div := ele.Find("div.image-characters div")
+			characters_div := ele.Find("div.image-characters div.mb-1")
 			link := ele.Find("div.thumb-image a").First().AttrOr("href", "none")
 			date := ele.Find("div.image-credits > div.mb-1").First().Text()
 			desc := ele.Find("div.image-description").Text()
