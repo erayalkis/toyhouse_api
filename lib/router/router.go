@@ -157,8 +157,11 @@ func SetRoutes() *gin.Engine {
 		character_id := c.Param("id")
 		must_sub, _ := strconv.ParseBool(c.Query("must_subscribe"))
 		must_comment, _ := strconv.ParseBool(c.Query("must_comment"))
+		fav_ticket_count, _ := strconv.Atoi(c.DefaultQuery("fav_ticket_count", "1"))
+		sub_ticket_count, _ := strconv.Atoi(c.DefaultQuery("subscriber_ticket_count", "1"))
+		comment_ticket_count, _ := strconv.Atoi(c.DefaultQuery("comment_ticket_count", "1"))
 
-		tickets := helpers.CalculateRaffleTickets(character_id, &client, must_sub, must_comment)
+		tickets := helpers.CalculateRaffleTickets(character_id, &client, must_sub, must_comment, fav_ticket_count, sub_ticket_count, comment_ticket_count)
 
 		c.JSON(http.StatusOK, tickets)
 	})
