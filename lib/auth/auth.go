@@ -25,7 +25,7 @@ func LoadInitialAuth(client *http.Client) {
 	}
 
 	if(flag.Lookup("test.v") == nil ) {
-		viper.SetConfigFile("./etc/secrets/.env")
+		viper.SetConfigFile(".env")
 	} else {
 		viper.SetConfigFile("../../etc/secrets/.env")
 	}
