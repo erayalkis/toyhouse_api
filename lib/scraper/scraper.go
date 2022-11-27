@@ -221,6 +221,37 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 	return character, locked;
 }
 
+func ScraperCharacterDetails(character_id string, client *http.Client) (structs.Character, bool) {
+	fmt.Println("Fetching details for", character_id)
+	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/gallery")
+
+	res, err := client.Get(full_url)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+
+	owner_anchor := doc.Find("span.display-user a")
+	owner_name := owner_anchor.Find("span.display-user-username").Text()
+	owner_link := owner_anchor.AttrOr("href", "none")
+	character_anchor := doc.Find("li.character-name span.display-character a")
+	character_name := character_anchor.Text()
+	character_image := character_anchor.Find("img").AttrOr("src", "none")
+	locked := doc.Find("h1.image-gallery-title i.fa-unlock-alt").Length() > 0
+
+	character := structs.Character{
+		Owner: structs.Profile{
+			Name: owner_name,
+			Link: owner_link,
+		},
+		Name: character_name,
+		Image: character_image,
+	}
+
+	return character, locked
+}
+
 func ScrapeUser() {}
 
 func ScrapeUserSubs(user_id string, client *http.Client) []structs.Profile {

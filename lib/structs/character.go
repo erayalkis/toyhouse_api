@@ -2,6 +2,7 @@ package structs
 
 type Character struct {
 	Name string `json:"name" binding:"required"`
+	Image string `json:"image,omitempty"`
 	Gallery []Image `json:"gallery,omitempty"`
 	Favorites []Profile `json:"favorites,omitempty"`
 	Comments []Comment `json:"comments,omitempty"`
