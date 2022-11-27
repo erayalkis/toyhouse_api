@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/cookiejar"
+	"strconv"
 	"toyhouse_api/v2/lib/auth"
+	"toyhouse_api/v2/lib/helpers"
 	"toyhouse_api/v2/lib/scraper"
 
 	"github.com/gin-gonic/gin"
@@ -54,13 +56,6 @@ func SetRoutes() *gin.Engine {
 		})
 	})
 
-	server.GET("/user/:id/details", func(c *gin.Context) {
-		user_id := c.Param("id");
-
-		scraper.ScrapeUser();
-		c.String(http.StatusOK, "Hello %s", user_id);
-	})
-
 	server.GET("/character/:id/gallery", func(c *gin.Context) {
 		character_id := c.Param("id");
 
@@ -102,6 +97,73 @@ func SetRoutes() *gin.Engine {
 		}
 
 		c.JSON(http.StatusOK, character);
+	})
+
+	server.GET("/character/:id/favorites", func(c *gin.Context) {
+		character_id := c.Param("id");
+
+		character, locked := scraper.ScrapeCharacterFavorites(character_id, &client);
+		if locked {
+			auths := auth.GetAuthorizedUsers(&client);
+			fmt.Printf("auths: %v\n", auths);
+
+			ok, _ := auth.EnsureUserHasAccess(&character, auths);
+			if !ok {
+				c.JSON(http.StatusForbidden, gin.H{
+					"error": "You do not have access to this character!",
+				})
+				return;
+			}
+		}
+	
+		c.JSON(http.StatusOK, character);
+	})
+
+	server.GET("/character/:id/comments", func(c *gin.Context) {
+		character_id := c.Param("id")
+
+		character, locked := scraper.ScrapeCharacterComments(character_id, &client);
+		if locked {
+			auths := auth.GetAuthorizedUsers(&client);
+			fmt.Printf("auths: %v\n", auths);
+
+			ok, _ := auth.EnsureUserHasAccess(&character, auths);
+			if !ok {
+				c.JSON(http.StatusForbidden, gin.H{
+					"error": "You do not have access to this character!",
+				})
+				return;
+			}
+		}
+
+		c.JSON(http.StatusOK, character)
+	})
+
+	server.GET("/user/:id/details", func(c *gin.Context) {
+		user_id := c.Param("id");
+
+		scraper.ScrapeUser();
+		c.String(http.StatusOK, "Hello %s", user_id);
+	})
+
+	server.GET("/user/:id/subscribers", func(c *gin.Context) {
+		user_id := c.Param("id")
+		subs := scraper.ScrapeUserSubs(user_id, &client)
+
+		c.JSON(http.StatusOK, subs)
+	})
+
+	server.GET("/raffle/:id", func(c *gin.Context) {		
+		character_id := c.Param("id")
+		must_sub, _ := strconv.ParseBool(c.Query("must_subscribe"))
+		must_comment, _ := strconv.ParseBool(c.Query("must_comment"))
+		fav_ticket_count, _ := strconv.Atoi(c.DefaultQuery("fav_ticket_count", "1"))
+		sub_ticket_count, _ := strconv.Atoi(c.DefaultQuery("subscriber_ticket_count", "1"))
+		comment_ticket_count, _ := strconv.Atoi(c.DefaultQuery("comment_ticket_count", "1"))
+
+		tickets := helpers.CalculateRaffleTickets(character_id, &client, must_sub, must_comment, fav_ticket_count, sub_ticket_count, comment_ticket_count)
+
+		c.JSON(http.StatusOK, tickets)
 	})
 
 	return server;

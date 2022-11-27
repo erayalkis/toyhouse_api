@@ -13,8 +13,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func ScrapeUser() {}
-
 func ScrapeCharacterGallery(character_id string, client *http.Client) (structs.Character, bool) {
 	fmt.Println("Scraping character", character_id)
 	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/gallery");
@@ -35,6 +33,117 @@ func ScrapeCharacterGallery(character_id string, client *http.Client) (structs.C
 	character, locked := getCharacterDataFromGalleryPage(doc, client, full_url);
 
 	return character, locked;
+}
+
+func ScrapeCharacterFavorites(character_id string, client *http.Client) (structs.Character, bool) {
+	fmt.Println("Scraping favorites for", character_id);
+	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/favorites")
+
+	res, err := client.Get(full_url)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(res.Body);
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	name := doc.Find(".favorites-title a").Text()
+	owner_name := doc.Find("span.display-user a span.display-user-username").Text()
+	owner_link := doc.Find("span.display-user a").AttrOr("href", "none")
+
+	fmt.Println("Fetching", full_url)
+
+	get_favorites := func(doc *goquery.Document) []structs.Profile {
+		var users []structs.Profile;
+
+		doc.Find("div.user-cell").Each(func(i int, ele *goquery.Selection) {
+			image := ele.Find(".user-icon img").AttrOr("src", "none");
+			name := ele.Find(".user-name a").Text()
+			link := ele.Find(".user-name a").AttrOr("href", "none")
+
+			user := structs.Profile{
+				Avatar: image,
+				Name: name,
+				Link: link,
+			}
+
+			users = append(users, user)
+		})
+
+		return users;
+	}
+
+	all_users, locked := SaveWithPagination(client, full_url, get_favorites);
+
+	character := structs.Character{
+		Name: name,
+		Owner: structs.Profile{
+			Name: owner_name,
+			Link: owner_link,
+		},
+		Favorites: all_users,
+	}
+	return character, locked
+}
+
+func ScrapeCharacterComments(character_id string, client *http.Client) (structs.Character, bool) {
+	fmt.Println("Scraping comments for", character_id)
+	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/comments")
+
+	res, err := client.Get(full_url)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(res.Body);
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	name := doc.Find(".comments-title a").Text()
+	owner_name := doc.Find("span.display-user a span.display-user-username").Text()
+	owner_link := doc.Find("span.display-user a").AttrOr("href", "none")
+
+	fmt.Println("Fetching", full_url)
+	
+	get_comments := func(doc *goquery.Document) []structs.Comment {
+		var comments []structs.Comment
+
+		doc.Find("div.forum-post-post").Each(func(i int, ele *goquery.Selection) {
+			user_avatar := ele.Find("div.forum-post-avatar > img").AttrOr("src", "none")
+			user_name := ele.Find("a.user-name-badge").Text()
+			user_link := ele.Find("a.user-name-badge").AttrOr("href", "none")
+			text := ele.Find("div.user-content").Text()
+
+			comment := structs.Comment{
+				User: structs.Profile{
+					Name: user_name,
+					Link: user_link,
+					Avatar: user_avatar,
+				},
+				Body: text,
+			}
+
+			comments = append(comments, comment)
+		})
+
+		return comments
+	}
+
+	all_comments, locked := SaveWithPagination(client, full_url, get_comments);
+
+	character := structs.Character{
+		Name: name,
+		Owner: structs.Profile{
+			Name: owner_name,
+			Link: owner_link,
+		},
+		Comments: all_comments,
+	}
+
+	return character, locked
 }
 
 func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client, url string) (structs.Character, bool) {
@@ -100,7 +209,7 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 		return images;
 	}
 
-	all_images := SaveWithPagination(client, url, get_images);
+	all_images, locked := SaveWithPagination(client, url, get_images);
 
 
 	character := structs.Character {
@@ -112,13 +221,42 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 	return character, locked;
 }
 
+func ScrapeUser() {}
 
+func ScrapeUserSubs(user_id string, client *http.Client) []structs.Profile {
+	fmt.Println("Scraping subscribers of", user_id)
+	full_url := fmt.Sprint("https://toyhou.se/", user_id, "/stats/subscribers");
+
+	get_subs := func(doc *goquery.Document) []structs.Profile {
+		var subs []structs.Profile
+
+		doc.Find("div.character-select-cell").Each(func(i int, ele *goquery.Selection) {
+			avatar := ele.Find("img.mw-100").AttrOr("src", "none")
+			name := ele.Find("a.user-name-badge").Text()
+			link := ele.Find("a.user-name-badge").AttrOr("href", "none")
+
+			user := structs.Profile {
+				Avatar: avatar,
+				Name: name,
+				Link: link,
+			}
+
+			subs = append(subs, user)
+		})
+
+		return subs
+	}
+
+	all_subs, _ := SaveWithPagination(client, full_url, get_subs)
+
+	return all_subs
+}
 // Given an array `data`, goes through each page, provides callback to process page's data, adds the array returned from the callback to the data array
 //
 // The callback **must** return an array
 //
 // *V* is a generic parameter that can either be `string` or `structs.Image`
-func SaveWithPagination[V string | structs.Image](client *http.Client, baseUrl string, callback func(doc *goquery.Document) []V) []V {
+func SaveWithPagination[V string | structs.Image | structs.Profile | structs.Comment](client *http.Client, baseUrl string, callback func(doc *goquery.Document) []V) ([]V, bool) {
 	var data []V;
 	var urls []string;
 	pages := make(map[int][]V);
@@ -132,6 +270,8 @@ func SaveWithPagination[V string | structs.Image](client *http.Client, baseUrl s
 	}
 	doc, err := goquery.NewDocumentFromReader(page.Body);
 	limit_int := getPaginationLimit(doc)
+	locked := doc.Find("h1.image-gallery-title i.fa-unlock-alt").Length() > 0
+
 
 	ret := callback(doc);
 	pages[idx] = ret;
@@ -177,7 +317,7 @@ func SaveWithPagination[V string | structs.Image](client *http.Client, baseUrl s
 		data = append(data, pages[key]...)
 	}
 	
-	return data;
+	return data, locked;
 }
 
 func getPaginationLimit(doc *goquery.Document) int {

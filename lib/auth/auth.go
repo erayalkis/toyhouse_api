@@ -25,9 +25,9 @@ func LoadInitialAuth(client *http.Client) {
 	}
 
 	if(flag.Lookup("test.v") == nil ) {
-		viper.SetConfigFile(".env")
+		viper.SetConfigFile("./etc/secrets/.env")
 	} else {
-		viper.SetConfigFile("../../.env")
+		viper.SetConfigFile("../../etc/secrets/.env")
 	}
 	viper.ReadInConfig();
 
@@ -80,7 +80,7 @@ func GetAuthorizedUsers(client *http.Client) []string {
 		return usernames
 	}
 
-	all_usernames := scraper.SaveWithPagination(client, "https://toyhou.se/~account/authorizers", get_usernames)
+	all_usernames, _ := scraper.SaveWithPagination(client, "https://toyhou.se/~account/authorizers", get_usernames)
 
 	return all_usernames;
 }
