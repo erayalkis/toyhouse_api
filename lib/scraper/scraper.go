@@ -90,6 +90,64 @@ func ScrapeCharacterFavorites(character_id string, client *http.Client) (structs
 	return character, locked
 }
 
+func ScrapeCharacterComments(character_id string, client *http.Client) (structs.Character, bool) {
+	fmt.Println("Scraping comments for", character_id)
+	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/comments")
+
+	res, err := client.Get(full_url)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(res.Body);
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	name := doc.Find(".comments-title a").Text()
+	owner_name := doc.Find("span.display-user a span.display-user-username").Text()
+	owner_link := doc.Find("span.display-user a").AttrOr("href", "none")
+
+	fmt.Println("Fetching", full_url)
+	
+	get_comments := func(doc *goquery.Document) []structs.Comment {
+		var comments []structs.Comment
+
+		doc.Find("div.forum-post-post").Each(func(i int, ele *goquery.Selection) {
+			user_avatar := ele.Find("div.forum-post-avatar > img").AttrOr("src", "none")
+			user_name := ele.Find("a.user-name-badge").Text()
+			user_link := ele.Find("a.user-name-badge").AttrOr("href", "none")
+			text := ele.Find("div.user-content").Text()
+
+			comment := structs.Comment{
+				User: structs.Profile{
+					Name: user_name,
+					Link: user_link,
+					Avatar: user_avatar,
+				},
+				Body: text,
+			}
+
+			comments = append(comments, comment)
+		})
+
+		return comments
+	}
+
+	all_comments, locked := SaveWithPagination(client, full_url, get_comments);
+
+	character := structs.Character{
+		Name: name,
+		Owner: structs.Profile{
+			Name: owner_name,
+			Link: owner_link,
+		},
+		Comments: all_comments,
+	}
+
+	return character, locked
+}
+
 func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client, url string) (structs.Character, bool) {
 	name := doc.Find("h1.image-gallery-title a").Text();
 	owner_box := doc.Find("span.display-user a").First()
@@ -171,7 +229,7 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 // The callback **must** return an array
 //
 // *V* is a generic parameter that can either be `string` or `structs.Image`
-func SaveWithPagination[V string | structs.Image | structs.Profile](client *http.Client, baseUrl string, callback func(doc *goquery.Document) []V) ([]V, bool) {
+func SaveWithPagination[V string | structs.Image | structs.Profile | structs.Comment](client *http.Client, baseUrl string, callback func(doc *goquery.Document) []V) ([]V, bool) {
 	var data []V;
 	var urls []string;
 	pages := make(map[int][]V);
