@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/cookiejar"
+	"strconv"
 	"toyhouse_api/v2/lib/auth"
+	"toyhouse_api/v2/lib/helpers"
 	"toyhouse_api/v2/lib/scraper"
 
 	"github.com/gin-gonic/gin"
@@ -152,6 +154,13 @@ func SetRoutes() *gin.Engine {
 	})
 
 	server.GET("/raffle/:id", func(c *gin.Context) {		
+		character_id := c.Param("id")
+		must_sub, _ := strconv.ParseBool(c.Query("must_subscribe"))
+		must_comment, _ := strconv.ParseBool(c.Query("must_comment"))
+
+		tickets := helpers.CalculateRaffleTickets(character_id, &client, must_sub, must_comment)
+
+		c.JSON(http.StatusOK, tickets)
 	})
 
 	return server;
