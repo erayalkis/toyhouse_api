@@ -37,6 +37,59 @@ func ScrapeCharacterGallery(character_id string, client *http.Client) (structs.C
 	return character, locked;
 }
 
+func ScrapeCharacterFavorites(character_id string, client *http.Client) (structs.Character, bool) {
+	fmt.Println("Scraping favorites for", character_id);
+	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/favorites")
+
+	res, err := client.Get(full_url)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(res.Body);
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	name := doc.Find(".favorites-title a").Text()
+	owner_name := doc.Find("span.display-user a span.display-user-username").Text()
+	owner_link := doc.Find("span.display-user a").AttrOr("href", "none")
+
+	fmt.Println("Fetching", full_url)
+
+	get_favorites := func(doc *goquery.Document) []structs.Profile {
+		var users []structs.Profile;
+
+		doc.Find("div.user-cell").Each(func(i int, ele *goquery.Selection) {
+			image := ele.Find(".user-icon img").AttrOr("src", "none");
+			name := ele.Find(".user-name a").Text()
+			link := ele.Find(".user-name a").AttrOr("href", "none")
+
+			user := structs.Profile{
+				Avatar: image,
+				Name: name,
+				Link: link,
+			}
+
+			users = append(users, user)
+		})
+
+		return users;
+	}
+
+	all_users, locked := SaveWithPagination(client, full_url, get_favorites);
+
+	character := structs.Character{
+		Name: name,
+		Owner: structs.Profile{
+			Name: owner_name,
+			Link: owner_link,
+		},
+		Favorites: all_users,
+	}
+	return character, locked
+}
+
 func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client, url string) (structs.Character, bool) {
 	name := doc.Find("h1.image-gallery-title a").Text();
 	owner_box := doc.Find("span.display-user a").First()
@@ -100,7 +153,7 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 		return images;
 	}
 
-	all_images := SaveWithPagination(client, url, get_images);
+	all_images, locked := SaveWithPagination(client, url, get_images);
 
 
 	character := structs.Character {
@@ -118,7 +171,7 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 // The callback **must** return an array
 //
 // *V* is a generic parameter that can either be `string` or `structs.Image`
-func SaveWithPagination[V string | structs.Image](client *http.Client, baseUrl string, callback func(doc *goquery.Document) []V) []V {
+func SaveWithPagination[V string | structs.Image | structs.Profile](client *http.Client, baseUrl string, callback func(doc *goquery.Document) []V) ([]V, bool) {
 	var data []V;
 	var urls []string;
 	pages := make(map[int][]V);
@@ -132,6 +185,8 @@ func SaveWithPagination[V string | structs.Image](client *http.Client, baseUrl s
 	}
 	doc, err := goquery.NewDocumentFromReader(page.Body);
 	limit_int := getPaginationLimit(doc)
+	locked := doc.Find("h1.image-gallery-title i.fa-unlock-alt").Length() > 0
+
 
 	ret := callback(doc);
 	pages[idx] = ret;
@@ -177,7 +232,7 @@ func SaveWithPagination[V string | structs.Image](client *http.Client, baseUrl s
 		data = append(data, pages[key]...)
 	}
 	
-	return data;
+	return data, locked;
 }
 
 func getPaginationLimit(doc *goquery.Document) int {
