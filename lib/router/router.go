@@ -54,13 +54,6 @@ func SetRoutes() *gin.Engine {
 		})
 	})
 
-	server.GET("/user/:id/details", func(c *gin.Context) {
-		user_id := c.Param("id");
-
-		scraper.ScrapeUser();
-		c.String(http.StatusOK, "Hello %s", user_id);
-	})
-
 	server.GET("/character/:id/gallery", func(c *gin.Context) {
 		character_id := c.Param("id");
 
@@ -142,6 +135,20 @@ func SetRoutes() *gin.Engine {
 		}
 
 		c.JSON(http.StatusOK, character)
+	})
+
+	server.GET("/user/:id/details", func(c *gin.Context) {
+		user_id := c.Param("id");
+
+		scraper.ScrapeUser();
+		c.String(http.StatusOK, "Hello %s", user_id);
+	})
+
+	server.GET("/user/:id/subscribers", func(c *gin.Context) {
+		user_id := c.Param("id")
+		subs := scraper.ScrapeUserSubs(user_id, &client)
+
+		c.JSON(http.StatusOK, subs)
 	})
 
 	server.GET("/raffle/:id", func(c *gin.Context) {		

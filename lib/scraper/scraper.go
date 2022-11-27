@@ -13,8 +13,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func ScrapeUser() {}
-
 func ScrapeCharacterGallery(character_id string, client *http.Client) (structs.Character, bool) {
 	fmt.Println("Scraping character", character_id)
 	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/gallery");
@@ -223,7 +221,36 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 	return character, locked;
 }
 
+func ScrapeUser() {}
 
+func ScrapeUserSubs(user_id string, client *http.Client) []structs.Profile {
+	fmt.Println("Scraping subscribers of", user_id)
+	full_url := fmt.Sprint("https://toyhou.se/", user_id, "/stats/subscribers");
+
+	get_subs := func(doc *goquery.Document) []structs.Profile {
+		var subs []structs.Profile
+
+		doc.Find("div.character-select-cell").Each(func(i int, ele *goquery.Selection) {
+			avatar := ele.Find("img.mw-100").AttrOr("src", "none")
+			name := ele.Find("a.user-name-badge").Text()
+			link := ele.Find("a.user-name-badge").AttrOr("href", "none")
+
+			user := structs.Profile {
+				Avatar: avatar,
+				Name: name,
+				Link: link,
+			}
+
+			subs = append(subs, user)
+		})
+
+		return subs
+	}
+
+	all_subs, _ := SaveWithPagination(client, full_url, get_subs)
+
+	return all_subs
+}
 // Given an array `data`, goes through each page, provides callback to process page's data, adds the array returned from the callback to the data array
 //
 // The callback **must** return an array
