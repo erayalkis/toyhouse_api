@@ -64,7 +64,7 @@ func ScrapeCharacterFavorites(character_id string, client *http.Client) (structs
 			link := ele.Find(".user-name a").AttrOr("href", "none")
 
 			user := structs.Profile{
-				Avatar: image,
+				Image: image,
 				Name: name,
 				Link: link,
 			}
@@ -121,7 +121,7 @@ func ScrapeCharacterComments(character_id string, client *http.Client) (structs.
 				User: structs.Profile{
 					Name: user_name,
 					Link: user_link,
-					Avatar: user_avatar,
+					Image: user_avatar,
 				},
 				Body: text,
 			}
@@ -267,7 +267,7 @@ func ScrapeUserSubs(user_id string, client *http.Client) []structs.Profile {
 			link := ele.Find("a.user-name-badge").AttrOr("href", "none")
 
 			user := structs.Profile {
-				Avatar: avatar,
+				Image: avatar,
 				Name: name,
 				Link: link,
 			}
