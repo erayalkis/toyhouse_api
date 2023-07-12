@@ -13,11 +13,11 @@ func CalculateRaffleTickets(character_id string, client *http.Client, user_must_
 	owner := character.Owner.Name
 	for _, fav := range character.Favorites {
 		name := fav.Name
-		image := fav.Avatar
+		image := fav.Image
 		count := fav_count
 
 		ticket := structs.Ticket {
-			Avatar: image,
+			Image: image,
 			Tickets: count,
 		}
 
