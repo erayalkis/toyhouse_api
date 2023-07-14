@@ -6,22 +6,20 @@ import (
 	"toyhouse_api/v2/lib/structs"
 )
 
-func CalculateRaffleTickets(character_id string, client *http.Client, user_must_sub bool, user_must_comment bool, fav_count int, sub_count int, comment_count int) map[string]structs.Ticket {
-	tickets := make(map[string]structs.Ticket);
+func CalculateRaffleTickets(character_id string, client *http.Client, user_must_sub bool, user_must_comment bool, fav_count int, sub_count int, comment_count int) []structs.Ticket {
+	var tickets []structs.Ticket;
 
 	character, _ := scraper.ScrapeCharacterFavorites(character_id, client)
 	owner := character.Owner.Name
 	for _, fav := range character.Favorites {
-		name := fav.Name
-		image := fav.Image
 		count := fav_count
 
 		ticket := structs.Ticket {
-			Image: image,
+			Profile: fav,
 			Tickets: count,
 		}
 
-		tickets[name] = ticket
+		tickets = append(tickets, ticket)
 	}
 
 	if user_must_comment {
@@ -30,16 +28,25 @@ func CalculateRaffleTickets(character_id string, client *http.Client, user_must_
 		seen := make(map[string]bool)
 		for _, comment := range character.Comments {
 			username := comment.User.Name
-			_, ok := tickets[username]
 			_, in_seen := seen[username]
-			user_can_participate := ok
+
+			var user structs.Ticket
+			var userIdx int
+			for i := range tickets {
+				if (tickets[i].Profile.Name == comment.User.Name) {
+					user = tickets[i]
+					userIdx = i
+				}
+			}
+				
+			user_can_participate := user != structs.Ticket{};
 			user_unique := !in_seen
+
 			if user_can_participate && user_unique {
 				seen[username] = true
-		
-				user := tickets[username]
+
 				user.Tickets += comment_count
-				tickets[username] = user
+				tickets[userIdx] = user
 			}
 		}
 	}
@@ -48,14 +55,20 @@ func CalculateRaffleTickets(character_id string, client *http.Client, user_must_
 		subs := scraper.ScrapeUserSubs(owner, client)
 
 		for _, user := range subs {
-			username := user.Name
-			_, ok := tickets[username]
+			userIdx := 0
+			for i := range tickets {
+				if (tickets[i].Profile.Name == user.Name) {
+					userIdx = i
+				}
+			}
+
+			ok := userIdx != 0;
 			user_can_participate := ok
 
 			if user_can_participate {
-				user := tickets[username]
+				user := tickets[userIdx]
 				user.Tickets += sub_count
-				tickets[username] = user
+				tickets[userIdx] = user
 			}
 		}
 	}
