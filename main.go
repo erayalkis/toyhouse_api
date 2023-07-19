@@ -9,5 +9,5 @@ func main() {
 
 	server := router.SetRoutes();
 
-	server.Run();
+	server.Run(":8081");
 }
