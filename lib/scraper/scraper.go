@@ -32,6 +32,7 @@ func ScrapeCharacterGallery(character_id string, client *http.Client) (structs.C
 
 	character, locked := getCharacterDataFromGalleryPage(doc, client, full_url);
 
+	character.Id = character_id;
 	return character, locked;
 }
 
@@ -64,7 +65,7 @@ func ScrapeCharacterFavorites(character_id string, client *http.Client) (structs
 			link := ele.Find(".user-name a").AttrOr("href", "none")
 
 			user := structs.Profile{
-				Avatar: image,
+				Image: image,
 				Name: name,
 				Link: link,
 			}
@@ -85,6 +86,8 @@ func ScrapeCharacterFavorites(character_id string, client *http.Client) (structs
 		},
 		Favorites: all_users,
 	}
+	
+	character.Id = character_id;
 	return character, locked
 }
 
@@ -121,7 +124,7 @@ func ScrapeCharacterComments(character_id string, client *http.Client) (structs.
 				User: structs.Profile{
 					Name: user_name,
 					Link: user_link,
-					Avatar: user_avatar,
+					Image: user_avatar,
 				},
 				Body: text,
 			}
@@ -143,6 +146,7 @@ func ScrapeCharacterComments(character_id string, client *http.Client) (structs.
 		Comments: all_comments,
 	}
 
+	character.Id = character_id;
 	return character, locked
 }
 
@@ -241,6 +245,7 @@ func ScraperCharacterDetails(character_id string, client *http.Client) (structs.
 	locked := doc.Find("h1.image-gallery-title i.fa-unlock-alt").Length() > 0
 
 	character := structs.Character{
+		Id: character_id,
 		Owner: structs.Profile{
 			Name: owner_name,
 			Link: owner_link,
@@ -248,6 +253,7 @@ func ScraperCharacterDetails(character_id string, client *http.Client) (structs.
 		Name: character_name,
 		Image: character_image,
 	}
+
 
 	return character, locked
 }
@@ -267,7 +273,7 @@ func ScrapeUserSubs(user_id string, client *http.Client) []structs.Profile {
 			link := ele.Find("a.user-name-badge").AttrOr("href", "none")
 
 			user := structs.Profile {
-				Avatar: avatar,
+				Image: avatar,
 				Name: name,
 				Link: link,
 			}
