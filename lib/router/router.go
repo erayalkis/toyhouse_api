@@ -159,6 +159,29 @@ func SetRoutes() *gin.Engine {
 		c.JSON(http.StatusOK, character)
 	})
 
+		server.GET("/character/:id/:tabId/details", func(c *gin.Context) {
+		character_id := c.Param("id");
+		tab_id := c.Param("tabId");
+		complete_url := fmt.Sprint(character_id, "/", tab_id)
+
+		character, locked := scraper.ScraperCharacterDetails(complete_url, &client);
+		if locked {
+			auths := auth.GetAuthorizedUsers(&client);
+			fmt.Printf("auths: %v\n", auths)
+			ok, _ := auth.EnsureUserHasAccess(&character, auths);
+			if !ok {
+				println("User unauthorized")
+				c.JSON(http.StatusForbidden, gin.H{
+					"error": "You do not have access to this character!",
+				})
+				return
+			}
+			println("User authorized")
+		}
+
+		c.JSON(http.StatusOK, character);
+	})
+
 	server.GET("/user/:id/details", func(c *gin.Context) {
 		user_id := c.Param("id");
 
