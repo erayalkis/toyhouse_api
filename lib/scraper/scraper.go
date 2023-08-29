@@ -150,9 +150,9 @@ func ScrapeCharacterComments(character_id string, client *http.Client) (structs.
 	return character, locked
 }
 
-func ScrapeCharacterOwnership(character_id string, client *http.Client) ([]structs.OwnershipLog, bool) {
+func ScrapeCharacterOwnership(character_id string, client *http.Client) (structs.Character, bool) {
 	fmt.Println("Scraping character ownsership logs for:", character_id)
-	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/ownership/logs");
+	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/ownership/log");
 
 	fmt.Println("Fetching", full_url);
 	res, err := client.Get(full_url);
@@ -167,9 +167,10 @@ func ScrapeCharacterOwnership(character_id string, client *http.Client) ([]struc
 		log.Fatal(err);
 	}
 
-	log, locked := getCharacterDataFromOwnershipPage(doc, client, full_url);
+	character, locked := getCharacterDataFromOwnershipPage(doc, client, full_url);
 
-	return log, locked;
+	character.Id = character_id;
+	return character, locked;
 }
 
 func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client, url string) (structs.Character, bool) {
@@ -247,14 +248,14 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 	return character, locked;
 }
 
-func getCharacterDataFromOwnershipPage(doc *goquery.Document, client *http.Client, url string) ([]structs.OwnershipLog, bool) {
+func getCharacterDataFromOwnershipPage(doc *goquery.Document, client *http.Client, url string) (structs.Character, bool) {
 	get_images := func(doc *goquery.Document) []structs.OwnershipLog { 
 		var logs []structs.OwnershipLog;
 		
 		doc.Find("tr.row").Each(func(i int, ele *goquery.Selection) {
 			log_date := ele.Find("td.col-4").Text()
 			log_desc := ele.Find("td.col-8").Text()
-			log_user := ele.Find("td.col-8 span.display-user")
+			log_user := ele.Find("td.col-8 span.display-user a")
 			log_user_username := log_user.Text()
 			log_user_link := log_user.AttrOr("href", "N/A")
 
@@ -275,7 +276,11 @@ func getCharacterDataFromOwnershipPage(doc *goquery.Document, client *http.Clien
 
 	all_logs, locked := SaveWithPagination(client, url, get_images);
 
-	return all_logs, locked;
+	character := structs.Character {
+		Ownership: all_logs,
+	}
+
+	return character, locked;
 }
 
 func ScraperCharacterDetails(character_id string, client *http.Client) (structs.Character, bool) {
