@@ -150,6 +150,28 @@ func ScrapeCharacterComments(character_id string, client *http.Client) (structs.
 	return character, locked
 }
 
+func ScrapeCharacterOwnership(character_id string, client *http.Client) ([]structs.OwnershipLog, bool) {
+	fmt.Println("Scraping character ownsership logs for:", character_id)
+	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/ownership/logs");
+
+	fmt.Println("Fetching", full_url);
+	res, err := client.Get(full_url);
+	
+	if err != nil {
+		log.Fatal(err);
+	}
+
+	doc, err := goquery.NewDocumentFromReader(res.Body);
+
+	if err != nil {
+		log.Fatal(err);
+	}
+
+	log, locked := getCharacterDataFromOwnershipPage(doc, client, full_url);
+
+	return log, locked;
+}
+
 func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client, url string) (structs.Character, bool) {
 	name := doc.Find("h1.image-gallery-title a").Text();
 	owner_box := doc.Find("span.display-user a").First()
@@ -225,6 +247,37 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 	return character, locked;
 }
 
+func getCharacterDataFromOwnershipPage(doc *goquery.Document, client *http.Client, url string) ([]structs.OwnershipLog, bool) {
+	get_images := func(doc *goquery.Document) []structs.OwnershipLog { 
+		var logs []structs.OwnershipLog;
+		
+		doc.Find("tr.row").Each(func(i int, ele *goquery.Selection) {
+			log_date := ele.Find("td.col-4").Text()
+			log_desc := ele.Find("td.col-8").Text()
+			log_user := ele.Find("td.col-8 span.display-user")
+			log_user_username := log_user.Text()
+			log_user_link := log_user.AttrOr("href", "N/A")
+
+			log := structs.OwnershipLog {
+				Date: log_date,
+				Description: log_desc,
+				TaggedUser: structs.Profile {
+					Name: log_user_username,
+					Link: log_user_link,
+				},
+			}
+
+			logs = append(logs, log)
+		})
+
+		return logs;
+	}
+
+	all_logs, locked := SaveWithPagination(client, url, get_images);
+
+	return all_logs, locked;
+}
+
 func ScraperCharacterDetails(character_id string, client *http.Client) (structs.Character, bool) {
 	fmt.Println("Fetching details for", character_id)
 	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/gallery")
@@ -293,7 +346,7 @@ func ScrapeUserSubs(user_id string, client *http.Client) []structs.Profile {
 // The callback **must** return an array
 //
 // *V* is a generic parameter that can either be `string` or `structs.Image`
-func SaveWithPagination[V string | structs.Image | structs.Profile | structs.Comment](client *http.Client, baseUrl string, callback func(doc *goquery.Document) []V) ([]V, bool) {
+func SaveWithPagination[V string | structs.Image | structs.Profile | structs.Comment | structs.OwnershipLog](client *http.Client, baseUrl string, callback func(doc *goquery.Document) []V) ([]V, bool) {
 	var data []V;
 	var urls []string;
 	pages := make(map[int][]V);
