@@ -190,8 +190,8 @@ func getCharacterDataFromGalleryPage(doc *goquery.Document, client *http.Client,
 				char_link := character.Find("a").AttrOr("href", "none")
 
 				char_obj := structs.Profile{
-					Name: char_name,
-					Link: char_link,
+					Name: char_name, 
+					Link: "https://toyhou.se" + char_link,
 				}
 
 				tagged_characters = append(tagged_characters, char_obj)
