@@ -1,7 +1,7 @@
 package structs
 
 type Profile struct {
-	Name string `json:"name" binding:"required"`
-	Link string `json:"link" binding:"required"`
+	Name string `json:"name,omitempty"`
+	Link string `json:"link,omitempty"`
 	Image string `json:"image,omitempty"`
 }
