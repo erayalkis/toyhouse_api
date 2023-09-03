@@ -7,8 +7,8 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "gui",
-    "version": "0.0.0"
+    "productName": "Toyhouse Extensions",
+    "version": "0.1.2"
   },
   "tauri": {
     "allowlist": {
@@ -40,9 +40,11 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "gui",
+        "title": "Toyhouse Extensions",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "minWidth": 800,
+        "minHeight": 600
       }
     ]
   }
