@@ -1,11 +1,14 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { Router, createRouter, createWebHashHistory } from "vue-router";
+import DownloaderView from "../views/DownloaderView.vue";
+import RaffleView from "../views/RaffleView.vue";
+import type { Route } from "../lib/interfaces/route";
 
-const routes = [
+const routes: Array<Route> = [
   { path: "/downloader", component: DownloaderView },
   { path: "/raffle", component: RaffleView },
 ];
 
-const router = createRouter({
+const router: Router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
