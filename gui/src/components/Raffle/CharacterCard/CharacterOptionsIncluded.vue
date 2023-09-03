@@ -20,7 +20,7 @@
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { getCharacterDetails } from "../../../helpers/requests.ts";
 import { getCharacterIdFromUrl } from "../../../helpers/url.ts";
 import { useRaffleStore } from "../../../stores/raffleOptions.ts";
@@ -45,19 +45,19 @@ const load = async () => {
   await loadCharacter(id);
 };
 
-const ensureCharacterUnique = (id) => {
+const ensureCharacterUnique = (id: string) => {
   let alreadyExists = characterExistsInoptions(id);
   if (alreadyExists) {
     throw Error("Character already loaded!");
   }
 };
 
-const characterExistsInoptions = (id) => {
+const characterExistsInoptions = (id: string) => {
   console.log(options.value, id);
   return options.value.some((opt) => opt.character.id === id);
 };
 
-const loadCharacter = async (id) => {
+const loadCharacter = async (id: string) => {
   try {
     ensureCharacterUnique(id);
 
@@ -66,7 +66,7 @@ const loadCharacter = async (id) => {
       throw Error("Something went wrong while loading your character!");
     }
     addCharacter(details);
-  } catch (err) {
+  } catch (err: any) {
     setError(err);
     setTimeout(() => {
       clearError();
@@ -78,4 +78,3 @@ const loadCharacter = async (id) => {
   }
 };
 </script>
-../../../stores/raffleOptions.ts

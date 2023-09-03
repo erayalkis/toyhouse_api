@@ -11,7 +11,7 @@
     <CharacterFormMessages />
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import CharacterForm from "./CharacterForm.vue";
 import CharacterFormMessages from "./CharacterFormMessages.vue";

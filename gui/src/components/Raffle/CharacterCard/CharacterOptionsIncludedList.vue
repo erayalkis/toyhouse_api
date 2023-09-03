@@ -56,7 +56,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useRaffleStore } from "../../../stores/raffleOptions.ts";
 import { storeToRefs } from "pinia";
 import SubscribeIcon from "../../../assets/components/SubscribeIcon.vue";
@@ -66,9 +66,8 @@ import StarIcon from "../../../assets/components/StarIcon.vue";
 const optionsStore = useRaffleStore();
 let { options } = storeToRefs(optionsStore);
 
-const truncateNameIfTooLong = (name) => {
+const truncateNameIfTooLong = (name: string) => {
   if (name.length > 12) return name.slice(0, 9) + "...";
   return name;
 };
 </script>
-../../../stores/raffleOptions.ts

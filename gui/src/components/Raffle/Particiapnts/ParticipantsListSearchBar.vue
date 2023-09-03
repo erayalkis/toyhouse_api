@@ -10,7 +10,7 @@
     />
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import SearchIcon from "../../../assets/components/SearchIcon.vue";
 import { useParticipantsStore } from "../../../stores/participantsStore";
 import { ref } from "vue";

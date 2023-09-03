@@ -4,7 +4,7 @@
     <h3 class="text-sm text-red-500 text-center">{{ errorMessage }}</h3>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { useMessagesStore } from "../../../stores/messagesStore.ts";
 const messagesStore = useMessagesStore();
 import { storeToRefs } from "pinia";

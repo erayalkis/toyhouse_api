@@ -34,10 +34,9 @@
     </template>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { useParticipantsStore } from "../../../stores/participantsStore";
 import { storeToRefs } from "pinia";
-import { defineProps } from "vue";
 import UserIcon from "../../../assets/components/UserIcon.vue";
 import MinusIcon from "../../../assets/components/MinusIcon.vue";
 import PlusIcon from "../../../assets/components/PlusIcon.vue";
@@ -45,14 +44,15 @@ import PlusIcon from "../../../assets/components/PlusIcon.vue";
 const pStore = useParticipantsStore();
 const { list } = storeToRefs(pStore);
 
-const truncateName = (name) => {
+const truncateName = (name: string) => {
   if (name.length >= 12) {
     return name.slice(0, 9) + "...";
   }
   return name;
 };
-const incrementTicket = (username) => (list.value[username].ticket_count += 1);
-const decrementTicket = (username) => {
+const incrementTicket = (username: string) =>
+  (list.value[username].ticket_count += 1);
+const decrementTicket = (username: string) => {
   let user = list.value[username];
 
   if (user.ticket_count === 1) return;

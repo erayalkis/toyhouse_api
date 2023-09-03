@@ -8,7 +8,7 @@
         >
           <LeftArrow class="w-4" />
         </button>
-        <template v-for="(arr, idx) in chunked" :key="idx">
+        <template v-for="(_, idx) in chunked" :key="idx">
           <p
             @click="$emit('set', idx)"
             class="border border-toyhouse-border-primary text-toyhouse-blue-primary cursor-pointer p-2 px-3 hover:bg-gray-100 border-l-0"
@@ -36,7 +36,7 @@
         >
           <LeftArrow class="w-4" />
         </button>
-        <template v-for="(arr, idx) in chunked.slice(0, 3)" :key="idx">
+        <template v-for="(_, idx) in chunked.slice(0, 3)" :key="idx">
           <p
             @click="$emit('set', idx)"
             class="border border-toyhouse-border-primary text-toyhouse-blue-primary cursor-pointer p-2 px-3 hover:bg-gray-100 border-l-0"
@@ -82,10 +82,9 @@
     </template>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import LeftArrow from "../../../assets/components/LeftArrow.vue";
 import RightArrow from "../../../assets/components/RightArrow.vue";
-import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
   chunked: {

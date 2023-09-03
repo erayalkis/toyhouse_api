@@ -99,7 +99,7 @@
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { useRaffleStore } from "../../../stores/raffleOptions.ts";
 import { useMessagesStore } from "../../../stores/messagesStore.ts";
 import { storeToRefs } from "pinia";
@@ -136,7 +136,7 @@ const loadParticipants = async () => {
   try {
     let json = await getRaffleTicketsForAll(options.value);
     setParticipants(json);
-  } catch (err) {
+  } catch (err: any) {
     setError(err);
     setTimeout(() => clearError(), 1500);
   }
@@ -145,6 +145,11 @@ const loadParticipants = async () => {
 
 const pick = () => {
   console.log(winnerCount.value, Object.keys(list.value).length);
+  if (winnerCount.value === null) {
+    console.error("Winner Count is null");
+    return;
+  }
+
   if (winnerCount.value > Object.keys(list.value).length) {
     setError("Winner count cannot be higher than participant count!");
     setTimeout(() => clearError(), 1500);
@@ -161,4 +166,3 @@ const pick = () => {
   transition: transform 2s ease-out;
 }
 </style>
-../../../stores/raffleOptions.ts

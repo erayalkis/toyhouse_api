@@ -24,7 +24,7 @@
     <AppStatus />
   </nav>
 </template>
-<script setup>
+<script setup lang="ts">
 import HomeIcon from "../../assets/components/HomeIcon.vue";
 import PeopleIcon from "../../assets/components/PeopleIcon.vue";
 import AppStatus from "./AppStatus.vue";

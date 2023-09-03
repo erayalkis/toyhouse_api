@@ -17,8 +17,8 @@
     <CharacterOptionsIncluded />
   </div>
 </template>
-<script setup>
-import { defineProps, computed } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 import { useRaffleStore } from "../../../stores/raffleOptions.ts";
 import { storeToRefs } from "pinia";
 import CharacterOptionsInputs from "./CharacterOptionsInputs.vue";

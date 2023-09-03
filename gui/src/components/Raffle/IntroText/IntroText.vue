@@ -16,6 +16,6 @@
     </template>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { textContent } from "./textContent";
 </script>
