@@ -57,13 +57,13 @@
 </template>
 
 <script setup>
-import { useOptionsStore } from "../../../stores/optionsStore.ts";
+import { useRaffleOptionsStore } from "../../../stores/raffleOptions.ts";
 import { storeToRefs } from "pinia";
 import SubscribeIcon from "../../../assets/components/SubscribeIcon.vue";
 import CommentIcon from "../../../assets/components/CommentIcon.vue";
 import StarIcon from "../../../assets/components/StarIcon.vue";
 
-const optionsStore = useOptionsStore();
+const optionsStore = useRaffleOptionsStore();
 let { opts } = storeToRefs(optionsStore);
 
 const truncateNameIfTooLong = (name) => {
@@ -71,3 +71,4 @@ const truncateNameIfTooLong = (name) => {
   return name;
 };
 </script>
+../../../stores/raffleOptions.ts

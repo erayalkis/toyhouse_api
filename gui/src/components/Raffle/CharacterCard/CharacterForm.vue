@@ -19,11 +19,11 @@
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 // import { makeQueryFromOptions } from "@/helpers/queryBuilder.js";
 import { getCharacterDetails } from "../../../helpers/requests";
 import { getCharacterIdFromUrl } from "../../../helpers/url";
-import { useOptionsStore } from "../../../stores/optionsStore.ts";
+import { useRaffleOptionsStore } from "../../../stores/raffleOptions.ts";
 import { useMessagesStore } from "../../../stores/messagesStore.ts";
 import { storeToRefs } from "pinia";
 import { useStatusStore } from "@/stores/appStatus";
@@ -31,7 +31,7 @@ import { ref, computed } from "vue";
 
 const url = ref("");
 const messagesStore = useMessagesStore();
-const optionsStore = useOptionsStore();
+const optionsStore = useRaffleOptionsStore();
 const statusStore = useStatusStore();
 
 const status = computed(() => statusStore.status);
@@ -47,19 +47,19 @@ const load = async () => {
   await loadCharacter(id);
 };
 
-const ensureCharacterUnique = (id) => {
+const ensureCharacterUnique = (id: string) => {
   let alreadyExists = characterExistsInOpts(id);
   if (alreadyExists) {
     throw Error("Character already loaded!");
   }
 };
 
-const characterExistsInOpts = (id) => {
+const characterExistsInOpts = (id: string) => {
   console.log(opts.value, id);
   return opts.value.some((opt) => opt.character.id === id);
 };
 
-const loadCharacter = async (id) => {
+const loadCharacter = async (id: string) => {
   try {
     ensureCharacterUnique(id);
 
@@ -68,7 +68,7 @@ const loadCharacter = async (id) => {
       throw Error("Something went wrong while loading your character!");
     }
     addCharacter(details);
-  } catch (err) {
+  } catch (err: any) {
     setError(err);
     console.error(err);
     setTimeout(() => {
@@ -80,3 +80,4 @@ const loadCharacter = async (id) => {
   }
 };
 </script>
+../../../stores/raffleOptions.ts

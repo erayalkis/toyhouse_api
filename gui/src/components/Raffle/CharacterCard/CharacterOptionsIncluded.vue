@@ -23,7 +23,7 @@
 <script setup>
 import { getCharacterDetails } from "../../../helpers/requests.ts";
 import { getCharacterIdFromUrl } from "../../../helpers/url.ts";
-import { useOptionsStore } from "../../../stores/optionsStore.ts";
+import { useRaffleOptionsStore } from "../../../stores/raffleOptions.ts";
 import { useMessagesStore } from "../../../stores/messagesStore.ts";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
@@ -32,7 +32,7 @@ import CharacterFormOptionsIncludedList from "./CharacterOptionsIncludedList.vue
 
 const url = ref("");
 const messagesStore = useMessagesStore();
-const optionsStore = useOptionsStore();
+const optionsStore = useRaffleOptionsStore();
 
 const { setError, setLoading, clearLoading, clearError } = messagesStore;
 const { addCharacter } = optionsStore;
@@ -78,3 +78,4 @@ const loadCharacter = async (id) => {
   }
 };
 </script>
+../../../stores/raffleOptions.ts

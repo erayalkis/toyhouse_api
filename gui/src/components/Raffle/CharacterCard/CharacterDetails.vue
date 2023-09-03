@@ -100,7 +100,7 @@
   </div>
 </template>
 <script setup>
-import { useOptionsStore } from "../../../stores/optionsStore.ts";
+import { useRaffleOptionsStore } from "../../../stores/raffleOptions.ts";
 import { useMessagesStore } from "../../../stores/messagesStore.ts";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
@@ -110,7 +110,7 @@ import CharacterOptions from "./CharacterOptions.vue";
 import { useParticipantsStore } from "../../../stores/participantsStore.ts";
 import { getRaffleTicketsForAll } from "../../../helpers/requests.ts";
 
-let optsStore = useOptionsStore();
+let optsStore = useRaffleOptionsStore();
 let pStore = useParticipantsStore();
 let mStore = useMessagesStore();
 let { setParticipants, setWinners, pickWinners, deleteParticipants } = pStore;
@@ -161,3 +161,4 @@ const pick = () => {
   transition: transform 2s ease-out;
 }
 </style>
+../../../stores/raffleOptions.ts

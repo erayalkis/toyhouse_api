@@ -7,13 +7,13 @@ export const get = async (url: string) => {
   return json;
 };
 
-export const getCharacter = async (characterId: number) => {
+export const getCharacter = async (characterId: string) => {
   let url = addPathToUrl(`/character/${characterId}`);
   let json = get(url);
   return json;
 };
 
-export const getCharacterDetails = async (characterId: number) => {
+export const getCharacterDetails = async (characterId: string) => {
   let url = addPathToUrl(`/character/${characterId}/details`);
   let json = get(url);
   return json;
