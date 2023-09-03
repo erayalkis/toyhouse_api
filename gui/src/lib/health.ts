@@ -11,10 +11,13 @@ export const makeStatusQuery = () => {
   const messageStore = useMessageStore();
   const messagesStore = useMessagesStore();
 
+  statusStore.setStatus(-1);
   console.log("fetching status...");
   fetch(`${url}/app_status`)
     .then(() => {
       console.log("app is up! :D");
+      messagesStore.clearError();
+      errorStore.clearError();
       statusStore.setStatus(1);
     })
     .catch(() => {

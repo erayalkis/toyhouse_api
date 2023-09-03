@@ -11,7 +11,7 @@
       />
       <button
         class="bg-toyhouse-blue-primary text-white p-2 transition duration-300 ease-out rounded-md rounded-l-none hover:bg-toyhouse-button-secondary disabled:bg-toyhouse-button-secondary disabled:cursor-not-allowed"
-        :disabled="!url.length"
+        :disabled="status === -1 || status === 0"
         @click="load"
       >
         Load
@@ -26,11 +26,15 @@ import { getCharacterIdFromUrl } from "../../../helpers/url";
 import { useOptionsStore } from "../../../stores/optionsStore.ts";
 import { useMessagesStore } from "../../../stores/messagesStore.ts";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { useStatusStore } from "@/stores/appStatus";
+import { ref, computed } from "vue";
 
 const url = ref("");
 const messagesStore = useMessagesStore();
 const optionsStore = useOptionsStore();
+const statusStore = useStatusStore();
+
+const status = computed(() => statusStore.status);
 
 const { setError, clearError, setLoading, clearLoading } = messagesStore;
 const { addCharacter } = optionsStore;

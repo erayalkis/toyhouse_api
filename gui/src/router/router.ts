@@ -5,8 +5,8 @@ import ParticipantsView from "../views/ParticipantsView.vue";
 import type { Route } from "../lib/interfaces/route";
 
 const routes: Array<Route> = [
-  { path: "/downloader", component: DownloaderView },
-  { path: "/", component: RaffleView },
+  { path: "/", component: DownloaderView },
+  { path: "/raffle", component: RaffleView },
   { path: "/participants", component: ParticipantsView },
 ];
 

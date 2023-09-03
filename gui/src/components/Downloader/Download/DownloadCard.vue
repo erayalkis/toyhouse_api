@@ -14,7 +14,7 @@
       <button
         class="bg-toyhouse-button-primary text-white transition duration-300 ease-out p-1 rounded-r-md hover:bg-toyhouse-button-secondary disabled:bg-toyhouse-button-secondary disabled:cursor-not-allowed"
         @click="handleCharacterRequest"
-        :disabled="status === -1 || status === 0 || !url.length"
+        :disabled="status === -1 || status === 0"
       >
         {{ isUsingQueue ? "Add" : "Download" }}
       </button>
