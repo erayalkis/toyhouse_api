@@ -2,7 +2,7 @@
   <div
     class="flex-col text-toyhouse-dark bg-toyhouse-primary-100 border border-toyhouse-primary-200 rounded-sm p-10"
   >
-    <h1 class="text-xl font-medium">Download gallery</h1>
+    <h1 class="text-xl font-bold">Download gallery</h1>
     <hr class="w-full h-px bg-toyhouse-primary-300 my-2" />
     <h1 class="font-bold mb-2">Character Profile</h1>
     <div class="flex w-full">
@@ -14,7 +14,7 @@
       <button
         class="bg-toyhouse-button-primary text-white transition duration-300 ease-out p-1 rounded-r-md hover:bg-toyhouse-button-secondary disabled:bg-toyhouse-button-secondary disabled:cursor-not-allowed"
         @click="handleCharacterRequest"
-        :disabled="status === -1 || status === 0"
+        :disabled="status === -1 || status === 0 || !url.length"
       >
         {{ isUsingQueue ? "Add" : "Download" }}
       </button>

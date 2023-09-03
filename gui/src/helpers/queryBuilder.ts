@@ -1,8 +1,8 @@
 import { API_URL } from "./constants";
 
-export const addPathToUrl = (path) => API_URL + path;
+export const addPathToUrl = (path: string) => API_URL + path;
 
-export const makeQueryFromOptions = (opts) => {
+export const makeQueryFromOptions = (opts: any) => {
   let url = API_URL + `/raffle/${opts.character.id}`;
   let queryStr = "?";
 

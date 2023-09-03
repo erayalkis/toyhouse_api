@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
-import { chunkArray } from "@/helpers/requests";
+import { Ref, computed, ref } from "vue";
+import { chunkArray } from "../helpers/requests.ts";
 
 export const useParticipantsStore = defineStore("participants", () => {
-  const list = ref({});
+  const list: Ref<Record<string, any>> = ref({});
   const searchResults = ref({});
-  const winners = ref({});
-  const usersByTicketCount = ref([]);
+  const winners: Ref<Record<string, any>> = ref({});
+  const usersByTicketCount: Ref<Array<any>> = ref([]);
   const loaded = computed(() => Object.keys(list.value).length === 0);
   const chunked = computed(() => {
     if (Object.keys(searchResults.value).length) {
@@ -16,9 +16,9 @@ export const useParticipantsStore = defineStore("participants", () => {
     return chunkArray(Object.keys(list.value), 30);
   });
 
-  const setParticipants = (obj) => (list.value = obj);
-  const setWinners = (obj) => (winners.value = obj);
-  const setSearchResults = (obj) => (searchResults.value = obj);
+  const setParticipants = (obj: Object) => (list.value = obj);
+  const setWinners = (obj: Object) => (winners.value = obj);
+  const setSearchResults = (obj: Object) => (searchResults.value = obj);
 
   const deleteParticipants = () => {
     list.value = {};
@@ -29,22 +29,22 @@ export const useParticipantsStore = defineStore("participants", () => {
   const deleteSearchResults = () => (searchResults.value = {});
   const deleteWinners = () => (winners.value = {});
 
-  const remove = (user) => delete list.value[user];
+  const remove = (user: string) => delete list.value[user];
 
-  const increment = (user) => {
+  const increment = (user: string) => {
     list.value[user].ticket_count += 1;
   };
 
-  const decrement = (user) => {
+  const decrement = (user: string) => {
     list.value[user].ticket_count -= 1;
   };
 
-  const pickWinners = (winnersCount) => {
+  const pickWinners = (winnersCount: number) => {
     setDupedUsers();
 
     // Set of usernames
     let seenUsers = new Set();
-    let winners = {};
+    let winners: Record<string, any> = {};
 
     for (winnersCount; winnersCount > 0; winnersCount--) {
       const idx = getRandomIndex(usersByTicketCount.value.length);
@@ -67,7 +67,7 @@ export const useParticipantsStore = defineStore("participants", () => {
   const setDupedUsers = () => {
     usersByTicketCount.value = [];
 
-    const usersDupedByTicketCount = [];
+    const usersDupedByTicketCount: Array<any> = [];
 
     Object.keys(list.value).forEach((username) => {
       let user = list.value[username];
@@ -77,21 +77,19 @@ export const useParticipantsStore = defineStore("participants", () => {
     usersByTicketCount.value = usersDupedByTicketCount;
   };
 
-  const getRandomIndex = (length) => Math.floor(Math.random() * length);
-  const rerollWinner = (username) => {
+  const getRandomIndex = (length: number) => Math.floor(Math.random() * length);
+  const rerollWinner = (username: string) => {
     const dupedWinnersWithoutTarget = usersByTicketCount.value.filter(
       (user) => user.profile.name != username
     );
 
-    const newWinnerIndex = getRandomIndex(
-      dupedWinnersWithoutTarget.value.length
-    );
+    const newWinnerIndex = getRandomIndex(dupedWinnersWithoutTarget.length);
 
     winners.value[username] = dupedWinnersWithoutTarget[newWinnerIndex];
   };
 
-  const getUsersWithMatchingName = (username) => {
-    let matches = {};
+  const getUsersWithMatchingName = (username: string) => {
+    let matches: Record<string, any> = {};
     let usernames = Object.keys(list.value).filter((userKey) => {
       console.log(userKey, username);
       return userKey.toLowerCase().includes(username.toLowerCase());

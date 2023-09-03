@@ -5,6 +5,6 @@
     </main>
   </KeepAlive>
 </template>
-<script setup>
-import ParticipantsList from "@/components/Particiapnts/ParticipantsList.vue";
+<script setup lang="ts">
+import ParticipantsList from "../components/Raffle/Particiapnts/ParticipantsList.vue";
 </script>

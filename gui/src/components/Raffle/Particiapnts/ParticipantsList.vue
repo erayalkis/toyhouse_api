@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-center items-center p-1 mt-2">
+  <div class="">
     <template v-if="chunked.length">
       <h1 class="my-1 mb-2">
         Displaying {{ Object.keys(list).length }} participant(s).
@@ -25,8 +25,8 @@
     </template>
   </div>
 </template>
-<script setup>
-import { useParticipantsStore } from "@/state/participantsStore";
+<script setup lang="ts">
+import { useParticipantsStore } from "../../../stores/participantsStore.ts";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import ParticipantsCard from "./ParticipantsCard.vue";
@@ -40,5 +40,5 @@ const currentIndex = ref(0);
 
 const incrementIndex = () => (currentIndex.value += 1);
 const decrementIndex = () => (currentIndex.value -= 1);
-const setIndex = (idx) => (currentIndex.value = idx);
+const setIndex = (idx: number) => (currentIndex.value = idx);
 </script>

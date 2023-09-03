@@ -100,15 +100,15 @@
   </div>
 </template>
 <script setup>
-import { useOptionsStore } from "@/state/optionsStore";
+import { useOptionsStore } from "../../../stores/optionsStore.ts";
+import { useMessagesStore } from "../../../stores/messagesStore.ts";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
-import CogIcon from "@/assets/components/CogIcon.vue";
-import UserIcon from "@/assets/components/UserIcon.vue";
+import CogIcon from "../../../assets/components/CogIcon.vue";
+import UserIcon from "../../../assets/components/UserIcon.vue";
 import CharacterOptions from "./CharacterOptions.vue";
-import { useParticipantsStore } from "@/state/participantsStore";
-import { getRaffleTicketsForAll } from "@/helpers/requests";
-import { useMessagesStore } from "@/state/messagesStore";
+import { useParticipantsStore } from "../../../stores/participantsStore.ts";
+import { getRaffleTicketsForAll } from "../../../helpers/requests.ts";
 
 let optsStore = useOptionsStore();
 let pStore = useParticipantsStore();

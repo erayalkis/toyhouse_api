@@ -83,8 +83,8 @@
   </div>
 </template>
 <script setup>
-import LeftArrow from "@/assets/components/LeftArrow.vue";
-import RightArrow from "@/assets/components/RightArrow.vue";
+import LeftArrow from "../../../assets/components/LeftArrow.vue";
+import RightArrow from "../../../assets/components/RightArrow.vue";
 import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({

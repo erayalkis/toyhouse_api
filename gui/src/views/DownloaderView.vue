@@ -1,3 +1,10 @@
 <template>
-  <div></div>
+  <KeepAlive>
+    <main class="w-10/12 xl:w-7/12 flex flex-col h-5/6 justify-center m-auto">
+      <MainContainer />
+    </main>
+  </KeepAlive>
 </template>
+<script setup lang="ts">
+import MainContainer from "../components/Downloader/Container/MainContainer.vue";
+</script>

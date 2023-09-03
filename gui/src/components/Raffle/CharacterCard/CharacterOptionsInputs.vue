@@ -75,10 +75,10 @@
 <script setup>
 import { defineProps, computed } from "vue";
 import { storeToRefs } from "pinia";
-import { useOptionsStore } from "@/state/optionsStore.js";
-import SubscribeIcon from "@/assets/components/SubscribeIcon.vue";
-import CommentIcon from "@/assets/components/CommentIcon.vue";
-import StarIcon from "@/assets/components/StarIcon.vue";
+import { useOptionsStore } from "../../../stores/optionsStore.ts";
+import SubscribeIcon from "../../../assets/components/SubscribeIcon.vue";
+import CommentIcon from "../../../assets/components/CommentIcon.vue";
+import StarIcon from "../../../assets/components/StarIcon.vue";
 
 let optsStore = useOptionsStore();
 let { opts } = storeToRefs(optsStore);

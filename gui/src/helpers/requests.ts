@@ -1,33 +1,33 @@
 import { addPathToUrl, makeQueryFromOptions } from "./queryBuilder";
 
-export const get = async (url) => {
+export const get = async (url: string) => {
   let res = await fetch(url);
   let json = await res.json();
 
   return json;
 };
 
-export const getCharacter = async (characterId) => {
+export const getCharacter = async (characterId: number) => {
   let url = addPathToUrl(`/character/${characterId}`);
   let json = get(url);
   return json;
 };
 
-export const getCharacterDetails = async (characterId) => {
+export const getCharacterDetails = async (characterId: number) => {
   let url = addPathToUrl(`/character/${characterId}/details`);
   let json = get(url);
   return json;
 };
 
-export const getRaffleTickets = async (options) => {
+export const getRaffleTickets = async (options: any) => {
   let url = makeQueryFromOptions(options);
   console.log(url);
   let json = get(url);
   return json;
 };
 
-export const getRaffleTicketsForAll = async (optsArray) => {
-  let list = {};
+export const getRaffleTicketsForAll = async (optsArray: any) => {
+  let list: Record<string, any> = {};
 
   for (let idx = 0; idx < optsArray.length; idx++) {
     const opt = optsArray[idx];
@@ -49,7 +49,7 @@ export const getRaffleTicketsForAll = async (optsArray) => {
   return list;
 };
 
-export const chunkArray = (arr, size) => {
+export const chunkArray = (arr: Array<any>, size: number) => {
   const mainArr = [];
 
   for (let i = 0; i < arr.length; i += size) {

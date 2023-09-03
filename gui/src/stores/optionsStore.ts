@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { Ref, computed, ref } from "vue";
 
 export const useOptionsStore = defineStore("options", () => {
   const defaultOptions = {
@@ -19,10 +19,10 @@ export const useOptionsStore = defineStore("options", () => {
     favorite_points: 1,
   };
 
-  const opts = ref([]);
+  const opts: Ref<Array<any>> = ref([]);
   const loadedMain = computed(() => opts.value.length > 0);
 
-  const addCharacter = (character) => {
+  const addCharacter = (character: any) => {
     if (characterAlreadyAdded(character)) return;
 
     let newOpts = Object.assign({}, defaultOptions);
@@ -31,11 +31,11 @@ export const useOptionsStore = defineStore("options", () => {
     opts.value.push(newOpts);
   };
 
-  const resetCharacter = (character) => {
+  const resetCharacter = (character: any) => {
     let characterId = character.id;
 
     let characterIdx = opts.value.findIndex(
-      (opt) => opt.character.id === characterId
+      (opt: any) => opt.character.id === characterId
     );
 
     let newOpts = defaultOptions;
@@ -44,24 +44,26 @@ export const useOptionsStore = defineStore("options", () => {
     opts.value[characterIdx] = newOpts;
   };
 
-  const updateCharacter = (character) => {
+  const updateCharacter = (character: any) => {
     let characterId = character.id;
 
     let characterIdx = opts.value.findIndex(
-      (opt) => opt.character.id === characterId
+      (opt: any) => opt.character.id === characterId
     );
 
     opts.value[characterIdx] = character;
   };
 
-  const removeCharacter = (character) => {
+  const removeCharacter = (character: any) => {
     let characterId = character.id;
 
-    opts.value = opts.value.filter((opt) => opt.character.id !== characterId);
+    opts.value = opts.value.filter(
+      (opt: any) => opt.character.id !== characterId
+    );
   };
 
-  const characterAlreadyAdded = (character) => {
-    return opts.value.some((opt) => opt.character.id === character.id);
+  const characterAlreadyAdded = (character: any) => {
+    return opts.value.some((opt: any) => opt.character.id === character.id);
   };
 
   return {

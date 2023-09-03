@@ -5,8 +5,8 @@ export const useMessagesStore = defineStore("messages", () => {
   const loadingMessage = ref("");
   const errorMessage = ref("");
 
-  const setLoading = (str) => (loadingMessage.value = str);
-  const setError = (str) => (errorMessage.value = str);
+  const setLoading = (str: string) => (loadingMessage.value = str);
+  const setError = (str: string) => (errorMessage.value = str);
   const clearLoading = () => (loadingMessage.value = "");
   const clearError = () => (errorMessage.value = "");
 

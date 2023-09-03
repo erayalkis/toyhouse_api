@@ -19,7 +19,7 @@
 </template>
 <script setup>
 import { defineProps, computed } from "vue";
-import { useOptionsStore } from "@/state/optionsStore.js";
+import { useOptionsStore } from "../../../stores/optionsStore.ts";
 import { storeToRefs } from "pinia";
 import CharacterOptionsInputs from "./CharacterOptionsInputs.vue";
 import CharacterOptionsIncluded from "./CharacterOptionsIncluded.vue";

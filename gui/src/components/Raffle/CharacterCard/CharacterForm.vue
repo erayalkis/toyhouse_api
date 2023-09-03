@@ -10,7 +10,8 @@
         class="p-2 border border-toyhouse-border-primary outline-0 rounded-md rounded-r-none w-full indent-1"
       />
       <button
-        class="bg-toyhouse-blue-primary text-white p-2 transition duration-300 ease-out rounded-md rounded-l-none hover:bg-toyhouse-blue-secondary"
+        class="bg-toyhouse-blue-primary text-white p-2 transition duration-300 ease-out rounded-md rounded-l-none hover:bg-toyhouse-button-secondary disabled:bg-toyhouse-button-secondary disabled:cursor-not-allowed"
+        :disabled="!url.length"
         @click="load"
       >
         Load
@@ -20,10 +21,10 @@
 </template>
 <script setup>
 // import { makeQueryFromOptions } from "@/helpers/queryBuilder.js";
-import { getCharacterDetails } from "@/helpers/requests";
-import { getCharacterIdFromUrl } from "@/helpers/url";
-import { useMessagesStore } from "@/state/messagesStore";
-import { useOptionsStore } from "@/state/optionsStore";
+import { getCharacterDetails } from "../../../helpers/requests";
+import { getCharacterIdFromUrl } from "../../../helpers/url";
+import { useOptionsStore } from "../../../stores/optionsStore.ts";
+import { useMessagesStore } from "../../../stores/messagesStore.ts";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 

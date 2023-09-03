@@ -57,11 +57,11 @@
 </template>
 
 <script setup>
-import { useOptionsStore } from "@/state/optionsStore.js";
+import { useOptionsStore } from "../../../stores/optionsStore.ts";
 import { storeToRefs } from "pinia";
-import SubscribeIcon from "@/assets/components/SubscribeIcon.vue";
-import CommentIcon from "@/assets/components/CommentIcon.vue";
-import StarIcon from "@/assets/components/StarIcon.vue";
+import SubscribeIcon from "../../../assets/components/SubscribeIcon.vue";
+import CommentIcon from "../../../assets/components/CommentIcon.vue";
+import StarIcon from "../../../assets/components/StarIcon.vue";
 
 const optionsStore = useOptionsStore();
 let { opts } = storeToRefs(optionsStore);

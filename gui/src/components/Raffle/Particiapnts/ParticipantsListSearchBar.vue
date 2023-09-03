@@ -11,8 +11,8 @@
   </div>
 </template>
 <script setup>
-import SearchIcon from "@/assets/components/SearchIcon.vue";
-import { useParticipantsStore } from "@/state/participantsStore";
+import SearchIcon from "../../../assets/components/SearchIcon.vue";
+import { useParticipantsStore } from "../../../stores/participantsStore";
 import { ref } from "vue";
 
 const username = ref("");

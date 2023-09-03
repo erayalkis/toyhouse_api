@@ -22,8 +22,6 @@ import NoticeRow from './NoticeRow.vue';
         </h1>
       </template>
     </NoticeRow>
-    <NoticeRow :text="''" :row-num="0" />
-    <NoticeRow :text="''" :row-num="0" />
   </div>
 </template>
 <script setup lang="ts">

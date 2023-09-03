@@ -1,5 +1,5 @@
 <template>
-  <div class="w-10/12 xl:w-7/12 my-auto">
+  <div class="">
     <Download />
     <Notice />
   </div>

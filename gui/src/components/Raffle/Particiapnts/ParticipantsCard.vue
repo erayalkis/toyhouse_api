@@ -35,12 +35,12 @@
   </div>
 </template>
 <script setup>
-import { useParticipantsStore } from "@/state/participantsStore";
+import { useParticipantsStore } from "../../../stores/participantsStore";
 import { storeToRefs } from "pinia";
 import { defineProps } from "vue";
-import UserIcon from "@/assets/components/UserIcon.vue";
-import MinusIcon from "@/assets/components/MinusIcon.vue";
-import PlusIcon from "@/assets/components/PlusIcon.vue";
+import UserIcon from "../../../assets/components/UserIcon.vue";
+import MinusIcon from "../../../assets/components/MinusIcon.vue";
+import PlusIcon from "../../../assets/components/PlusIcon.vue";
 
 const pStore = useParticipantsStore();
 const { list } = storeToRefs(pStore);

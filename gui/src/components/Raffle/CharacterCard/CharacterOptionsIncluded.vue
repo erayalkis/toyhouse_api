@@ -21,10 +21,10 @@
   </div>
 </template>
 <script setup>
-import { getCharacterDetails } from "@/helpers/requests";
-import { getCharacterIdFromUrl } from "@/helpers/url";
-import { useMessagesStore } from "@/state/messagesStore";
-import { useOptionsStore } from "@/state/optionsStore.js";
+import { getCharacterDetails } from "../../../helpers/requests.ts";
+import { getCharacterIdFromUrl } from "../../../helpers/url.ts";
+import { useOptionsStore } from "../../../stores/optionsStore.ts";
+import { useMessagesStore } from "../../../stores/messagesStore.ts";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import CharacterFormMessages from "./CharacterFormMessages.vue";

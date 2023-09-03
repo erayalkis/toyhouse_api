@@ -1,6 +1,7 @@
 import { backendConfig } from "@/config/backendConfig";
 import { useStatusStore } from "@/stores/appStatus";
 import { useMessageStore } from "@/stores/message";
+import { useMessagesStore } from "@/stores/messagesStore";
 import { useErrorStore } from "@/stores/error";
 
 export const makeStatusQuery = () => {
@@ -8,6 +9,7 @@ export const makeStatusQuery = () => {
   const statusStore = useStatusStore();
   const errorStore = useErrorStore();
   const messageStore = useMessageStore();
+  const messagesStore = useMessagesStore();
 
   console.log("fetching status...");
   fetch(`${url}/app_status`)
@@ -20,6 +22,9 @@ export const makeStatusQuery = () => {
       // Check status store for code meanings
       statusStore.setStatus(0);
       messageStore.clearMessage();
+      messagesStore.clearLoading();
+
       errorStore.setError("App is currently down! :(");
+      messagesStore.setError("App is currently down! :(");
     });
 };

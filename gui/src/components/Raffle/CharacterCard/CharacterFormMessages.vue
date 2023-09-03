@@ -5,7 +5,7 @@
   </div>
 </template>
 <script setup>
-import { useMessagesStore } from "@/state/messagesStore";
+import { useMessagesStore } from "../../../stores/messagesStore.ts";
 const messagesStore = useMessagesStore();
 import { storeToRefs } from "pinia";
 const { loadingMessage, errorMessage } = storeToRefs(messagesStore);
