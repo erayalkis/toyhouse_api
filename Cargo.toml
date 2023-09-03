@@ -1,0 +1,6 @@
+
+[workspace]
+
+members = [
+  "./gui/src-tauri"
+]
