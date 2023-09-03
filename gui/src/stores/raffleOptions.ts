@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { Ref, computed, ref } from "vue";
 
-export const useRaffleStore = defineStore("options", () => {
+export const useRaffleStore = defineStore("raffleOptions", () => {
   const defaultOptions = {
     character: {
       name: "",
