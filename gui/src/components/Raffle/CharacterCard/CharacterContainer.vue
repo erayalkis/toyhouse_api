@@ -15,10 +15,9 @@
 import { storeToRefs } from "pinia";
 import CharacterForm from "./CharacterForm.vue";
 import CharacterFormMessages from "./CharacterFormMessages.vue";
-import { useRaffleOptionsStore } from "../../../stores/raffleOptions.ts";
+import { useRaffleStore } from "../../../stores/raffleOptions.ts";
 import CharacterDetails from "./CharacterDetails.vue";
 
-let optsStore = useRaffleOptionsStore();
+let optsStore = useRaffleStore();
 let { loadedMain } = storeToRefs(optsStore);
 </script>
-../../../stores/raffleOptions.ts

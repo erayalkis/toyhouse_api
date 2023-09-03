@@ -13,7 +13,7 @@
       <CogIcon
         class="z-50 transition duration-900 ease-out sticky"
         :class="{ rotate: showOptions }"
-        @click="toggleShowOpts"
+        @click="toggleShowoptions"
       />
     </div>
 
@@ -100,7 +100,7 @@
   </div>
 </template>
 <script setup>
-import { useRaffleOptionsStore } from "../../../stores/raffleOptions.ts";
+import { useRaffleStore } from "../../../stores/raffleOptions.ts";
 import { useMessagesStore } from "../../../stores/messagesStore.ts";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
@@ -110,31 +110,31 @@ import CharacterOptions from "./CharacterOptions.vue";
 import { useParticipantsStore } from "../../../stores/participantsStore.ts";
 import { getRaffleTicketsForAll } from "../../../helpers/requests.ts";
 
-let optsStore = useRaffleOptionsStore();
+let optionsStore = useRaffleStore();
 let pStore = useParticipantsStore();
 let mStore = useMessagesStore();
 let { setParticipants, setWinners, pickWinners, deleteParticipants } = pStore;
 let { setLoading, setError, clearLoading, clearError } = mStore;
 let { list, winners } = storeToRefs(pStore);
-let { opts } = storeToRefs(optsStore);
-let mainOpt = computed(() => opts.value[0]);
+let { options } = storeToRefs(optionsStore);
+let mainOpt = computed(() => options.value[0]);
 let mainCharacter = computed(() => mainOpt.value.character);
 let showOptions = ref(false);
 const winnerCount = ref(null);
 
-const toggleShowOpts = () => (showOptions.value = !showOptions.value);
-const resetRaffle = () => {
-  let conf = confirm("Are you sure you wish to reset all data?");
+const toggleShowoptions = () => (showOptions.value = !showOptions.value);
+const resetRaffle = async () => {
+  let conf = await confirm("Are you sure you wish to reset all data?");
   if (!conf) return;
 
-  opts.value = [];
+  options.value = [];
   deleteParticipants();
 };
 
 const loadParticipants = async () => {
   setLoading("Loading participants...");
   try {
-    let json = await getRaffleTicketsForAll(opts.value);
+    let json = await getRaffleTicketsForAll(options.value);
     setParticipants(json);
   } catch (err) {
     setError(err);

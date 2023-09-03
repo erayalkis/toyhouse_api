@@ -23,7 +23,7 @@
 <script setup>
 import { getCharacterDetails } from "../../../helpers/requests.ts";
 import { getCharacterIdFromUrl } from "../../../helpers/url.ts";
-import { useRaffleOptionsStore } from "../../../stores/raffleOptions.ts";
+import { useRaffleStore } from "../../../stores/raffleOptions.ts";
 import { useMessagesStore } from "../../../stores/messagesStore.ts";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
@@ -32,11 +32,11 @@ import CharacterFormOptionsIncludedList from "./CharacterOptionsIncludedList.vue
 
 const url = ref("");
 const messagesStore = useMessagesStore();
-const optionsStore = useRaffleOptionsStore();
+const optionsStore = useRaffleStore();
 
 const { setError, setLoading, clearLoading, clearError } = messagesStore;
 const { addCharacter } = optionsStore;
-let { opts } = storeToRefs(optionsStore);
+let { options } = storeToRefs(optionsStore);
 
 const load = async () => {
   setLoading("Loading your character...");
@@ -46,15 +46,15 @@ const load = async () => {
 };
 
 const ensureCharacterUnique = (id) => {
-  let alreadyExists = characterExistsInOpts(id);
+  let alreadyExists = characterExistsInoptions(id);
   if (alreadyExists) {
     throw Error("Character already loaded!");
   }
 };
 
-const characterExistsInOpts = (id) => {
-  console.log(opts.value, id);
-  return opts.value.some((opt) => opt.character.id === id);
+const characterExistsInoptions = (id) => {
+  console.log(options.value, id);
+  return options.value.some((opt) => opt.character.id === id);
 };
 
 const loadCharacter = async (id) => {

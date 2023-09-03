@@ -19,7 +19,7 @@
 </template>
 <script setup>
 import { defineProps, computed } from "vue";
-import { useRaffleOptionsStore } from "../../../stores/raffleOptions.ts";
+import { useRaffleStore } from "../../../stores/raffleOptions.ts";
 import { storeToRefs } from "pinia";
 import CharacterOptionsInputs from "./CharacterOptionsInputs.vue";
 import CharacterOptionsIncluded from "./CharacterOptionsIncluded.vue";
@@ -31,9 +31,9 @@ defineProps({
   },
 });
 
-let optsStore = useRaffleOptionsStore();
-let { opts } = storeToRefs(optsStore);
-let mainOpt = computed(() => opts.value[0]);
+let optionsStore = useRaffleStore();
+let { options } = storeToRefs(optionsStore);
+let mainOpt = computed(() => options.value[0]);
 </script>
 
 <style>
@@ -49,4 +49,3 @@ let mainOpt = computed(() => opts.value[0]);
   opacity: 100%;
 }
 </style>
-../../../stores/raffleOptions.ts

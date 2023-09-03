@@ -23,7 +23,7 @@
 // import { makeQueryFromOptions } from "@/helpers/queryBuilder.js";
 import { getCharacterDetails } from "../../../helpers/requests";
 import { getCharacterIdFromUrl } from "../../../helpers/url";
-import { useRaffleOptionsStore } from "../../../stores/raffleOptions.ts";
+import { useRaffleStore } from "@/stores/raffleOptions";
 import { useMessagesStore } from "../../../stores/messagesStore.ts";
 import { storeToRefs } from "pinia";
 import { useStatusStore } from "@/stores/appStatus";
@@ -31,14 +31,14 @@ import { ref, computed } from "vue";
 
 const url = ref("");
 const messagesStore = useMessagesStore();
-const optionsStore = useRaffleOptionsStore();
+const raffleOptionsStore = useRaffleStore();
 const statusStore = useStatusStore();
 
 const status = computed(() => statusStore.status);
 
 const { setError, clearError, setLoading, clearLoading } = messagesStore;
-const { addCharacter } = optionsStore;
-const { opts } = storeToRefs(optionsStore);
+const { addCharacter } = raffleOptionsStore;
+const { options } = storeToRefs(raffleOptionsStore);
 
 const load = async () => {
   setLoading("Loading your character...");
@@ -55,8 +55,9 @@ const ensureCharacterUnique = (id: string) => {
 };
 
 const characterExistsInOpts = (id: string) => {
-  console.log(opts.value, id);
-  return opts.value.some((opt) => opt.character.id === id);
+  console.log(raffleOptionsStore);
+  console.log(options.value, id);
+  return options.value.some((opt) => opt.character.id === id);
 };
 
 const loadCharacter = async (id: string) => {
@@ -80,4 +81,3 @@ const loadCharacter = async (id: string) => {
   }
 };
 </script>
-../../../stores/raffleOptions.ts

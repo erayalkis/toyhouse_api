@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="flex flex-col justify-center items-center p-1 mt-2">
     <template v-if="chunked.length">
       <h1 class="my-1 mb-2">
         Displaying {{ Object.keys(list).length }} participant(s).

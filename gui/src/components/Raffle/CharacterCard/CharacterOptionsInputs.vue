@@ -75,14 +75,14 @@
 <script setup>
 import { defineProps, computed } from "vue";
 import { storeToRefs } from "pinia";
-import { useRaffleOptionsStore } from "../../../stores/raffleOptions.ts";
+import { useRaffleStore } from "../../../stores/raffleOptions.ts";
 import SubscribeIcon from "../../../assets/components/SubscribeIcon.vue";
 import CommentIcon from "../../../assets/components/CommentIcon.vue";
 import StarIcon from "../../../assets/components/StarIcon.vue";
 
-let optsStore = useRaffleOptionsStore();
-let { opts } = storeToRefs(optsStore);
-let mainOpt = computed(() => opts.value[0]);
+let optionsStore = useRaffleStore();
+let { options } = storeToRefs(optionsStore);
+let mainOpt = computed(() => options.value[0]);
 
 defineProps({
   mainOpt: {
@@ -91,4 +91,3 @@ defineProps({
   },
 });
 </script>
-../../../stores/raffleOptions.ts

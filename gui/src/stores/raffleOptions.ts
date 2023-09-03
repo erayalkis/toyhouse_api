@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { Ref, computed, ref } from "vue";
 
-export const useRaffleOptionsStore = defineStore("options", () => {
+export const useRaffleStore = defineStore("options", () => {
   const defaultOptions = {
     character: {
       name: "",
@@ -19,55 +19,55 @@ export const useRaffleOptionsStore = defineStore("options", () => {
     favorite_points: 1,
   };
 
-  const opts: Ref<Array<any>> = ref([]);
-  const loadedMain = computed(() => opts.value.length > 0);
+  const options: Ref<Array<any>> = ref([]);
+  const loadedMain = computed(() => options.value.length > 0);
 
   const addCharacter = (character: any) => {
     if (characterAlreadyAdded(character)) return;
 
-    let newOpts = Object.assign({}, defaultOptions);
-    newOpts.character = character;
+    let newoptions = Object.assign({}, defaultOptions);
+    newoptions.character = character;
 
-    opts.value.push(newOpts);
+    options.value.push(newoptions);
   };
 
   const resetCharacter = (character: any) => {
     let characterId = character.id;
 
-    let characterIdx = opts.value.findIndex(
+    let characterIdx = options.value.findIndex(
       (opt: any) => opt.character.id === characterId
     );
 
-    let newOpts = defaultOptions;
-    newOpts.character = character;
+    let newoptions = defaultOptions;
+    newoptions.character = character;
 
-    opts.value[characterIdx] = newOpts;
+    options.value[characterIdx] = newoptions;
   };
 
   const updateCharacter = (character: any) => {
     let characterId = character.id;
 
-    let characterIdx = opts.value.findIndex(
+    let characterIdx = options.value.findIndex(
       (opt: any) => opt.character.id === characterId
     );
 
-    opts.value[characterIdx] = character;
+    options.value[characterIdx] = character;
   };
 
   const removeCharacter = (character: any) => {
     let characterId = character.id;
 
-    opts.value = opts.value.filter(
+    options.value = options.value.filter(
       (opt: any) => opt.character.id !== characterId
     );
   };
 
   const characterAlreadyAdded = (character: any) => {
-    return opts.value.some((opt: any) => opt.character.id === character.id);
+    return options.value.some((opt: any) => opt.character.id === character.id);
   };
 
   return {
-    opts,
+    options,
     loadedMain,
     addCharacter,
     resetCharacter,

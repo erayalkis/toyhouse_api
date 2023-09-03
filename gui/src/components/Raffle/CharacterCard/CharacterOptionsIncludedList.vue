@@ -2,7 +2,7 @@
   <div
     class="bg-neutral-100 border border-toyhouse-border-primary w-full p-2 flex gap-4 overflow-x-auto rounded-md h-42 rounded-b-none"
   >
-    <template v-for="opt in opts.slice(1)" :key="opt.character.id">
+    <template v-for="opt in options.slice(1)" :key="opt.character.id">
       <div class="flex-col p-1">
         <img
           :src="opt.character.image"
@@ -57,14 +57,14 @@
 </template>
 
 <script setup>
-import { useRaffleOptionsStore } from "../../../stores/raffleOptions.ts";
+import { useRaffleStore } from "../../../stores/raffleOptions.ts";
 import { storeToRefs } from "pinia";
 import SubscribeIcon from "../../../assets/components/SubscribeIcon.vue";
 import CommentIcon from "../../../assets/components/CommentIcon.vue";
 import StarIcon from "../../../assets/components/StarIcon.vue";
 
-const optionsStore = useRaffleOptionsStore();
-let { opts } = storeToRefs(optionsStore);
+const optionsStore = useRaffleStore();
+let { options } = storeToRefs(optionsStore);
 
 const truncateNameIfTooLong = (name) => {
   if (name.length > 12) return name.slice(0, 9) + "...";
