@@ -39,6 +39,7 @@ jobs:
         with:
           node-version: "lts/*"
           cache: "npm" # Set this to npm, yarn or pnpm.
+          cache-dependency-path: gui/package-lock.json
 
       - name: Install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
