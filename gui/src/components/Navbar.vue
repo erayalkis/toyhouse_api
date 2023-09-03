@@ -3,7 +3,9 @@
     class="flex w-full h-min p-2 pl-3 bg-toyhouse-main-dark text-white justify-between items-center select-none"
   >
     <h1 class="hidden text-xl header md:block">
-      <a href="https://toyhou.se" target="_blank">TOYHOU.RF</a>
+      <a href="https://toyhou.se" target="_blank">{{
+        currentRoute.name === "Downloader" ? "TOYHOU.DL" : "TOYHOU.RF"
+      }}</a>
     </h1>
     <div class="flex items-center mr-auto gap-5 md:ml-5">
       <router-link
@@ -45,6 +47,7 @@ import DownloadIcon from "../assets/components/DownloadIcon.vue";
 import PeopleIcon from "../assets/components/PeopleIcon.vue";
 import UserIcon from "@/assets/components/UserIcon.vue";
 import RefreshIcon from "@/assets/components/RefreshIcon.vue";
+import { useRoute } from "vue-router";
 
 import { computed, onMounted } from "vue";
 import { makeStatusQuery } from "@/lib/health";
@@ -53,6 +56,7 @@ import { useStatusStore } from "@/stores/appStatus";
 const statusStore = useStatusStore();
 
 const status = computed(() => statusStore.status);
+const currentRoute = useRoute();
 
 onMounted(() => {
   makeStatusQuery();

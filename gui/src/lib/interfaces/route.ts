@@ -1,6 +1,7 @@
 import type { Component } from "vue";
 
 export interface Route {
-  component: Component;
+  name: string;
   path: string;
+  component: Component;
 }

@@ -5,9 +5,13 @@ import ParticipantsView from "../views/ParticipantsView.vue";
 import type { Route } from "../lib/interfaces/route";
 
 const routes: Array<Route> = [
-  { path: "/", component: () => DownloaderView },
-  { path: "/raffle", component: () => RaffleView },
-  { path: "/participants", component: () => ParticipantsView },
+  { name: "Downloader", path: "/", component: () => DownloaderView },
+  { name: "Raffle", path: "/raffle", component: () => RaffleView },
+  {
+    name: "Participants",
+    path: "/participants",
+    component: () => ParticipantsView,
+  },
 ];
 
 const router: Router = createRouter({
