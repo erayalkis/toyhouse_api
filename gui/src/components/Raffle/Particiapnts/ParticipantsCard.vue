@@ -18,6 +18,7 @@
         >
           <button
             @click="incrementTicket(key)"
+            type="button"
             class="border-r px-1 hover:bg-gray-100"
           >
             <PlusIcon class="w-4 text-toyhouse-blue-primary" />
@@ -25,6 +26,7 @@
           <p>{{ list[key].ticket_count }}</p>
           <button
             @click="decrementTicket(key)"
+            type="button"
             class="border-l px-1 hover:bg-gray-100"
           >
             <MinusIcon class="w-4 text-toyhouse-blue-primary" />

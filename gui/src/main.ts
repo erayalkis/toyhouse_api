@@ -23,11 +23,13 @@ readTextFile(".env", {
   const parsed = parseEnvString(envContents);
 
   console.log("Starting child process with env", parsed);
-  const cmd = Command.sidecar("bin/main", [], {
+  const cmd = Command.sidecar("binaries/main", [], {
     env: parsed,
   });
 
-  cmd.spawn().then((child) => {
+  console.log(cmd);
+
+  cmd.execute().then((child) => {
     console.log("CHILD_PROCESS", child);
   });
 });

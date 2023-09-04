@@ -22,6 +22,7 @@
       :class="{ 'cursor-not-allowed': queue.length === 0 }"
       :disabled="queue.length === 0"
       class="self-stretch right-0 bg-toyhouse-button-primary text-white rounded-md rounded-l-none w-1/3 transition duration-300 ease-out hover:bg-toyhouse-button-secondary disabled:bg-toyhouse-button-secondary md:w-1/6 lg:w-1/6 2xl:w-1/12"
+      type="button"
       @click="downloadQueue"
     >
       <img :src="DownloadSvg" class="w-6 mx-auto lg:w-7 xl:w-8 text-white" />

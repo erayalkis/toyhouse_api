@@ -34,7 +34,7 @@
         "sidecar": true,
         "scope": [
           {
-            "name": "bin/main",
+            "name": "binaries/main",
             "sidecar": true
           }
         ]
@@ -58,7 +58,7 @@
         "icons/icon.ico"
       ],
       "externalBin": [
-        "bin/main"
+        "binaries/main"
       ]
     },
     "security": {

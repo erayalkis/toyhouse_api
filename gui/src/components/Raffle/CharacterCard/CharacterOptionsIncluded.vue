@@ -10,6 +10,7 @@
         />
         <button
           class="bg-toyhouse-blue-primary text-white p-2 transition duration-300 ease-out rounded-md rounded-l-none hover:bg-toyhouse-blue-secondary"
+          type="button"
           @click="load"
         >
           Load
@@ -62,7 +63,7 @@ const loadCharacter = async (id: string) => {
     ensureCharacterUnique(id);
 
     let details = await getCharacterDetails(id);
-    if (details.name === "") {
+    if (details.name === "" || details.error) {
       throw Error("Something went wrong while loading your character!");
     }
     addCharacter(details);

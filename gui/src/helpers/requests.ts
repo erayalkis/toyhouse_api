@@ -2,7 +2,15 @@ import { addPathToUrl, makeQueryFromOptions } from "./queryBuilder";
 
 export const get = async (url: string) => {
   let res = await fetch(url);
-  let json = await res.json();
+
+  let json;
+  try {
+    json = await res.json();
+  } catch (err) {
+    console.log("Error while fetching", url);
+    console.error(err);
+    throw err;
+  }
 
   return json;
 };
@@ -37,7 +45,15 @@ export const getCharacter = async (characterId: string) => {
 
 export const getCharacterDetails = async (characterId: string) => {
   let url = addPathToUrl(`/character/${characterId}/details`);
-  let json = get(url);
+
+  let json;
+  try {
+    json = get(url);
+  } catch (err: any) {
+    console.log("Error while fetching details", url);
+    console.error(err);
+    throw err;
+  }
   return json;
 };
 

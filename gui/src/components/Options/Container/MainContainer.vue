@@ -22,6 +22,7 @@
     <div class="flex justify-center mt-5">
       <button
         class="w-1/3 bg-toyhouse-button-primary text-white transition duration-300 ease-out p-1 rounded-md hover:bg-toyhouse-button-secondary disabled:bg-toyhouse-button-secondary disabled:cursor-not-allowed"
+        type="button"
         @click="updateCredentials"
       >
         Update Credentials
@@ -77,7 +78,7 @@ const createCfgFolderIfNotExists = async () => {
 };
 
 const updateCredentials = async () => {
-  const confirmation = ask(
+  const confirmation = await ask(
     "Updating the credentials will restart the app, are you sure you entered valid data?"
   );
   if (!confirmation) return;

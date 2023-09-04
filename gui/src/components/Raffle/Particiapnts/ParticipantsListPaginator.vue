@@ -4,6 +4,7 @@
       <div class="flex items-stretch justify-between">
         <button
           @click="prevPage"
+          type="button"
           class="p-2 px-3 cursor-pointer border border-toyhouse-border-primary text-toyhouse-blue-primary rounded-md rounded-r-none hover:bg-gray-100"
         >
           <LeftArrow class="w-4" />
@@ -22,6 +23,7 @@
         </template>
         <button
           @click="nextPage"
+          type="button"
           class="p-2 px-3 cursor-pointer border border-toyhouse-border-primary text-toyhouse-blue-primary rounded-md rounded-l-none border-l-0 hover:bg-gray-100"
         >
           <RightArrow class="w-4" />
@@ -32,6 +34,7 @@
       <div class="flex items-stretch justify-between">
         <button
           @click="prevPage"
+          type="button"
           class="p-2 px-3 cursor-pointer border border-toyhouse-border-primary text-toyhouse-blue-primary rounded-md rounded-r-none hover:bg-gray-100"
         >
           <LeftArrow class="w-4" />
@@ -74,6 +77,7 @@
         </template>
         <button
           @click="nextPage"
+          type="button"
           class="p-2 px-3 cursor-pointer border border-toyhouse-border-primary text-toyhouse-blue-primary rounded-md rounded-l-none border-l-0 hover:bg-gray-100"
         >
           <RightArrow class="w-4" />

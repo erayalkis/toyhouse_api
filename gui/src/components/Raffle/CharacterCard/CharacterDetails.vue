@@ -34,7 +34,7 @@
               <UserIcon />
               <h3>
                 <a
-                  :href="mainCharacter.owner.link"
+                  :href="mainCharacter.owner.profile"
                   target="_blank"
                   class="md:text-xl"
                   >{{ mainCharacter.owner.name }}</a
@@ -74,6 +74,7 @@
         >
           <button
             class="bg-red-600 text-white p-2 rounded-md transition duration-300 ease-out hover:bg-red-700"
+            type="button"
             @click="resetRaffle"
           >
             Reset raffle
@@ -81,6 +82,7 @@
           <template v-if="Object.keys(list).length">
             <button
               class="bg-toyhouse-blue-primary text-white p-2 rounded-md transition duration-300 ease-out hover:bg-toyhouse-blue-secondary"
+              type="button"
               @click="pick"
             >
               Pick Winners
@@ -89,6 +91,7 @@
           <template v-else>
             <button
               class="bg-toyhouse-blue-primary text-white p-2 rounded-md transition duration-300 ease-out hover:bg-toyhouse-blue-secondary"
+              type="button"
               @click="loadParticipants"
             >
               Load participants
@@ -109,6 +112,7 @@ import UserIcon from "../../../assets/components/UserIcon.vue";
 import CharacterOptions from "./CharacterOptions.vue";
 import { useParticipantsStore } from "../../../stores/participantsStore.ts";
 import { getRaffleTicketsForAll } from "../../../helpers/requests.ts";
+import { confirm } from "@tauri-apps/api/dialog";
 
 let optionsStore = useRaffleStore();
 let pStore = useParticipantsStore();
