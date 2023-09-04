@@ -4,10 +4,11 @@ import App from "./App.vue";
 import router from "./router/router";
 import { createPinia } from "pinia";
 import { Command } from "@tauri-apps/api/shell";
-import { exists, BaseDirectory } from "@tauri-apps/api/fs";
+import { exists, BaseDirectory, readTextFile } from "@tauri-apps/api/fs";
 import { message } from "@tauri-apps/api/dialog";
+import { parseEnvString } from "./lib/env";
 
-const envExists = exists(".env", { dir: BaseDirectory.AppConfig });
+const envExists = await exists(`.env`, { dir: BaseDirectory.AppConfig });
 
 if (!envExists) {
   router.push({ path: "/options" });
@@ -16,11 +17,15 @@ if (!envExists) {
   );
 }
 
+const envContents = await readTextFile(".env", {
+  dir: BaseDirectory.AppConfig,
+});
+
+const parsed = parseEnvString(envContents);
+
+console.log("Starting child process with env", parsed);
 const cmd = Command.sidecar("bin/main", [], {
-  env: {
-    TOYHOUSE_USERNAME: "toyhouse_downloader",
-    TOYHOUSE_PASSWORD: "arda159852456",
-  },
+  env: parsed,
 });
 const sidecar_output = await cmd.spawn();
 console.log("PID", sidecar_output);

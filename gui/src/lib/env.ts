@@ -1,4 +1,4 @@
-export const parse_env_string = (envStr: string): Record<string, string> => {
+export const parseEnvString = (envStr: string): Record<string, string> => {
   const lines = envStr.split("\n");
 
   const envCfg: Record<string, string> = {};

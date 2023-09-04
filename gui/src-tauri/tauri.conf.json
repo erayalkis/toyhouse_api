@@ -20,7 +20,9 @@
         "writeFile": true,
         "exists": true,
         "scope": [
-          "$APPCONFIG/*"
+          "$APPCONFIG",
+          "$APPCONFIG/*",
+          "$APPCONFIG/.env"
         ]
       },
       "path": {
@@ -37,6 +39,9 @@
           }
         ]
       },
+      "process": {
+        "relaunch": true
+      },
       "dialog": {
         "all": true
       }
@@ -44,7 +49,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "erayalkis.th.extensions",
+      "identifier": "th-extensions",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",

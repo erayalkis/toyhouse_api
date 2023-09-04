@@ -30,19 +30,51 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { relaunch } from "@tauri-apps/api/process";
 import { ask } from "@tauri-apps/api/dialog";
 import {
   writeTextFile,
-  createDir,
-  exists,
   BaseDirectory,
+  exists,
+  createDir,
+  readTextFile,
 } from "@tauri-apps/api/fs";
 import { appConfigDir } from "@tauri-apps/api/path";
+import { parseEnvString } from "@/lib/env";
 
 const username = ref("");
 const password = ref("");
+
+onBeforeMount(async () => {
+  const envContent = await readFromEnvFile();
+  const parsed = parseEnvString(envContent);
+
+  if (parsed["TOYHOUSE_USERNAME"]) {
+    username.value = parsed["TOYHOUSE_USERNAME"];
+  }
+
+  if (parsed["TOYHOUSE_PASSWORD"]) {
+    password.value = parsed["TOYHOUSE_PASSWORD"];
+  }
+});
+
+const readFromEnvFile = async (): Promise<string> => {
+  const envContents = await readTextFile(".env", {
+    dir: BaseDirectory.AppConfig,
+  });
+
+  return envContents;
+};
+
+const createCfgFolderIfNotExists = async () => {
+  const appCfg = await appConfigDir();
+  const cfgDirExists = await exists(`${appCfg}`);
+
+  if (!cfgDirExists) {
+    createDir(`${appCfg}`);
+  }
+};
 
 const updateCredentials = async () => {
   const confirmation = ask(
@@ -50,8 +82,9 @@ const updateCredentials = async () => {
   );
   if (!confirmation) return;
 
-  createCfgFolderIfNotExists();
-  const fileContents = `TOYHOUSE_USERNAME=${username}\nTOYHOUSE_PASSWORD=${password}`;
+  await createCfgFolderIfNotExists();
+
+  const fileContents = `TOYHOUSE_USERNAME=${username.value}\nTOYHOUSE_PASSWORD=${password.value}`;
   await writeTextFile(".env", fileContents, { dir: BaseDirectory.AppConfig });
   await relaunch();
 };
