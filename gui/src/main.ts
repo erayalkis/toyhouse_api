@@ -8,27 +8,30 @@ import { exists, BaseDirectory, readTextFile } from "@tauri-apps/api/fs";
 import { message } from "@tauri-apps/api/dialog";
 import { parseEnvString } from "./lib/env";
 
-const envExists = await exists(`.env`, { dir: BaseDirectory.AppConfig });
+exists(`.env`, { dir: BaseDirectory.AppConfig }).then((envExists) => {
+  if (!envExists) {
+    router.push({ path: "/options" });
+    message(
+      "It seems that you do not have any login info saved on this machine, please update it before using the app."
+    );
+  }
+});
 
-if (!envExists) {
-  router.push({ path: "/options" });
-  message(
-    "It seems that you do not have any login info saved on this machine, please update it before using the app."
-  );
-}
-
-const envContents = await readTextFile(".env", {
+readTextFile(".env", {
   dir: BaseDirectory.AppConfig,
+}).then((envContents) => {
+  const parsed = parseEnvString(envContents);
+
+  console.log("Starting child process with env", parsed);
+  const cmd = Command.sidecar("bin/main", [], {
+    env: parsed,
+  });
+
+  cmd.spawn().then((child) => {
+    console.log("CHILD_PROCESS", child);
+  });
 });
 
-const parsed = parseEnvString(envContents);
-
-console.log("Starting child process with env", parsed);
-const cmd = Command.sidecar("bin/main", [], {
-  env: parsed,
-});
-const sidecar_output = await cmd.spawn();
-console.log("PID", sidecar_output);
 const app = createApp(App);
 const pinia = createPinia();
 

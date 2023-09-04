@@ -15,9 +15,6 @@ export default defineConfig(async () => ({
     port: 1420,
     strictPort: true,
   },
-  build: {
-    target: "esnext",
-  },
   resolve: {
     alias: [
       {
