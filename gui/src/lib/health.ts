@@ -3,6 +3,7 @@ import { useStatusStore } from "@/stores/appStatus";
 import { useMessageStore } from "@/stores/message";
 import { useMessagesStore } from "@/stores/messagesStore";
 import { useErrorStore } from "@/stores/error";
+import { getWithRetry } from "@/helpers/requests";
 
 export const makeStatusQuery = () => {
   const url = backendConfig.backendUrl;
@@ -13,7 +14,10 @@ export const makeStatusQuery = () => {
 
   statusStore.setStatus(-1);
   console.log("fetching status...");
-  fetch(`${url}/app_status`)
+
+  let retry_limit = 5;
+
+  getWithRetry(`${url}/app_status`, retry_limit)
     .then(() => {
       console.log("app is up! :D");
       messagesStore.clearError();

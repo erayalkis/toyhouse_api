@@ -13,9 +13,29 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "fs": {
+        "createDir": true,
+        "readFile": true,
+        "readDir": true,
+        "writeFile": true,
+        "exists": true,
+        "scope": [
+          "$APPCONFIG/*"
+        ]
+      },
+      "path": {
+        "all": true
+      },
       "shell": {
         "all": false,
-        "open": true
+        "open": true,
+        "sidecar": true,
+        "scope": [
+          {
+            "name": "bin/main",
+            "sidecar": true
+          }
+        ]
       },
       "dialog": {
         "all": true
@@ -31,6 +51,9 @@
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
+      ],
+      "externalBin": [
+        "bin/main"
       ]
     },
     "security": {

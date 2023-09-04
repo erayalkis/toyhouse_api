@@ -3,6 +3,7 @@ package auth
 import (
 	"errors"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -29,15 +30,19 @@ func LoadInitialAuth(client *http.Client) {
 	} else {
 		viper.SetConfigFile("../../etc/secrets/.env")
 	}
-	viper.ReadInConfig();
 
-	username, ok := viper.Get("toyhouse_username") . (string);
+	viper.ReadInConfig();
+	viper.AutomaticEnv();
+
+	username, ok := viper.Get("TOYHOUSE_USERNAME") . (string);
+	fmt.Printf("username: %v\n", username)
 	if !ok {
-		log.Fatal("Something went wrong while reading username from .env file!");
+		log.Fatal("Something went wrong while reading username!");
 	}
-	password, ok := viper.Get("toyhouse_password") . (string);
+	password, ok := viper.Get("TOYHOUSE_PASSWORD") . (string);
+	fmt.Printf("password: %v\n", password)
 	if !ok {
-		log.Fatal("Something went wrong while reading password from .env file!");
+		log.Fatal("Something went wrong while reading password!");
 	}
 
 	doc, err := goquery.NewDocumentFromReader(page.Body);

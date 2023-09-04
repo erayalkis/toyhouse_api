@@ -7,6 +7,25 @@ export const get = async (url: string) => {
   return json;
 };
 
+export const getWithRetry = async (
+  url: string,
+  tries: number
+): Promise<any> => {
+  const onError = (err: any) => {
+    let triesLeft = tries - 1;
+    if (!triesLeft) {
+      throw err;
+    }
+
+    setTimeout(() => {
+      console.log("Could not get a response from backend, retrying...");
+      getWithRetry(url, triesLeft);
+    }, 500);
+  };
+
+  return get(url).catch(onError);
+};
+
 export const getCharacter = async (characterId: string) => {
   let url = addPathToUrl(`/character/${characterId}`);
   let json = get(url);

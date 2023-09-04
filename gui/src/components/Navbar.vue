@@ -32,6 +32,9 @@
     </div>
 
     <div class="flex gap-2 items-center">
+      <RouterLink to="/options">
+        <CogIcon class="mr-2 hover:cursor-pointer" />
+      </RouterLink>
       <RefreshIcon class="hover:cursor-pointer" @click="makeStatusQuery" />
       <div class="ml-auto flex items-center">
         <h1>App Status:</h1>
@@ -48,7 +51,7 @@ import PeopleIcon from "../assets/components/PeopleIcon.vue";
 import UserIcon from "@/assets/components/UserIcon.vue";
 import RefreshIcon from "@/assets/components/RefreshIcon.vue";
 import { useRoute } from "vue-router";
-
+import CogIcon from "@/assets/components/CogIcon.vue";
 import { computed, onMounted } from "vue";
 import { makeStatusQuery } from "@/lib/health";
 import { useStatusStore } from "@/stores/appStatus";
