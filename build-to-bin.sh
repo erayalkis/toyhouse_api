@@ -12,9 +12,9 @@ MAC_AMD64_BIN="main-x86_64-apple-darwin"
 MS_AMD64_BIN="main-x86_64-pc-windows-msvc.exe"
 LINUX_AMD64_BIN="main-x86_64-unknown-linux-gnu"
 
-TAURI_BIN_DIR="./gui/src-tauri/bin"
+TAURI_BIN_DIR="./gui/src-tauri/binaries"
 
-[ ! -d "./gui/src-tauri/bin" ] && mkdir ./gui/src-tauri/bin
+[ ! -d "./gui/src-tauri/binaries" ] && mkdir ./gui/src-tauri/binaries
 
 printf "${BLUE}[INFO]${NC} STARTING BUILD\n"
 
