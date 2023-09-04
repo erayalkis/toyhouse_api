@@ -4,9 +4,11 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
 	"toyhouse_api/v2/lib/scraper"
 	"toyhouse_api/v2/lib/structs"
 
@@ -65,13 +67,25 @@ func LoadInitialAuth(client *http.Client) {
 	}
 
 	println("Posting login form with data:", form_data.Encode());
-	client.PostForm("https://toyhou.se/~account/login", form_data);
-	println("Login complete")
-	println("Login successful")
+	res, err := client.PostForm("https://toyhou.se/~account/login", form_data);
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	defer res.Body.Close()
+
+	bodyBytes, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	bodyString := string(bodyBytes)
+
+	stillOnLoginPage := strings.Contains(bodyString, "Login")
+
+	if stillOnLoginPage {
+		log.Fatal("Login unsuccesful! Please ensure that you have the correct credentials!");
+	}
 }
 
 func GetAuthorizedUsers(client *http.Client) []string {
