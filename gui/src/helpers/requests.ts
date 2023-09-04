@@ -11,19 +11,22 @@ export const getWithRetry = async (
   url: string,
   tries: number
 ): Promise<any> => {
-  const onError = (err: any) => {
-    let triesLeft = tries - 1;
-    if (!triesLeft) {
-      throw err;
+  let triesLeft = tries;
+  while (triesLeft > 0) {
+    try {
+      await get(url);
+      return true;
+    } catch {
+      triesLeft -= 1;
+      console.error(
+        `Request to backend failed, retrying with ${triesLeft} tries left.`
+      );
     }
 
-    setTimeout(() => {
-      console.log("Could not get a response from backend, retrying...");
-      getWithRetry(url, triesLeft);
-    }, 500);
-  };
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
 
-  return get(url).catch(onError);
+  throw "Could not reach backend!";
 };
 
 export const getCharacter = async (characterId: string) => {

@@ -5,7 +5,7 @@ import { useMessagesStore } from "@/stores/messagesStore";
 import { useErrorStore } from "@/stores/error";
 import { getWithRetry } from "@/helpers/requests";
 
-export const makeStatusQuery = () => {
+export const makeStatusQuery = async () => {
   const url = backendConfig.backendUrl;
   const statusStore = useStatusStore();
   const errorStore = useErrorStore();
@@ -15,23 +15,22 @@ export const makeStatusQuery = () => {
   statusStore.setStatus(-1);
   console.log("fetching status...");
 
-  let retry_limit = 5;
+  let retry_limit = 10;
 
-  getWithRetry(`${url}/app_status`, retry_limit)
-    .then(() => {
-      console.log("app is up! :D");
-      messagesStore.clearError();
-      errorStore.clearError();
-      statusStore.setStatus(1);
-    })
-    .catch(() => {
-      console.log("app is down :(");
-      // Check status store for code meanings
-      statusStore.setStatus(0);
-      messageStore.clearMessage();
-      messagesStore.clearLoading();
+  try {
+    await getWithRetry(`${url}/app_status`, retry_limit);
+    console.log("app is up! :D");
+    messagesStore.clearError();
+    errorStore.clearError();
+    statusStore.setStatus(1);
+  } catch (err) {
+    console.log("app is down :(");
+    // Check status store for code meanings
+    statusStore.setStatus(0);
+    messageStore.clearMessage();
+    messagesStore.clearLoading();
 
-      errorStore.setError("App is currently down! :(");
-      messagesStore.setError("App is currently down! :(");
-    });
+    errorStore.setError("App is currently down! :(");
+    messagesStore.setError("App is currently down! :(");
+  }
 };
