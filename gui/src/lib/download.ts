@@ -1,16 +1,18 @@
-import type { GalleryImage, OwnershipLog } from "./interfaces/toyhouse";
-import type { ImageBlob } from "./interfaces/zip";
+import type {
+  GalleryImage,
+  ImageMetadata,
+  OwnershipLog,
+  ToyhouseProfile,
+} from "./interfaces/toyhouse";
 
-import JSZip from "jszip";
 import { useMessageStore } from "@/stores/message";
 import { backendConfig } from "@/config/backendConfig";
 import { useErrorStore } from "@/stores/error";
-import { promiseify } from "./promise";
-import { saveAs } from "file-saver";
 import { useQueueStore } from "@/stores/queue";
 import { useOptionsStore } from "@/stores/options";
+import { invoke } from "@tauri-apps/api";
 
-const fetchCharacterGallery = async (id: string) => {
+export const fetchCharacterGallery = async (id: string) => {
   const { setError, clearError } = useErrorStore();
   const { clearMessage } = useMessageStore();
   const backendUrl = backendConfig.backendUrl;
@@ -76,69 +78,7 @@ export const fetchCharacterOwnershipLogs = async (id: string) => {
   }
 };
 
-const promiseifyGallery = async (gallery: Array<GalleryImage>) => {
-  const promises = gallery.map((image) => promiseify(image));
-  // Put this part into parantheses so we await the .allSettled() function first
-  const blobs = (await Promise.allSettled(promises))
-    // The `value` property only exists on fulfilled promises,
-    // so we use the && operator to evaluate and return the `value` property only if the status is fulfilled
-    .map((result) => result.status === "fulfilled" && result.value);
-
-  return blobs;
-};
-
-const downloadZip = async (zip: JSZip, id: string) => {
-  const blob = await zip.generateAsync({ type: "blob" });
-  saveAs(blob, `${id}.zip`);
-};
-
-const zipBlobs = async (blobs: (false | ImageBlob)[]): Promise<JSZip> => {
-  const zip = new JSZip();
-
-  let artists = "";
-  let metadata = "";
-
-  blobs.forEach((blob, idx) => {
-    if (!blob || !blob.type) return;
-
-    if (blob.artists) {
-      artists += `\n${idx}: `;
-      blob.artists.forEach(
-        (artist) => (artists += `[${artist.name}, ${artist.link}] `)
-      );
-      artists += "\n";
-    }
-
-    if (blob.metadata) {
-      const mtd = blob.metadata;
-      metadata += `\n${idx}: \n\tDate: ${mtd.date}\n`;
-      if (mtd.description) {
-        metadata += "\tDescription: ";
-        const parsed_description = mtd.description
-          .replace("Caption", "")
-          .trim();
-        metadata += parsed_description;
-        metadata += "\n";
-      } else {
-        metadata += "\tDescription: N/A \n";
-      }
-
-      metadata += `\tTagged Characters: `;
-      mtd.tagged_characters.forEach(
-        (char) => (metadata += `[${char.name}, ${char.link}] `)
-      );
-      metadata += "\n";
-    }
-
-    zip.file(`${idx}.${blob.type}`, blob.blob);
-  });
-
-  zip.file("credits.txt", artists);
-  zip.file("metadata.txt", metadata);
-  return zip;
-};
-
-const createLogsFile = async (zip: JSZip, id: string) => {
+const createLogsText = async (id: string) => {
   const { ownership } = await fetchCharacterOwnershipLogs(id);
   let logsFileContent = "";
 
@@ -156,7 +96,45 @@ const createLogsFile = async (zip: JSZip, id: string) => {
     logsFileContent += completeRow;
   });
 
-  zip.file("ownership.txt", logsFileContent);
+  return logsFileContent;
+};
+
+const createCreditsText = (credits: ToyhouseProfile[][]) => {
+  let artistsText = "";
+
+  credits.forEach((artists, idx) => {
+    artistsText += `\n${idx}: `;
+    artists.forEach(
+      (artist) => (artistsText += `[${artist.name}, ${artist.link}] `)
+    );
+    artistsText += "\n";
+  });
+
+  return artistsText;
+};
+
+const createMetadataText = (metadata: ImageMetadata[]) => {
+  let mtdtText = "";
+
+  metadata.forEach((mtd, idx) => {
+    mtdtText += `\n${idx}: \n\tDate: ${mtd.date}\n`;
+    if (mtd.description) {
+      mtdtText += "\tDescription: ";
+      const parsed_description = mtd.description.replace("Caption", "").trim();
+      mtdtText += parsed_description;
+      mtdtText += "\n";
+    } else {
+      mtdtText += "\tDescription: N/A \n";
+    }
+
+    mtdtText += `\tTagged Characters: `;
+    mtd.tagged_characters.forEach(
+      (char) => (mtdtText += `[${char.name}, ${char.link}] `)
+    );
+    mtdtText += "\n";
+  });
+
+  return mtdtText;
 };
 
 export const downloadCharacter = async (id: string) => {
@@ -168,7 +146,7 @@ export const downloadCharacter = async (id: string) => {
   setMessage("Fetching gallery...");
   const characterObj = await fetchCharacterGallery(id);
   console.log(characterObj);
-  if (!characterObj.gallery) {
+  if (!characterObj.gallery || characterObj.error) {
     clearMessage();
     setError("Character is invalid!");
     setTimeout(() => {
@@ -176,16 +154,36 @@ export const downloadCharacter = async (id: string) => {
     }, 1200);
     return;
   }
-  setMessage("Parsing gallery...");
-  const blobs = await promiseifyGallery(characterObj.gallery);
-  setMessage("Creating zip...");
-  const zip = await zipBlobs(blobs);
+
+  const gallery: Array<GalleryImage> = characterObj.gallery;
+  setMessage("Extracting links from gallery...");
+  const links = gallery.map((img) => img.link);
+  setMessage("Extracting credits from gallery...");
+  const creditsArray = gallery.map((img) => img.artists);
+  const credits = createCreditsText(creditsArray);
+  setMessage("Extracting metadata from gallery...");
+  const metadataArray = gallery.map((img) => img.image_metadata);
+  const metadata = createMetadataText(metadataArray);
+
+  let logs;
   if (opts.downloadOwnerLogs) {
-    setMessage("Downloading ownership logs...");
-    await createLogsFile(zip, characterObj.id);
+    setMessage("Fetching ownership logs...");
+    logs = await createLogsText(id);
   }
+
+  console.log(
+    "LINKS",
+    links,
+    "CREDITS",
+    credits,
+    "METADATA",
+    metadata,
+    "LOGS",
+    logs
+  );
+
   setMessage("Downloading gallery...");
-  downloadZip(zip, id);
+  await invoke("download_character", { id, links, credits, metadata, logs });
   setMessage("Gallery downloaded!");
   setTimeout(() => {
     clearMessage();

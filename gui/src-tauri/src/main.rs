@@ -1,6 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::fs;
+
 use futures::StreamExt;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -10,7 +12,29 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-async fn download_gallery(id: String, links: Vec<String>) {
+async fn download_character(
+    id: String,
+    links: Vec<String>,
+    credits: String,
+    metadata: String,
+    logs: Option<String>,
+) {
+    let mut download_path = tauri::api::path::download_dir().unwrap();
+    let folder_name = format!("{}-gallery", id);
+    download_path.push(folder_name);
+
+    fs::create_dir_all(download_path).unwrap();
+
+    download_charcter_gallery(&id, links).await;
+    write_character_credits(&id, credits);
+    write_character_metadata(&id, metadata);
+
+    if logs.is_some() {
+        write_character_logs(&id, logs.unwrap());
+    }
+}
+
+async fn download_charcter_gallery(id: &String, links: Vec<String>) {
     let iter = links.into_iter();
 
     for (idx, mut link) in iter.enumerate() {
@@ -44,9 +68,36 @@ async fn download_gallery(id: String, links: Vec<String>) {
     }
 }
 
+fn write_character_credits(id: &String, credits: String) {
+    let mut download_path = tauri::api::path::download_dir().unwrap();
+    let folder_name = format!("{}-gallery", id);
+    download_path.push(folder_name);
+    download_path.push("credits.txt");
+
+    fs::write(download_path, credits).unwrap();
+}
+
+fn write_character_metadata(id: &String, metadata: String) {
+    let mut download_path = tauri::api::path::download_dir().unwrap();
+    let folder_name = format!("{}-gallery", id);
+    download_path.push(folder_name);
+    download_path.push("metadata.txt");
+
+    fs::write(download_path, metadata).unwrap();
+}
+
+fn write_character_logs(id: &String, logs: String) {
+    let mut download_path = tauri::api::path::download_dir().unwrap();
+    let folder_name = format!("{}-gallery", id);
+    download_path.push(folder_name);
+    download_path.push("ownership.txt");
+
+    fs::write(download_path, logs).unwrap();
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet, download_gallery])
+        .invoke_handler(tauri::generate_handler![greet, download_character])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

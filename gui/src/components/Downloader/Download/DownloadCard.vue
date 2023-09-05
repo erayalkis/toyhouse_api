@@ -98,7 +98,6 @@ const handleCharacterRequest = async () => {
 const download = async () => {
   const id = getIdFromUrl(url.value);
   await downloadCharacter(id);
-  url.value = "";
 };
 
 const enqueue = async () => {
