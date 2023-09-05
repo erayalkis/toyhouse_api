@@ -55,7 +55,7 @@ jobs:
           releaseName: "Toyhouse Extensions v__VERSION__" # tauri-action replaces \_\_VERSION\_\_ with the app version.
           releaseBody: |
             Windows:
-              - Download `Toyhouse.Extensions___VERSION___x64_en-US.msi` or `Toyhouse.Extensions____VERSION____x64-setup.exe`
+              - Download `Toyhouse.Extensions_x64_en-US.msi` or `Toyhouse.Extensions_x64-setup.exe`
 
             Linux:
               - Download `toyhouse-extensions____VERSION____amd64.AppImage`, `toyhouse-extensions_0___VERSION____amd64.deb` or `Toyhouse.Extensions_x64.app.tar.gz`
