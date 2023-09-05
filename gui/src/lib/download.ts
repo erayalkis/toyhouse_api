@@ -145,7 +145,7 @@ export const downloadCharacter = async (id: string) => {
 
   setMessage("Fetching gallery...");
   const characterObj = await fetchCharacterGallery(id);
-  console.log(characterObj);
+  console.log("CHARACTER", characterObj);
   if (!characterObj.gallery || characterObj.error) {
     clearMessage();
     setError("Character is invalid!");
