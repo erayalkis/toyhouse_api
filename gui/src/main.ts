@@ -32,6 +32,11 @@ readTextFile(".env", {
   cmd.execute().then((child) => {
     console.log("CHILD_PROCESS", child);
   });
+
+  cmd.on("error", (err) => {
+    console.error(err);
+    console.log("ERROR ERROR ERROR ERROR", err, "ERROR ERROR ERROR ERROR");
+  });
 });
 
 const app = createApp(App);

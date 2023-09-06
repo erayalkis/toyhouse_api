@@ -1,33 +1,25 @@
+# ACTUAL CODE
 
-BLUE='\033[0;34m'
-L_BLUE='\033[1;34m'
-GREEN='\033[0;32m'
-L_GREEN='\033[1;32m'
-RED='\033[0;31m'
-L_RED='\033[1;31m'
-NC='\033[0m'
-
-MAC_ARM64_BIN="main-aarch64-apple-darwin"
-MAC_AMD64_BIN="main-x86_64-apple-darwin"
-MS_AMD64_BIN="main-x86_64-pc-windows-msvc.exe"
-LINUX_AMD64_BIN="main-x86_64-unknown-linux-gnu"
-
-TAURI_BIN_DIR="./gui/src-tauri/binaries"
+# import lib.sh
+. lib.sh
 
 [ ! -d "./gui/src-tauri/binaries" ] && mkdir ./gui/src-tauri/binaries
 
-printf "${BLUE}[INFO]${NC} STARTING BUILD\n"
+print_info "STARTING BUILD"
 
-GOOS="darwin"  GOARCH="arm64" go build -o $MAC_ARM64_BIN       main.go
-GOOS="darwin"  GOARCH="amd64" go build -o $MAC_AMD64_BIN       main.go
-GOOS="windows" GOARCH="amd64" go build -o $MS_AMD64_BIN        main.go
-GOOS="linux"   GOARCH="amd64" go build -o $LINUX_AMD64_BIN     main.go
+build_mac_arm64
+build_mac_amd64
+build_windows_amd64
+build_linux_amd64
 
-printf "${GREEN}[OK]${NC} BUILD PROCESS COMPLETE\n"
+print_ok "BUILD PROCESS COMPLETE"
 
-printf "${BLUE}[INFO]${NC} MOVING FILES TO TAURI BIN\n"
+print_info "MOVING FILES TO TAURI BIN"
 
-mv $MAC_ARM64_BIN     $TAURI_BIN_DIR
-mv $MAC_AMD64_BIN     $TAURI_BIN_DIR
-mv $MS_AMD64_BIN      $TAURI_BIN_DIR
-mv $LINUX_AMD64_BIN   $TAURI_BIN_DIR
+for path in $MAC_ARM64_BIN $MAC_AMD64_BIN $MS_AMD64_BIN $LINUX_AMD64_BIN; do
+  print_info "MOVING $path TO $TAURI_BIN_DIR"
+  mv $path $TAURI_BIN_DIR
+done
+
+print_ok "MOVED FILES SUCCESSFULLY"
+print_ok "PROCESS COMPLETE"

@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"toyhouse_api/v2/lib/scraper"
 	"toyhouse_api/v2/lib/structs"
@@ -84,6 +85,7 @@ func LoadInitialAuth(client *http.Client) {
 	stillOnLoginPage := strings.Contains(bodyString, "Login")
 
 	if stillOnLoginPage {
+		os.Stderr.WriteString("Something went wrong while setting up the server! Please ensure your username and password are correct!");
 		log.Fatal("Login unsuccesful! Please ensure that you have the correct credentials!");
 	}
 }
