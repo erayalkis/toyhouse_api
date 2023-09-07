@@ -61,9 +61,7 @@ func SetRoutes() *gin.Engine {
 
 		character, locked := scraper.ScrapeCharacterGallery(character_id, &client);
 		if locked {
-			auths := auth.GetAuthorizedUsers(&client);
-			fmt.Printf("auths: %v\n", auths)
-			ok, _ := auth.EnsureUserHasAccess(&character, auths);
+			ok, _ := auth.EnsureUserHasAccess(&character);
 			if !ok {
 				c.JSON(http.StatusForbidden, gin.H{
 					"error": "You do not have access to this character!",
@@ -83,9 +81,7 @@ func SetRoutes() *gin.Engine {
 
 		character, locked := scraper.ScrapeCharacterGallery(complete_url, &client);
 		if locked {
-			auths := auth.GetAuthorizedUsers(&client);
-			fmt.Printf("auths: %v\n", auths)
-			ok, _ := auth.EnsureUserHasAccess(&character, auths);
+			ok, _ := auth.EnsureUserHasAccess(&character);
 			if !ok {
 				println("User unauthorized")
 				c.JSON(http.StatusForbidden, gin.H{
@@ -104,10 +100,8 @@ func SetRoutes() *gin.Engine {
 
 		character, locked := scraper.ScrapeCharacterFavorites(character_id, &client);
 		if locked {
-			auths := auth.GetAuthorizedUsers(&client);
-			fmt.Printf("auths: %v\n", auths);
 
-			ok, _ := auth.EnsureUserHasAccess(&character, auths);
+			ok, _ := auth.EnsureUserHasAccess(&character);
 			if !ok {
 				c.JSON(http.StatusForbidden, gin.H{
 					"error": "You do not have access to this character!",
@@ -124,10 +118,8 @@ func SetRoutes() *gin.Engine {
 
 		character, locked := scraper.ScrapeCharacterComments(character_id, &client);
 		if locked {
-			auths := auth.GetAuthorizedUsers(&client);
-			fmt.Printf("auths: %v\n", auths);
 
-			ok, _ := auth.EnsureUserHasAccess(&character, auths);
+			ok, _ := auth.EnsureUserHasAccess(&character);
 			if !ok {
 				c.JSON(http.StatusForbidden, gin.H{
 					"error": "You do not have access to this character!",
@@ -144,10 +136,8 @@ func SetRoutes() *gin.Engine {
 
 		character, locked := scraper.ScraperCharacterDetails(character_id, &client)
 		if locked {
-			auths := auth.GetAuthorizedUsers(&client);
-			fmt.Printf("auths: %v\n", auths);
 
-			ok, _ := auth.EnsureUserHasAccess(&character, auths);
+			ok, _ := auth.EnsureUserHasAccess(&character);
 			if !ok {
 				c.JSON(http.StatusForbidden, gin.H{
 					"error": "You do not have access to this character!",
@@ -166,9 +156,7 @@ func SetRoutes() *gin.Engine {
 
 		character, locked := scraper.ScraperCharacterDetails(complete_url, &client);
 		if locked {
-			auths := auth.GetAuthorizedUsers(&client);
-			fmt.Printf("auths: %v\n", auths)
-			ok, _ := auth.EnsureUserHasAccess(&character, auths);
+			ok, _ := auth.EnsureUserHasAccess(&character);
 			if !ok {
 				println("User unauthorized")
 				c.JSON(http.StatusForbidden, gin.H{
@@ -187,10 +175,7 @@ func SetRoutes() *gin.Engine {
 
 		character, locked := scraper.ScrapeCharacterOwnership(character_id, &client)
 		if locked {
-			auths := auth.GetAuthorizedUsers(&client);
-			fmt.Printf("auths: %v\n", auths);
-
-			ok, _ := auth.EnsureUserHasAccess(&character, auths);
+			ok, _ := auth.EnsureUserHasAccess(&character);
 			if !ok {
 				c.JSON(http.StatusForbidden, gin.H{
 					"error": "You do not have access to this character!",

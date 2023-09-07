@@ -104,12 +104,18 @@ func GetAuthorizedUsers(client *http.Client) []string {
 	return all_usernames;
 }
 
-func EnsureUserHasAccess(char *structs.Character, auths []string) (bool, error) {
-	for _, username := range auths {
-		if username == char.Owner.Name {
-			return true, nil;
-		}
+func EnsureUserHasAccess(char *structs.Character) (bool, error) {
+	viper.AutomaticEnv();
+
+	username, ok := viper.Get("TOYHOUSE_USERNAME") . (string);
+	
+	if !ok {
+		log.Fatal("Error while reading username!");
 	}
 
-	return false, errors.New("Username not in auths array");
+	if username == char.Owner.Name {
+		return true, nil;
+	}
+
+	return false, errors.New("User does not have access");
 }
