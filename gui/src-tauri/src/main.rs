@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::fs;
+use std::{fs, path::PathBuf};
 
 use futures::StreamExt;
 
@@ -18,12 +18,12 @@ async fn download_character(
     credits: String,
     metadata: String,
     logs: Option<String>,
-) {
+) -> PathBuf {
     let mut download_path = tauri::api::path::download_dir().unwrap();
     let folder_name = format!("{}-gallery", id);
     download_path.push(folder_name);
 
-    fs::create_dir_all(download_path).unwrap();
+    fs::create_dir_all(&download_path).unwrap();
 
     download_charcter_gallery(&id, links).await;
     write_character_credits(&id, credits);
@@ -32,6 +32,8 @@ async fn download_character(
     if logs.is_some() {
         write_character_logs(&id, logs.unwrap());
     }
+
+    return download_path;
 }
 
 async fn download_charcter_gallery(id: &String, links: Vec<String>) {

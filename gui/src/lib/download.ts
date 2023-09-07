@@ -10,6 +10,7 @@ import { backendConfig } from "@/config/backendConfig";
 import { useErrorStore } from "@/stores/error";
 import { useQueueStore } from "@/stores/queue";
 import { useOptionsStore } from "@/stores/options";
+import { downloadDir } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api";
 
 export const fetchCharacterGallery = async (id: string) => {
@@ -137,8 +138,8 @@ const createMetadataText = (metadata: ImageMetadata[]) => {
   return mtdtText;
 };
 
-export const downloadCharacter = async (id: string) => {
-  if (!id) return null;
+export const downloadCharacter = async (id: string): Promise<string> => {
+  if (!id) return "";
   const { setMessage, clearMessage } = useMessageStore();
   const { setError, clearError } = useErrorStore();
   const { opts } = useOptionsStore();
@@ -152,7 +153,7 @@ export const downloadCharacter = async (id: string) => {
     setTimeout(() => {
       clearError();
     }, 1200);
-    return;
+    return "";
   }
 
   const gallery: Array<GalleryImage> = characterObj.gallery;
@@ -183,11 +184,19 @@ export const downloadCharacter = async (id: string) => {
   );
 
   setMessage("Downloading gallery...");
-  await invoke("download_character", { id, links, credits, metadata, logs });
+  const res: string = await invoke("download_character", {
+    id,
+    links,
+    credits,
+    metadata,
+    logs,
+  });
   setMessage("Gallery downloaded!");
   setTimeout(() => {
     clearMessage();
   }, 1200);
+
+  return res;
 };
 
 export const downloadQueue = async () => {
@@ -197,4 +206,7 @@ export const downloadQueue = async () => {
     await downloadCharacter(char.id);
     removeCharacter(char.id);
   }
+
+  const path = await downloadDir();
+  open(path);
 };

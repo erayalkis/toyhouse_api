@@ -30,7 +30,7 @@
       },
       "shell": {
         "all": false,
-        "open": true,
+        "open": "^.",
         "sidecar": true,
         "scope": [
           {

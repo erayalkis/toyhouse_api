@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-0">
+  <div v-if="notifications.length" class="fixed bottom-0">
     <div>
       <button></button>
       <h2>{{ firstNotif.title }}</h2>
