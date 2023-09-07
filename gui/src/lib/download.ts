@@ -12,6 +12,7 @@ import { useQueueStore } from "@/stores/queue";
 import { useOptionsStore } from "@/stores/options";
 import { downloadDir } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api";
+import { open } from "@tauri-apps/api/shell";
 
 export const fetchCharacterGallery = async (id: string) => {
   const { setError, clearError } = useErrorStore();
@@ -208,5 +209,6 @@ export const downloadQueue = async () => {
   }
 
   const path = await downloadDir();
-  open(path);
+  console.log(path);
+  open(path, "open");
 };
