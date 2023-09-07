@@ -7,14 +7,16 @@ export const useNotificationStore = defineStore("notification", () => {
 
   const pushNotification = (notif: Notification) =>
     notifications.value.push(notif);
-  const popNotification = () => notifications.value.pop();
+  const popNotification = () => notifications.value.shift();
   const removeNotification = (idx: number) =>
     notifications.value.splice(idx, 1);
+  const clearNotifications = () => (notifications.value = []);
 
   return {
     notifications,
     pushNotification,
     popNotification,
+    clearNotifications,
     removeNotification,
   };
 });

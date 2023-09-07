@@ -43,7 +43,8 @@ readTextFile(".env", {
       console.error("Error while logging in!", ln);
       const notif: Notification = {
         title: "Login Error",
-        body: ln,
+        type: "error",
+        body: "Invalid username/password",
         data: null,
       };
 
