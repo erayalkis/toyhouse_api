@@ -7,6 +7,9 @@ import { Command } from "@tauri-apps/api/shell";
 import { exists, BaseDirectory, readTextFile } from "@tauri-apps/api/fs";
 import { message } from "@tauri-apps/api/dialog";
 import { parseEnvString } from "./lib/env";
+import { useStatusStore } from "./stores/appStatus";
+import { useNotificationStore } from "./stores/notification";
+import type { Notification } from "./lib/interfaces/notification";
 
 exists(`.env`, { dir: BaseDirectory.AppConfig }).then((envExists) => {
   if (!envExists) {
@@ -20,6 +23,8 @@ exists(`.env`, { dir: BaseDirectory.AppConfig }).then((envExists) => {
 readTextFile(".env", {
   dir: BaseDirectory.AppConfig,
 }).then((envContents) => {
+  const { setStatus } = useStatusStore();
+  const { pushNotification } = useNotificationStore();
   const parsed = parseEnvString(envContents);
 
   console.log("Starting child process with env", parsed);
@@ -33,9 +38,18 @@ readTextFile(".env", {
     console.log("CHILD_PROCESS", child);
   });
 
-  cmd.on("error", (err) => {
-    console.error(err);
-    console.log("ERROR ERROR ERROR ERROR", err, "ERROR ERROR ERROR ERROR");
+  cmd.stderr.on("data", (ln: string) => {
+    if (ln.includes("Login unsuccesful!")) {
+      console.error("Error while logging in!", ln);
+      const notif: Notification = {
+        title: "Login Error",
+        body: ln,
+        data: null,
+      };
+
+      setStatus(0);
+      pushNotification(notif);
+    }
   });
 });
 
