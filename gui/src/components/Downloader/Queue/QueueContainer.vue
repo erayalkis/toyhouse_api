@@ -1,5 +1,5 @@
 <template>
-  <div v-if="shouldDisplay" class="flex items-center shrink-0">
+  <div v-if="viewQueue" class="flex items-center shrink-0">
     <div
       class="flex w-full bg-toyhouse-primary-200 border border-toyhouse-primary-400 rounded-md rounded-r-none relative w-2/3 md:w-5/6 lg:w-5/6 2xl:w-11/12"
     >
@@ -31,13 +31,11 @@
 </template>
 <script setup lang="ts">
 import { useQueueStore } from "@/stores/queue";
-import { computed } from "vue";
 import DownloadSvg from "@/assets/download.svg";
 import Character from "./QueueCharacter.vue";
 import { downloadQueue } from "@/lib/download";
+import { storeToRefs } from "pinia";
 
 const queueStore = useQueueStore();
-
-const queue = computed(() => queueStore.queue);
-const shouldDisplay = computed(() => queueStore.viewQueue);
+const { queue, viewQueue } = storeToRefs(queueStore);
 </script>

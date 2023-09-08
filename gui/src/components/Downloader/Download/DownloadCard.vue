@@ -68,7 +68,6 @@ import { enqueueCharacter } from "@/lib/queue";
 import Queue from "../Queue/QueueContainer.vue";
 import { useOptionsStore } from "@/stores/options";
 import { storeToRefs } from "pinia";
-import { open } from "@tauri-apps/api/shell";
 
 const statusStore = useStatusStore();
 const optsStore = useOptionsStore();
@@ -98,12 +97,8 @@ const handleCharacterRequest = async () => {
 
 const download = async () => {
   const id = getIdFromUrl(url.value);
-  const folderPath: string = await downloadCharacter(id);
-
-  if (folderPath.length) {
-    console.log(folderPath);
-    await open(folderPath, "open");
-  }
+  await downloadCharacter(id);
+  url.value = "";
 };
 
 const enqueue = async () => {

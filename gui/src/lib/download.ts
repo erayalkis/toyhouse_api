@@ -10,9 +10,8 @@ import { backendConfig } from "@/config/backendConfig";
 import { useErrorStore } from "@/stores/error";
 import { useQueueStore } from "@/stores/queue";
 import { useOptionsStore } from "@/stores/options";
-import { downloadDir } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api";
-import { open } from "@tauri-apps/api/shell";
+import { useEventStore } from "@/stores/event";
 
 export const fetchCharacterGallery = async (id: string) => {
   const { setError, clearError } = useErrorStore();
@@ -143,6 +142,7 @@ export const downloadCharacter = async (id: string): Promise<string> => {
   if (!id) return "";
   const { setMessage, clearMessage } = useMessageStore();
   const { setError, clearError } = useErrorStore();
+  const { addToEvents } = useEventStore();
   const { opts } = useOptionsStore();
 
   setMessage("Fetching gallery...");
@@ -173,18 +173,13 @@ export const downloadCharacter = async (id: string): Promise<string> => {
     logs = await createLogsText(id);
   }
 
-  console.log(
-    "LINKS",
-    links,
-    "CREDITS",
-    credits,
-    "METADATA",
-    metadata,
-    "LOGS",
-    logs
-  );
+  addToEvents(`${characterObj.id}-gallery`, {
+    id: `${characterObj.id}-gallery`,
+    linksCount: characterObj.gallery.length,
+    downloaded: 0,
+  });
 
-  setMessage("Downloading gallery...");
+  setMessage("Touching up details...");
   const res: string = await invoke("download_character", {
     id,
     links,
@@ -192,7 +187,7 @@ export const downloadCharacter = async (id: string): Promise<string> => {
     metadata,
     logs,
   });
-  setMessage("Gallery downloaded!");
+  setMessage("Downloading gallery!");
   setTimeout(() => {
     clearMessage();
   }, 1200);
@@ -201,14 +196,11 @@ export const downloadCharacter = async (id: string): Promise<string> => {
 };
 
 export const downloadQueue = async () => {
-  const { queue, removeCharacter } = useQueueStore();
+  const { queue } = useQueueStore();
+  const { setBlockOpen } = useEventStore();
 
+  setBlockOpen(true);
   for (const char of queue) {
     await downloadCharacter(char.id);
-    removeCharacter(char.id);
   }
-
-  const path = await downloadDir();
-  console.log(path);
-  open(path, "open");
 };
