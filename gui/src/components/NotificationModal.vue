@@ -65,7 +65,7 @@ const notifStore = useNotificationStore();
 const eventStore = useEventStore();
 const qStore = useQueueStore();
 
-const { deleteData } = eventStore;
+const { deleteData, setBlockOpen } = eventStore;
 const { removeCharacter } = qStore;
 const { clearNotifications, popNotification } = notifStore;
 const { events, openFolderAfterSuccess } = storeToRefs(eventStore);
@@ -99,11 +99,15 @@ watch(
         removeCharacter(currChar.id);
       }
 
-      if (Object.keys(events.value).length === 0) {
+      if (Object.keys(events.value).length === 0 && queue.value.length === 0) {
+        console.log("opening folder from queue logic");
         open(dlPath, "open");
+        setBlockOpen(false);
+        return;
       }
 
       if (!openFolderAfterSuccess.value) {
+        console.log("opening folder from single dl logic");
         open(fullPath, "open");
       }
     }
