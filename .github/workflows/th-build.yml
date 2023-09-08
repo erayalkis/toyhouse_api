@@ -54,16 +54,22 @@ jobs:
           tagName: ${{ github.ref_name }} # This only works if your workflow triggers on new tags.
           releaseName: "Toyhouse Extensions v__VERSION__" # tauri-action replaces \_\_VERSION\_\_ with the app version.
           releaseBody: |
+            > **Note**
+            > This app will *not* work with locked characters that you do not own!
+            > The app downloads all galleries to your Downloads folder.
+            > Please ensure all the images are done downloading before closing the app!
+            > Please ensure that you input your username and password correctly! The app will give an Offline error if your username/password is incorrect.
+
             Windows:
               - Download `Toyhouse.Extensions_x64_en-US.msi` or `Toyhouse.Extensions_x64-setup.exe`
 
             Linux:
-              - Download `toyhouse-extensions____VERSION____amd64.AppImage`, `toyhouse-extensions_0___VERSION____amd64.deb` or `Toyhouse.Extensions_x64.app.tar.gz`
+              - Download `toyhouse-extensions__0.4.3__amd64.AppImage`, `toyhouse-extensions_0_0.4.3__amd64.deb` or `Toyhouse.Extensions_x64.app.tar.gz`
 
-            [!IMPORTANT]
-            Ubuntu 22.04 switched from openssl1.1 to openssl3.0, and this causes Toyhouse Extensions to crash on distros with openssl@v3. To fix this issue, please see [this StackOverflow thread](https://stackoverflow.com/questions/72133316/libssl-so-1-1-cannot-open-shared-object-file-no-such-file-or-directory)
+            > **Important**
+            Ubuntu 22.04 switched from openssl1.1 to openssl3.0, and this causes Toyhouse Extensions to crash on distros with openssl@v3. To fix this issue, please see [this StackOverflow thread.](https://stackoverflow.com/questions/72133316/libssl-so-1-1-cannot-open-shared-object-file-no-such-file-or-directory)
 
             MacOS:
-              - Download `Toyhouse.Extensions____VERSION____x64.dmg`
+              - Download `Toyhouse.Extensions__0.4.3__x64.dmg`
           releaseDraft: true
           prerelease: false
