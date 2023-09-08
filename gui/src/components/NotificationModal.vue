@@ -1,11 +1,14 @@
 <template>
   <div
     v-if="notifications.length"
-    class="flex flex-col gap-5 fixed right-5 bottom-5 border border-toyhouse-border-secondary p-5 bg-white rounded-md"
-    :class="{
-      'bg-red-200': firstNotif.type === 'error',
-      'bg-blue-200': firstNotif.type === 'info',
-    }"
+    class="flex flex-col gap-5 fixed right-5 bottom-5 border border-toyhouse-border-secondary p-5 rounded-md"
+    :class="[
+      'bg-white',
+      {
+        '!bg-red-200': firstNotif.type === 'error',
+        '!bg-blue-200': firstNotif.type === 'info',
+      },
+    ]"
   >
     <div class="flex justify-between font-bold gap-5">
       <X
