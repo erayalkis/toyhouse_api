@@ -16,12 +16,20 @@ import { useEventStore } from "@/stores/event";
 import type { EventData } from "@/lib/interfaces/event";
 import { useNotificationStore } from "./stores/notification";
 import AppVersion from "./components/AppVersion.vue";
+import { useQueueStore } from "./stores/queue";
+import { storeToRefs } from "pinia";
+
+const queueStore = useQueueStore();
 
 const { incrementDownloadCount, deleteData } = useEventStore();
 const { pushNotification } = useNotificationStore();
 
+const { viewQueue } = storeToRefs(queueStore);
+
 onMounted(async () => {
   await listen("gallery-begin", (event: Event<EventData>) => {
+    if (viewQueue.value) return;
+
     let payload: EventData = event.payload;
     pushNotification({
       title: `Downloading ${payload.id}`,

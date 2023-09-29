@@ -37,7 +37,12 @@
         </div>
       </div>
       <div class="flex items-center gap-3 my-3 w-full">
-        <input id="queue-checkbox" type="checkbox" @change="toggleQueue" />
+        <input
+          id="queue-checkbox"
+          type="checkbox"
+          :disabled="downloadInProgress"
+          @change="toggleQueue"
+        />
         <div class="flex flex-col">
           <label for="queue-checkbox" class="font-medium">Use Queue</label>
           <label for="queue-checkbox" class="hidden sm:block"
@@ -88,7 +93,7 @@ const isUsingQueue = computed(() => queueStore.viewQueue);
 const url = ref("");
 
 const toggleQueue = () => {
-  if (downloadInProgress) return;
+  if (downloadInProgress.value) return;
 
   queueStore.toggleQueueView();
 };

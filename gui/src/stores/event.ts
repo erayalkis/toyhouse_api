@@ -13,8 +13,11 @@ export const useEventStore = defineStore("event", () => {
   const toggleDlProgress = () =>
     (downloadInProgress.value = !downloadInProgress.value);
 
-  const incrementDownloadCount = (key: string) =>
-    (events.value[key].downloaded += 1);
+  const incrementDownloadCount = (key: string) => {
+    console.log(events.value);
+    events.value[key].downloaded += 1;
+  };
+
   const deleteData = (key: string) => delete events.value[key];
   const setBlockOpen = (val: boolean) => (openFolderAfterSuccess.value = val);
 
