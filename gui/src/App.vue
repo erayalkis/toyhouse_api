@@ -3,6 +3,7 @@
     <Navbar />
     <router-view></router-view>
     <NotificationModal />
+    <AppVersion />
   </div>
 </template>
 
@@ -14,6 +15,7 @@ import { Event, listen } from "@tauri-apps/api/event";
 import { useEventStore } from "@/stores/event";
 import type { EventData } from "@/lib/interfaces/event";
 import { useNotificationStore } from "./stores/notification";
+import AppVersion from "./components/AppVersion.vue";
 
 const { incrementDownloadCount, deleteData } = useEventStore();
 const { pushNotification } = useNotificationStore();
