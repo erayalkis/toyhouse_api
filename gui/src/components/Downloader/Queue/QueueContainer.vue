@@ -19,11 +19,13 @@
       </div>
     </div>
     <button
-      :class="{ 'cursor-not-allowed': queue.length === 0 }"
-      :disabled="queue.length === 0"
+      :class="{
+        'cursor-not-allowed': queue.length === 0 || downloadInProgress,
+      }"
+      :disabled="queue.length === 0 || downloadInProgress"
       class="self-stretch right-0 bg-toyhouse-button-primary text-white rounded-md rounded-l-none w-1/3 transition duration-300 ease-out hover:bg-toyhouse-button-secondary disabled:bg-toyhouse-button-secondary md:w-1/6 lg:w-1/6 2xl:w-1/12"
       type="button"
-      @click="downloadQueue"
+      @click="download"
     >
       <img :src="DownloadSvg" class="w-6 mx-auto lg:w-7 xl:w-8 text-white" />
     </button>
@@ -31,11 +33,23 @@
 </template>
 <script setup lang="ts">
 import { useQueueStore } from "@/stores/queue";
+import { useEventStore } from "@/stores/event";
 import DownloadSvg from "@/assets/download.svg";
 import Character from "./QueueCharacter.vue";
 import { downloadQueue } from "@/lib/download";
 import { storeToRefs } from "pinia";
 
+const eventStore = useEventStore();
 const queueStore = useQueueStore();
+
+const { toggleDlProgress } = eventStore;
+
 const { queue, viewQueue } = storeToRefs(queueStore);
+const { downloadInProgress } = storeToRefs(eventStore);
+
+const download = async () => {
+  toggleDlProgress();
+  await downloadQueue();
+  toggleDlProgress();
+};
 </script>

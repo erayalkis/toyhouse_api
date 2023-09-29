@@ -64,6 +64,7 @@ import { getIdFromUrl } from "@/lib/url";
 import { computed, ref } from "vue";
 import { useStatusStore } from "@/stores/appStatus";
 import { useQueueStore } from "@/stores/queue";
+import { useEventStore } from "@/stores/event";
 import { enqueueCharacter } from "@/lib/queue";
 import Queue from "../Queue/QueueContainer.vue";
 import { useOptionsStore } from "@/stores/options";
@@ -71,9 +72,12 @@ import { storeToRefs } from "pinia";
 
 const statusStore = useStatusStore();
 const optsStore = useOptionsStore();
+const eventStore = useEventStore();
 
 const status = computed(() => statusStore.status);
+const { toggleDlProgress } = eventStore;
 const { opts } = storeToRefs(optsStore);
+const { downloadInProgress } = storeToRefs(eventStore);
 
 const messageStore = useMessageStore();
 const errorStore = useErrorStore();
@@ -84,6 +88,8 @@ const isUsingQueue = computed(() => queueStore.viewQueue);
 const url = ref("");
 
 const toggleQueue = () => {
+  if (downloadInProgress) return;
+
   queueStore.toggleQueueView();
 };
 
@@ -96,9 +102,11 @@ const handleCharacterRequest = async () => {
 };
 
 const download = async () => {
+  toggleDlProgress();
   const id = getIdFromUrl(url.value);
   await downloadCharacter(id);
   url.value = "";
+  toggleDlProgress();
 };
 
 const enqueue = async () => {
