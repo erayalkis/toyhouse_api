@@ -7,6 +7,7 @@
       {
         '!bg-red-200': firstNotif.type === 'error',
         '!bg-blue-200': firstNotif.type === 'info',
+        '!bg-amber-100': firstNotif.type === 'warning',
       },
     ]"
   >

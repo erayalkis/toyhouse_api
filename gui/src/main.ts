@@ -10,6 +10,8 @@ import { parseEnvString } from "./lib/env";
 import { useStatusStore } from "./stores/appStatus";
 import { useNotificationStore } from "./stores/notification";
 import type { Notification } from "./lib/interfaces/notification";
+import { getVersion } from "@tauri-apps/api/app";
+import semver from "semver";
 
 exists(`.env`, { dir: BaseDirectory.AppConfig }).then((envExists) => {
   if (!envExists) {
@@ -52,6 +54,28 @@ readTextFile(".env", {
       pushNotification(notif);
     }
   });
+});
+
+getVersion().then((currentVer) => {
+  fetch("https://api.github.com/repos/erayalkis/toyhouse_api/releases/latest")
+    .then((res) => res.json())
+    .then((json) => {
+      const latestReleaseVersion = json["tag_name"];
+      const { pushNotification } = useNotificationStore();
+
+      const newReleaseVerIsHigher = semver.gt(latestReleaseVersion, currentVer);
+
+      if (newReleaseVerIsHigher) {
+        const notif: Notification = {
+          title: "App Outdated",
+          type: "warning",
+          body: `Current app version is outdated (${currentVer} < ${latestReleaseVersion})`,
+          data: null,
+        };
+
+        pushNotification(notif);
+      }
+    });
 });
 
 const app = createApp(App);
