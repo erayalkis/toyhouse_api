@@ -3,11 +3,6 @@ import { defineStore } from "pinia";
 import type { CharacterDetails } from "@/lib/interfaces/toyhouse";
 
 export const useQueueStore = defineStore("queue", () => {
-  /* 
-    -1 => queue undefined, making query
-    0 => App is down, server returned a 500 or took too long to respond
-    1 => App is up and running
-  */
   const queueDefault: Array<CharacterDetails> = [];
   const viewQueueDefault: boolean = false;
 
