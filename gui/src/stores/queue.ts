@@ -8,7 +8,7 @@ export const useQueueStore = defineStore("queue", () => {
 
   const queue = ref(queueDefault);
   const viewQueue = ref(viewQueueDefault);
-  const setqueue = (newValue: Array<CharacterDetails>) =>
+  const setQueue = (newValue: Array<CharacterDetails>) =>
     (queue.value = newValue);
   const addToQueue = (queueItem: CharacterDetails) =>
     queue.value.push(queueItem);
@@ -22,7 +22,7 @@ export const useQueueStore = defineStore("queue", () => {
     toggleQueueView,
     addToQueue,
     queue,
-    setqueue,
+    setQueue,
     clearqueue,
     removeCharacter,
   };

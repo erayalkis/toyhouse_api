@@ -10,11 +10,13 @@ export const useEventStore = defineStore("event", () => {
   const addToEvents = (key: string, val: EventData) =>
     (events.value[key] = val);
 
+  const setEvents = (newEvents: Record<string, EventData>) =>
+    (events.value = newEvents);
+
   const toggleDlProgress = () =>
     (downloadInProgress.value = !downloadInProgress.value);
 
   const incrementDownloadCount = (key: string) => {
-    console.log(events.value);
     events.value[key].downloaded += 1;
   };
 
@@ -27,6 +29,7 @@ export const useEventStore = defineStore("event", () => {
     downloadInProgress,
     toggleDlProgress,
     addToEvents,
+    setEvents,
     incrementDownloadCount,
     deleteData,
     setBlockOpen,

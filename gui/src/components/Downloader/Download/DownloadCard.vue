@@ -17,7 +17,7 @@
         @click="handleCharacterRequest"
         :disabled="status === -1 || status === 0"
       >
-        {{ isUsingQueue ? "Add" : "Download" }}
+        {{ viewQueue ? "Add" : "Download" }}
       </button>
     </div>
     <div class="flex">
@@ -66,7 +66,7 @@ import { useMessageStore } from "@/stores/message";
 import { useErrorStore } from "@/stores/error";
 import { downloadCharacter } from "@/lib/download";
 import { getIdFromUrl } from "@/lib/url";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useStatusStore } from "@/stores/appStatus";
 import { useQueueStore } from "@/stores/queue";
 import { useEventStore } from "@/stores/event";
@@ -74,22 +74,27 @@ import { enqueueCharacter } from "@/lib/queue";
 import Queue from "../Queue/QueueContainer.vue";
 import { useOptionsStore } from "@/stores/options";
 import { storeToRefs } from "pinia";
+import { useNotificationStore } from "@/stores/notification";
+import { downloadDir } from "@tauri-apps/api/path";
+import { open } from "@tauri-apps/api/shell";
 
 const statusStore = useStatusStore();
 const optsStore = useOptionsStore();
 const eventStore = useEventStore();
-
-const status = computed(() => statusStore.status);
-const { toggleDlProgress } = eventStore;
-const { opts } = storeToRefs(optsStore);
-const { downloadInProgress } = storeToRefs(eventStore);
-
-const messageStore = useMessageStore();
 const errorStore = useErrorStore();
 const queueStore = useQueueStore();
+const messageStore = useMessageStore();
+const notifStore = useNotificationStore();
+
+const status = computed(() => statusStore.status);
+const { toggleDlProgress, setEvents } = eventStore;
+const { opts } = storeToRefs(optsStore);
+const { downloadInProgress, events } = storeToRefs(eventStore);
+const { clearNotifications } = notifStore;
+
 const message = computed(() => messageStore.message);
 const error = computed(() => errorStore.error);
-const isUsingQueue = computed(() => queueStore.viewQueue);
+const { viewQueue } = storeToRefs(queueStore);
 const url = ref("");
 
 const toggleQueue = () => {
@@ -99,7 +104,7 @@ const toggleQueue = () => {
 };
 
 const handleCharacterRequest = async () => {
-  if (isUsingQueue.value) {
+  if (viewQueue.value) {
     await enqueue();
   } else {
     await download();
@@ -119,4 +124,28 @@ const enqueue = async () => {
   await enqueueCharacter(id);
   url.value = "";
 };
+
+watch(
+  events,
+  async () => {
+    if (viewQueue.value) return;
+
+    // We assume there's only one event registered, it should always be like this when downloading a single character
+    // The only time the event object contains multiple characters is when downloading through the queue
+    const firstKey = Object.keys(events.value)[0];
+    const target = events.value[firstKey];
+
+    console.log(target);
+    if (target && target.linksCount === target.downloaded) {
+      const dlDir = await downloadDir();
+      const fullDir = dlDir + target.id;
+
+      clearNotifications();
+      setEvents({});
+
+      open(fullDir, "open");
+    }
+  },
+  { deep: true }
+);
 </script>

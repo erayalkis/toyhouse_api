@@ -54,26 +54,19 @@
 <script setup lang="ts">
 import { useNotificationStore } from "@/stores/notification";
 import { storeToRefs } from "pinia";
-import { computed, ComputedRef, watch } from "vue";
+import { computed, ComputedRef } from "vue";
 import type { Notification } from "@/lib/interfaces/notification";
 import X from "@/assets/components/X.vue";
 import ChevronsRight from "@/assets/components/ChevronsRight.vue";
 import { useEventStore } from "@/stores/event";
 import { EventData } from "@/lib/interfaces/event";
-import { open } from "@tauri-apps/api/shell";
-import { downloadDir } from "@tauri-apps/api/path";
-import { useQueueStore } from "@/stores/queue";
 
 const notifStore = useNotificationStore();
 const eventStore = useEventStore();
-const qStore = useQueueStore();
 
-const { deleteData, setBlockOpen } = eventStore;
-const { removeCharacter } = qStore;
 const { clearNotifications, popNotification } = notifStore;
-const { events, openFolderAfterSuccess } = storeToRefs(eventStore);
+const { events } = storeToRefs(eventStore);
 const { notifications } = storeToRefs(notifStore);
-const { viewQueue, queue } = storeToRefs(qStore);
 
 const firstNotif: ComputedRef<Notification> = computed(
   () => notifications.value[0]
@@ -86,34 +79,4 @@ const firstNotifEventData: ComputedRef<EventData | null> = computed(() => {
 
   return null;
 });
-
-watch(
-  () => firstNotifEventData.value?.downloaded,
-  async (val) => {
-    if (val && val == firstNotifEventData.value?.linksCount) {
-      const dlPath = await downloadDir();
-      const eventCharId = firstNotif.value.data?.id;
-      const fullPath = dlPath + eventCharId;
-
-      popNotification();
-      deleteData(eventCharId);
-      if (viewQueue.value && queue.value.length) {
-        const currChar = queue.value[0];
-        removeCharacter(currChar.id);
-      }
-
-      if (Object.keys(events.value).length === 0 && queue.value.length === 0) {
-        console.log("opening folder from queue logic");
-        open(dlPath, "open");
-        setBlockOpen(false);
-        return;
-      }
-
-      if (!openFolderAfterSuccess.value) {
-        console.log("opening folder from single dl logic");
-        open(fullPath, "open");
-      }
-    }
-  }
-);
 </script>

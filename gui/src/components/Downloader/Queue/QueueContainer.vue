@@ -38,18 +38,55 @@ import DownloadSvg from "@/assets/download.svg";
 import Character from "./QueueCharacter.vue";
 import { downloadQueue } from "@/lib/download";
 import { storeToRefs } from "pinia";
+import { watch } from "vue";
+import type { EventData } from "@/lib/interfaces/event";
+import { useNotificationStore } from "@/stores/notification";
+import { downloadDir } from "@tauri-apps/api/path";
+import { open } from "@tauri-apps/api/shell";
 
 const eventStore = useEventStore();
 const queueStore = useQueueStore();
+const notifStore = useNotificationStore();
 
-const { toggleDlProgress } = eventStore;
+const { toggleDlProgress, setEvents } = eventStore;
+const { clearNotifications } = notifStore;
+const { setQueue } = queueStore;
 
 const { queue, viewQueue } = storeToRefs(queueStore);
-const { downloadInProgress } = storeToRefs(eventStore);
+const { downloadInProgress, events } = storeToRefs(eventStore);
 
 const download = async () => {
   toggleDlProgress();
   await downloadQueue();
   toggleDlProgress();
 };
+
+watch(
+  events,
+  async () => {
+    if (!viewQueue.value || !events.value) return;
+
+    console.log("watcher event from queue", events.value);
+
+    const eventValues = Object.values(events.value);
+
+    if (eventValues.length === 0) return;
+
+    const allDone = Object.values(events.value).every(
+      (e: EventData) => e.downloaded === e.linksCount
+    );
+
+    if (allDone) {
+      const dlDir = await downloadDir();
+
+      clearNotifications();
+      setQueue([]);
+      setEvents({});
+
+      console.log(queue.value, events.value);
+      open(dlDir, "open");
+    }
+  },
+  { deep: true }
+);
 </script>
