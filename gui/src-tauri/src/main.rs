@@ -18,6 +18,17 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
+async fn download_raffle_results(character_name: String, results: String) -> PathBuf {
+    let mut dl_path = tauri::api::path::download_dir().unwrap();
+    let filename = format!("{}-results.txt", character_name);
+    dl_path.push(filename);
+
+    tokio::fs::write(&dl_path, results).await.unwrap();
+
+    dl_path
+}
+
+#[tauri::command]
 async fn download_character(
     id: String,
     links: Vec<String>,
@@ -131,7 +142,11 @@ fn main() {
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![greet, download_character])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            download_character,
+            download_raffle_results
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

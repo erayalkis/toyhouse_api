@@ -117,6 +117,8 @@ import { useParticipantsStore } from "../../../stores/participantsStore.ts";
 import { getRaffleTicketsForAll } from "../../../helpers/requests.ts";
 import { confirm } from "@tauri-apps/api/dialog";
 import DownloadIcon from "@/assets/components/DownloadIcon.vue";
+import { invoke } from "@tauri-apps/api";
+import { open } from "@tauri-apps/api/shell";
 
 let optionsStore = useRaffleStore();
 let pStore = useParticipantsStore();
@@ -174,7 +176,21 @@ const truncateName = (name: string) => {
   return name.slice(0, 7) + "...";
 };
 
-const exportWinners = () => {};
+const exportWinners = async () => {
+  let winnersStr = "";
+
+  winnersStr += `Raffle Winners (${new Date().toLocaleString()})\n\n`;
+  Object.values(winners.value).forEach((winner) => {
+    winnersStr += `${winner.profile.name}\n`;
+  });
+
+  const path: string = await invoke("download_raffle_results", {
+    characterName: mainCharacter.value.name,
+    results: winnersStr,
+  });
+
+  open(path, "open");
+};
 </script>
 <style>
 .rotate {
