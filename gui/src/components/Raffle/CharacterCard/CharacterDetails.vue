@@ -8,7 +8,10 @@
       </h3>
       <div v-else>
         <h3 class="text-xl font-semibold">Congrats to the winners!</h3>
-        <p class="text-sm">{{ new Date().toLocaleString() }}</p>
+        <div class="flex items-center gap-3">
+          <p class="text-sm">{{ new Date().toLocaleString() }}</p>
+          <DownloadIcon class="w-4 h-4 cursor-pointer" @click="exportWinners" />
+        </div>
       </div>
       <CogIcon
         class="z-50 transition duration-900 ease-out sticky"
@@ -52,8 +55,8 @@
                 :src="winner.profile.image"
                 class="border border-toyhouse-border-primary p-1 bg-white rounded-md w-14 mx-auto md:w-20"
               />
-              <h4 class="text-center">
-                {{ winner.profile.name }}
+              <h4 class="text-center" :title="winner.profile.name">
+                {{ truncateName(winner.profile.name) }}
               </h4>
             </div>
           </template>
@@ -113,6 +116,7 @@ import CharacterOptions from "./CharacterOptions.vue";
 import { useParticipantsStore } from "../../../stores/participantsStore.ts";
 import { getRaffleTicketsForAll } from "../../../helpers/requests.ts";
 import { confirm } from "@tauri-apps/api/dialog";
+import DownloadIcon from "@/assets/components/DownloadIcon.vue";
 
 let optionsStore = useRaffleStore();
 let pStore = useParticipantsStore();
@@ -163,6 +167,14 @@ const pick = () => {
 
   setWinners(res);
 };
+
+const truncateName = (name: string) => {
+  if (name.length < 10) return name;
+
+  return name.slice(0, 7) + "...";
+};
+
+const exportWinners = () => {};
 </script>
 <style>
 .rotate {

@@ -12,9 +12,11 @@
         @decrement="decrementIndex"
         @set="setIndex"
       />
+
       <ParticipantsListSearchBar />
 
       <ParticipantsCard :chunked="chunked" :current-index="currentIndex" />
+
       <ParticipantsListPaginator
         :chunked="chunked"
         :current-index="currentIndex"
