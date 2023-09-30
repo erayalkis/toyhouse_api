@@ -4,6 +4,7 @@
       <h1 class="my-1 mb-2">
         Displaying {{ Object.keys(list).length }} participant(s).
       </h1>
+      <h1>Page {{ currentIndex + 1 }} out of {{ chunked.length }}</h1>
       <ParticipantsListPaginator
         :chunked="chunked"
         :current-index="currentIndex"
@@ -14,6 +15,13 @@
       <ParticipantsListSearchBar />
 
       <ParticipantsCard :chunked="chunked" :current-index="currentIndex" />
+      <ParticipantsListPaginator
+        :chunked="chunked"
+        :current-index="currentIndex"
+        @increment="incrementIndex"
+        @decrement="decrementIndex"
+        @set="setIndex"
+      />
     </template>
     <template v-else>
       <div class="border border-toyhouse-border-primary p-5 rounded-md">

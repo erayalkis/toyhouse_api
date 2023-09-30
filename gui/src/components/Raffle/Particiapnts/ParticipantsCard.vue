@@ -47,8 +47,8 @@ const pStore = useParticipantsStore();
 const { list } = storeToRefs(pStore);
 
 const truncateName = (name: string) => {
-  if (name.length >= 12) {
-    return name.slice(0, 9) + "...";
+  if (name.length >= 10) {
+    return name.slice(0, 7) + "...";
   }
   return name;
 };

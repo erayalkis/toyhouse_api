@@ -1,4 +1,3 @@
 export const notices = [
-  "This app will not download characters with locked (private) profiles.",
-  "This app will not remove watermarks when downloading images.",
+  "This app will not download characters that do not belong to you.",
 ];
