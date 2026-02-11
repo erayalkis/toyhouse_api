@@ -1,3 +1,3 @@
 export const backendConfig = {
-  backendUrl: "http://localhost:8081",
+  backendUrl: "https://toyhouse-api.duckdns.org",
 };

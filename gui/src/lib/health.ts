@@ -6,7 +6,8 @@ import { useErrorStore } from "@/stores/error";
 import { getWithRetry } from "@/helpers/requests";
 
 export const makeStatusQuery = async () => {
-  const url = backendConfig.backendUrl;
+  // Remove trailing slash to avoid double slashes
+  const url = backendConfig.backendUrl.replace(/\/+$/, '');
   const statusStore = useStatusStore();
   const errorStore = useErrorStore();
   const messageStore = useMessageStore();

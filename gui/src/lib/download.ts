@@ -16,7 +16,8 @@ import { useEventStore } from "@/stores/event";
 export const fetchCharacterGallery = async (id: string) => {
   const { setError, clearError } = useErrorStore();
   const { clearMessage } = useMessageStore();
-  const backendUrl = backendConfig.backendUrl;
+  // Remove trailing slash to avoid double slashes
+  const backendUrl = backendConfig.backendUrl.replace(/\/+$/, '');
 
   try {
     const characterJSONString = await fetch(
@@ -38,7 +39,8 @@ export const fetchCharacterGallery = async (id: string) => {
 export const fetchCharacterDetails = async (id: string) => {
   const { setError, clearError } = useErrorStore();
   const { clearMessage } = useMessageStore();
-  const backendUrl = backendConfig.backendUrl;
+  // Remove trailing slash to avoid double slashes
+  const backendUrl = backendConfig.backendUrl.replace(/\/+$/, '');
 
   try {
     const characterJSONString = await fetch(
@@ -60,7 +62,8 @@ export const fetchCharacterDetails = async (id: string) => {
 export const fetchCharacterOwnershipLogs = async (id: string) => {
   const { setError, clearError } = useErrorStore();
   const { clearMessage } = useMessageStore();
-  const backendUrl = backendConfig.backendUrl;
+  // Remove trailing slash to avoid double slashes
+  const backendUrl = backendConfig.backendUrl.replace(/\/+$/, '');
 
   try {
     const characterJSONString = await fetch(

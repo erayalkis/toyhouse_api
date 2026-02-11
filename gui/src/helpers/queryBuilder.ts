@@ -1,9 +1,16 @@
 import { API_URL } from "./constants";
 
-export const addPathToUrl = (path: string) => API_URL + path;
+// Helper to join URL parts without double slashes
+const joinUrl = (base: string, path: string) => {
+  const cleanBase = base.replace(/\/+$/, ''); // Remove trailing slashes
+  const cleanPath = path.replace(/^\/+/, ''); // Remove leading slashes
+  return `${cleanBase}/${cleanPath}`;
+};
+
+export const addPathToUrl = (path: string) => joinUrl(API_URL, path);
 
 export const makeQueryFromOptions = (opts: any) => {
-  let url = API_URL + `/raffle/${opts.character.id}`;
+  let url = joinUrl(API_URL, `/raffle/${opts.character.id}`);
   let queryStr = "?";
 
   if (opts.must_comment) {
