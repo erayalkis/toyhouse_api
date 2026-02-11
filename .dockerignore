@@ -1,0 +1,50 @@
+# Git
+.git
+.gitignore
+
+# Build artifacts
+main
+*.exe
+*.dll
+*.so
+*.dylib
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies
+vendor/
+
+# GUI files (not needed for API)
+gui/
+node_modules/
+
+# Rust/Cargo (not needed for API)
+target/
+Cargo.lock
+Cargo.toml
+
+# Test files
+*_test.go
+*.test
+
+# Documentation
+README.md
+LICENSE
+*.md
+
+# CI/CD
+.github/
+
+# Other
+.env.example
+.env.local
+

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  toyhouse-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: toyhouse-api
+    ports:
+      - "8081:8081"
+    volumes:
+      # Mount external .env file
+      - ./.env:/app/.env:ro
+      # Optional: mount static files if you want to update them without rebuilding
+      - ./static:/app/static:ro
+    environment:
+      # Pass environment variables from .env file
+      - ENV_FILE=/app/.env
+    restart: unless-stopped
+    # Security options for running Chromium
+    security_opt:
+      - seccomp=unconfined
+    # Required for Chromium to run in Docker
+    shm_size: '2gb'
+

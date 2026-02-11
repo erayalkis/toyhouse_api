@@ -1,6 +1,7 @@
 package scraper
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,23 +9,48 @@ import (
 	"strconv"
 
 	"sync"
+	"toyhouse_api/v2/lib/browser"
 	"toyhouse_api/v2/lib/structs"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Helper function to make a request using headless browser and log the response body
+func makeRequestAndLog(client *http.Client, url string) ([]byte, error) {
+	fmt.Println("\n=== Fetching with browser:", url, "===");
+	
+	html, err := browser.FetchWithBrowser(url, client);
+	if err != nil {
+		return nil, err;
+	}
+
+	bodyBytes := []byte(html);
+
+	// Log the response
+	fmt.Println("\n=== Response Body (first 2000 chars) ===");
+	bodyString := string(bodyBytes);
+	if len(bodyString) > 2000 {
+		fmt.Println(bodyString[:2000]);
+		fmt.Println("... (truncated, total length:", len(bodyString), "chars)");
+	} else {
+		fmt.Println(bodyString);
+	}
+	fmt.Println("=== End of Response ===\n");
+
+	return bodyBytes, nil;
+}
+
 func ScrapeCharacterGallery(character_id string, client *http.Client) (structs.Character, bool) {
 	fmt.Println("Scraping character", character_id)
 	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/gallery");
 
-	fmt.Println("Fetching", full_url);
-	res, err := client.Get(full_url);
+	bodyBytes, err := makeRequestAndLog(client, full_url);
 	
 	if err != nil {
 		log.Fatal(err);
 	}
 
-	doc, err := goquery.NewDocumentFromReader(res.Body);
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(bodyBytes));
 
 	if err != nil {
 		log.Fatal(err);
@@ -40,12 +66,12 @@ func ScrapeCharacterFavorites(character_id string, client *http.Client) (structs
 	fmt.Println("Scraping favorites for", character_id);
 	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/favorites")
 
-	res, err := client.Get(full_url)
+	bodyBytes, err := makeRequestAndLog(client, full_url)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	doc, err := goquery.NewDocumentFromReader(res.Body);
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(bodyBytes));
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -95,12 +121,12 @@ func ScrapeCharacterComments(character_id string, client *http.Client) (structs.
 	fmt.Println("Scraping comments for", character_id)
 	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/comments")
 
-	res, err := client.Get(full_url)
+	bodyBytes, err := makeRequestAndLog(client, full_url)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	doc, err := goquery.NewDocumentFromReader(res.Body);
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(bodyBytes));
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -154,14 +180,13 @@ func ScrapeCharacterOwnership(character_id string, client *http.Client) (structs
 	fmt.Println("Scraping character ownsership logs for:", character_id)
 	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/ownership/log");
 
-	fmt.Println("Fetching", full_url);
-	res, err := client.Get(full_url);
+	bodyBytes, err := makeRequestAndLog(client, full_url);
 	
 	if err != nil {
 		log.Fatal(err);
 	}
 
-	doc, err := goquery.NewDocumentFromReader(res.Body);
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(bodyBytes));
 
 	if err != nil {
 		log.Fatal(err);
@@ -287,12 +312,12 @@ func ScraperCharacterDetails(character_id string, client *http.Client) (structs.
 	fmt.Println("Fetching details for", character_id)
 	full_url := fmt.Sprint("https://toyhou.se/", character_id, "/gallery")
 
-	res, err := client.Get(full_url)
+	bodyBytes, err := makeRequestAndLog(client, full_url)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	doc, err := goquery.NewDocumentFromReader(res.Body)
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(bodyBytes))
 
 	owner_anchor := doc.Find("span.display-user a")
 	owner_name := owner_anchor.Find("span.display-user-username").Text()
@@ -359,11 +384,11 @@ func SaveWithPagination[V string | structs.Image | structs.Profile | structs.Com
 
 	idx := 1;
 	newUrl := fmt.Sprint(baseUrl, "?page=", idx);
-	page, err := client.Get(newUrl);
+	bodyBytes, err := makeRequestAndLog(client, newUrl);
 	if err != nil {
 		log.Fatal(err)
 	}
-	doc, err := goquery.NewDocumentFromReader(page.Body);
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(bodyBytes));
 	limit_int := getPaginationLimit(doc)
 	locked := doc.Find("h1.image-gallery-title i.fa-unlock-alt").Length() > 0
 
@@ -385,8 +410,14 @@ func SaveWithPagination[V string | structs.Image | structs.Profile | structs.Com
 		fetch := func(i int, url string, ) { 
 			defer waitGroup.Done();
 
-			page, err = client.Get(url);
-			doc, err = goquery.NewDocumentFromReader(page.Body);
+			bodyBytes, err := makeRequestAndLog(client, url);
+			if err != nil {
+				log.Fatal(err)
+			}
+			doc, err := goquery.NewDocumentFromReader(bytes.NewReader(bodyBytes));
+			if err != nil {
+				log.Fatal(err)
+			}
 			ret := callback(doc);
 
 			pages[i + 2] = ret;

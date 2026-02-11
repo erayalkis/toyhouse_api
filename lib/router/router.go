@@ -6,6 +6,7 @@ import (
 	"net/http/cookiejar"
 	"strconv"
 	"toyhouse_api/v2/lib/auth"
+	"toyhouse_api/v2/lib/browser"
 	"toyhouse_api/v2/lib/helpers"
 	"toyhouse_api/v2/lib/scraper"
 
@@ -34,6 +35,9 @@ func setCORS() gin.HandlerFunc {
 func SetRoutes() *gin.Engine {
 	server := gin.Default();
 	server.LoadHTMLFiles("./static/index.html")
+	
+	// Initialize headless browser
+	browser.InitBrowser();
 	
 	jar, _ := cookiejar.New(nil);
 	client := http.Client{
