@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: toyhouse-api
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter  # Minimum plan needed for Chromium (512MB RAM)
+    # For headless browser, you may need a higher plan:
+    # plan: standard  # 2GB RAM recommended
+    envVars:
+      - key: PORT
+        value: 8081
+      - key: CHROMIUM_PATH
+        value: /usr/bin/chromium-browser
+      - key: CHROME_PATH
+        value: /usr/bin/chromium-browser
+    # Add your environment variables here or in Render dashboard:
+    # - key: CF_CLEARANCE
+    #   sync: false  # Set this in Render dashboard
+    # - key: LARAVEL_SESSION
+    #   sync: false
+    # - key: REMEMBER_COOKIE
+    #   sync: false
+    # - key: XSRF_TOKEN
+    #   sync: false
+    # - key: TOYHOUSE_USERNAME
+    #   sync: false
+
